@@ -450,6 +450,7 @@ button:disabled {
   color: #394547;
   font-size: 14px;
   cursor: not-allowed;
+  line-height: 1.2;
 }
 
 .footer__link--wrapper:last-child {

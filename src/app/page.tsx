@@ -11,6 +11,7 @@ import { BsStarFill, BsStarHalf } from "react-icons/bs";
 import { BiCrown } from "react-icons/bi";
 import { RiLeafLine } from "react-icons/ri";
 
+
 export default function Home() {
   return (
     <div className="min-h-screen font-sans p-8 sm:p-20 flex flex-col gap-20">
@@ -174,7 +175,7 @@ export default function Home() {
       </section>
 
       {/* Reviews Section */}
-      <section id="reviews" className="container max-w-7xl mx-auto sm:translate-x-36">
+      <section id="reviews" className="container max-w-7xl mx-auto sm:translate-x-36 -translate-y-42">
   <h2 className="section__title text-3xl font-semibold mb-12 text-center">What our members say</h2>
   <div className="reviews__wrapper">
     {[
@@ -233,7 +234,7 @@ export default function Home() {
 </section>
 
       {/* Numbers Section */}
-      <section id="numbers" className="container max-w-7xl mx-auto sm:translate-x-36">
+      <section id="numbers" className="container max-w-7xl mx-auto sm:translate-x-36 -translate-y-35">
         <h2 className="section__title text-3xl font-semibold mb-12 text-center">Start growing with Summarist now</h2>
         <div className="numbers__wrapper flex flex-col sm:flex-row justify-around gap-12 text-center">
           <div className="numbers max-w-xs">
@@ -262,7 +263,7 @@ export default function Home() {
       </section>
 
       {/* Footer Section */}
-      <section id="footer" className="bg-gray-100 py-12 mt-20">
+      <section id="footer" className="bg-gray-100 py-12 mt-8">
         <div className="container max-w-7xl mx-auto px-6">
           <div className="row grid grid-cols-1 sm:grid-cols-4 gap-12 text-gray-700">
             {[
