@@ -100,70 +100,74 @@ export default function Home() {
         </div>
 
         {/* Statistics Sections */}
-        <div className="statistics__wrapper mt-20 grid grid-cols-1 sm:grid-cols-2 gap-12 max-w-7xl mx-auto">
-          {/* Left stats block */}
-          <div>
-            <div className="statistics__content--header grid grid-cols-3 gap-4 mb-8 text-center text-lg font-semibold">
-              <div>Enhance your knowledge</div>
-              <div>Achieve greater success</div>
-              <div>Improve your health</div>
-              <div>Develop better parenting skills</div>
-              <div>Increase happiness</div>
-              <div>Be the best version of yourself!</div>
+          <div className="statistics__wrapper">
+          {/* Left Column */}
+          <div className="statistics__content">
+            {/* Left side headers */}
+            <div className="statistics__content--header">
+              <div className="statistics__heading">Enhance your knowledge</div>
+              <div className="statistics__heading">Achieve greater success</div>
+              <div className="statistics__heading">Improve your health</div>
+              <div className="statistics__heading">Develop better parenting skills</div>
+              <div className="statistics__heading">Increase happiness</div>
+              <div className="statistics__heading statistics__heading--active">Be the best version of yourself!</div>
             </div>
 
-            <div className="statistics__content--details grid grid-cols-3 gap-6 text-center">
+            {/* Left side statistics */}
+            <div className="statistics__content--details">
               <div className="statistics__data">
-                <div className="statistics__data--number text-4xl font-bold text-blue-600">93%</div>
-                <div className="statistics__data--title text-gray-700">
+                <div className="statistics__data--number">93%</div>
+                <div className="statistics__data--title">
                   of Summarist members <b>significantly increase</b> reading frequency.
                 </div>
               </div>
               <div className="statistics__data">
-                <div className="statistics__data--number text-4xl font-bold text-blue-600">96%</div>
-                <div className="statistics__data--title text-gray-700">
+                <div className="statistics__data--number">96%</div>
+                <div className="statistics__data--title">
                   of Summarist members <b>establish better</b> habits.
                 </div>
               </div>
               <div className="statistics__data">
-                <div className="statistics__data--number text-4xl font-bold text-blue-600">90%</div>
-                <div className="statistics__data--title text-gray-700">
-                  have made <b>significant positive</b> change to their lives.
+                <div className="statistics__data--number">90%</div>
+                <div className="statistics__data--title">
+                  have made <b>significant positive change</b> to their lives.
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right stats block */}
-          <div>
-            <div className="statistics__content--details statistics__content--details-second grid grid-cols-3 gap-6 mb-8 text-center">
+          {/* Right Column */}
+          <div className="statistics__content">
+            {/* Right side statistics */}
+            <div className="statistics__content--details statistics__content--details-second">
               <div className="statistics__data">
-                <div className="statistics__data--number text-4xl font-bold text-blue-600">91%</div>
-                <div className="statistics__data--title text-gray-700">
+                <div className="statistics__data--number">91%</div>
+                <div className="statistics__data--title">
                   of Summarist members <b>report feeling more productive</b> after incorporating the service into their daily routine.
                 </div>
               </div>
               <div className="statistics__data">
-                <div className="statistics__data--number text-4xl font-bold text-blue-600">94%</div>
-                <div className="statistics__data--title text-gray-700">
+                <div className="statistics__data--number">94%</div>
+                <div className="statistics__data--title">
                   of Summarist members have <b>noticed an improvement</b> in their overall comprehension and retention of information.
                 </div>
               </div>
               <div className="statistics__data">
-                <div className="statistics__data--number text-4xl font-bold text-blue-600">88%</div>
-                <div className="statistics__data--title text-gray-700">
+                <div className="statistics__data--number">88%</div>
+                <div className="statistics__data--title">
                   of Summarist members <b>feel more informed</b> about current events and industry trends since using the platform.
                 </div>
               </div>
             </div>
 
-            <div className="statistics__content--header statistics__content--header-second grid grid-cols-3 gap-4 text-center text-lg font-semibold">
-              <div>Expand your learning</div>
-              <div>Accomplish your goals</div>
-              <div>Strengthen your vitality</div>
-              <div>Become a better caregiver</div>
-              <div>Improve your mood</div>
-              <div>Maximize your abilities</div>
+            {/* Right side headers */}
+            <div className="statistics__content--header statistics__content--header-second">
+              <div className="statistics__heading">Expand your learning</div>
+              <div className="statistics__heading">Accomplish your goals</div>
+              <div className="statistics__heading">Strengthen your vitality</div>
+              <div className="statistics__heading">Become a better caregiver</div>
+              <div className="statistics__heading">Improve your mood</div>
+              <div className="statistics__heading">Maximize your abilities</div>
             </div>
           </div>
         </div>

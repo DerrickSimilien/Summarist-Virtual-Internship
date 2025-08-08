@@ -1,5 +1,6 @@
-@import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
+@import "tailwindcss";
+/* @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap"); */
 
 :root {
   --background: #ffffff;
@@ -473,6 +474,17 @@ button:disabled {
 .footer__copyright {
   color: #032b41;
   font-weight: 500;
+}
+
+.statistics__content--details.statistics__content--details-second {
+  max-width: 500px !important; /* Force constraint on right side only */
+  width: auto; /* Let it be flexible within the max-width */
+}
+
+.statistics__content--details.statistics__content--details-second .statistics__data--title {
+  max-width: 380px !important; /* Force text wrapping on right side only */
+  line-height: 1.4;
+  word-wrap: break-word;
 }
 
 @media (max-width: 768px) {
