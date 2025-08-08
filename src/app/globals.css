@@ -29,8 +29,6 @@ body {
 
 /* ===== Your full custom CSS starts here ===== */
 
-
-
 * {
   margin: 0;
   padding: 0;
@@ -253,8 +251,10 @@ button:disabled {
   color: #2bd97c;
 }
 
+/* REPLACED FLEXBOX WITH CSS GRID FOR BETTER CONTROL */
 .statistics__wrapper {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
   gap: 80px;
   margin-bottom: 96px;
 }
@@ -263,25 +263,29 @@ button:disabled {
   margin-bottom: 0;
 }
 
+.statistics__content {
+  display: contents; /* Allows child elements to be direct grid items */
+}
+
 .statistics__content--header {
-  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  text-align: left; /* Default left align */
 }
 
 .statistics__content--header-second {
-  align-items: flex-end;
+  text-align: right; /* Right align for the second header column */
 }
 
 .statistics__content--details {
-  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 24px;
   background-color: #f1f6f4;
   padding: 40px 24px;
+  border-radius: 4px; /* Added to match the visual */
 }
 
 .statistics__data {
@@ -394,6 +398,13 @@ button:disabled {
 
 #footer {
   background-color: rgb(241 246 244);
+   padding: 80px 0 40px 0;
+}
+
+#footer .container {
+  max-width: 1070px;
+  margin: 0 auto;
+  padding: 0 60px; 
 }
 
 .footer__top--wrapper {
@@ -401,18 +412,22 @@ button:disabled {
   display: flex;
   justify-content: space-between;
   font-size: 14px;
-  margin: 32px auto 64px;
+ margin: 0 auto 64px; 
+  max-width: 900px;
 }
 
 .footer__block {
   z-index: 1;
+  flex: 1; 
+  padding: 0 20px;
 }
 
 .footer__link--title {
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
   font-size: 18px;
   color: #032b41;
+  text-align: left;
 }
 
 .footer__social--link-wrapper {
@@ -427,8 +442,8 @@ button:disabled {
 }
 
 .footer__link--wrapper {
-  margin-bottom: 12px;
-  line-height: 1;
+ margin-bottom: 16px; /* Increase spacing between links */
+  line-height: 1.0;
 }
 
 .footer__link {
@@ -469,23 +484,17 @@ button:disabled {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-top: 32px; 
+  border-top: 1px solid rgba(3, 43, 65, 0.1);
 }
 
 .footer__copyright {
   color: #032b41;
   font-weight: 500;
+  font-size: 14px;
 }
 
-.statistics__content--details.statistics__content--details-second {
-  max-width: 500px !important; /* Force constraint on right side only */
-  width: auto; /* Let it be flexible within the max-width */
-}
-
-.statistics__content--details.statistics__content--details-second .statistics__data--title {
-  max-width: 380px !important; /* Force text wrapping on right side only */
-  line-height: 1.4;
-  word-wrap: break-word;
-}
+/* The problematic CSS has been removed and the media query has been updated */
 
 @media (max-width: 768px) {
   .landing__content {
@@ -510,9 +519,28 @@ button:disabled {
   }
 
   .statistics__wrapper {
-    flex-direction: column;
+    grid-template-columns: 1fr; /* Stack columns vertically on mobile */
     gap: 32px;
     margin-bottom: 32px;
+  }
+
+  .statistics__content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .statistics__content--header {
+    text-align: left;
+  }
+  
+  /* Resetting right-side alignment on mobile */
+  .statistics__content--header-second {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .statistics__content--details-second {
+    order: 1; /* Puts the right details block on top of its header on mobile */
   }
 
   .statistics__heading {
@@ -526,14 +554,6 @@ button:disabled {
 
   .numbers__wrapper {
     grid-template-columns: 1fr;
-  }
-
-  .statistics__content--details-second {
-    order: 1;
-  }
-
-  .statistics__content--header-second {
-    align-items: flex-start;
   }
 
   .statistics__data--title {
@@ -576,6 +596,25 @@ button:disabled {
   .remove--tablet {
     display: none;
   }
+
+  #footer {
+    padding: 60px 0 30px 0;
+  }
+
+  #footer .container {
+    padding: 0 24px;
+  }
+
+.footer__top--wrapper {
+    flex-direction: column;
+    gap: 40px;
+    max-width: none;
+  }
+
+   .footer__block {
+    padding: 0;
+  }
+
 }
 
 @media (max-width: 576px) {

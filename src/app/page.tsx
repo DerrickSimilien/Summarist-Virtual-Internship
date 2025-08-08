@@ -174,64 +174,66 @@ export default function Home() {
       </section>
 
       {/* Reviews Section */}
-      <section id="reviews" className="container max-w-7xl mx-auto">
-        <h2 className="section__title text-3xl font-semibold mb-12 text-center">What our members say</h2>
-        <div className="reviews__wrapper grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-          {[
-            {
-              name: "Hanna M.",
-              body: (
-                <>
-                  This app has been a <b>game-changer</b> for me! It's saved me so much time and effort in reading and comprehending books. Highly recommend it to all book lovers.
-                </>
-              ),
-            },
-            {
-              name: "David B.",
-              body: (
-                <>
-                  I love this app! It provides <b>concise and accurate summaries</b> of books in a way that is easy to understand. It's also very user-friendly and intuitive.
-                </>
-              ),
-            },
-            {
-              name: "Nathan S.",
-              body: (
-                <>
-                  This app is a great way to get the main takeaways from a book without having to read the entire thing. <b>The summaries are well-written and informative.</b> Definitely worth downloading.
-                </>
-              ),
-            },
-            {
-              name: "Ryan R.",
-              body: (
-                <>
-                  If you're a busy person who <b>loves reading but doesn't have the time</b> to read every book in full, this app is for you! The summaries are thorough and provide a great overview of the book's content.
-                </>
-              ),
-            },
-          ].map(({ name, body }, idx) => (
-            <div key={idx} className="review border rounded p-6 shadow hover:shadow-lg transition">
-              <div className="review__header flex items-center justify-between mb-4">
-                <div className="review__name font-semibold text-lg">{name}</div>
-                <div className="review__stars text-yellow-500">
-                  <BsStarFill />
-                </div>
-              </div>
-              <div className="review__body text-gray-700">{body}</div>
-            </div>
-          ))}
+      <section id="reviews" className="container max-w-7xl mx-auto sm:translate-x-36">
+  <h2 className="section__title text-3xl font-semibold mb-12 text-center">What our members say</h2>
+  <div className="reviews__wrapper">
+    {[
+      {
+        name: "Hanna M.",
+        body: (
+          <>
+            This app has been a <b>game-changer</b> for me! It's saved me so much time and effort in reading and comprehending books. Highly recommend it to all book lovers.
+          </>
+        ),
+      },
+      {
+        name: "David B.",
+        body: (
+          <>
+            I love this app! It provides <b>concise and accurate summaries</b> of books in a way that is easy to understand. It's also very user-friendly and intuitive.
+          </>
+        ),
+      },
+      {
+        name: "Nathan S.",
+        body: (
+          <>
+            This app is a great way to get the main takeaways from a book without having to read the entire thing. <b>The summaries are well-written and informative.</b> Definitely worth downloading.
+          </>
+        ),
+      },
+      {
+        name: "Ryan R.",
+        body: (
+          <>
+            If you're a busy person who <b>loves reading but doesn't have the time</b> to read every book in full, this app is for you! The summaries are thorough and provide a great overview of the book's content.
+          </>
+        ),
+      },
+    ].map(({ name, body }, idx) => (
+      <div key={idx} className="review">
+        <div className="review__header">
+          <div className="review__name">{name}</div>
+          <div className="review__stars">
+            {[...Array(5)].map((_, i) => (
+              <BsStarFill key={i} />
+            ))}
+          </div>
         </div>
+        <div className="review__body">{body}</div>
+      </div>
+    ))}
+  </div>
 
-        <div className="reviews__btn--wrapper text-center mt-12">
-          <button className="btn home__cta--btn px-8 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-            Login
-          </button>
-        </div>
-      </section>
+  <div className="reviews__btn--wrapper">
+    <button className="btn home__cta--btn">
+      Login
+    </button>
+  </div>
+</section>
 
       {/* Numbers Section */}
-      <section id="numbers" className="container max-w-7xl mx-auto">
+      <section id="numbers" className="container max-w-7xl mx-auto sm:translate-x-36">
         <h2 className="section__title text-3xl font-semibold mb-12 text-center">Start growing with Summarist now</h2>
         <div className="numbers__wrapper flex flex-col sm:flex-row justify-around gap-12 text-center">
           <div className="numbers max-w-xs">
