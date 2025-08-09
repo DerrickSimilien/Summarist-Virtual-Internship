@@ -1,7 +1,8 @@
 // src/app/page.tsx
-"use client"; // Add this if you need client-side interactivity
+"use client"; 
 
 import Image from "next/image";
+import { useState, useEffect } from 'react'; 
 import {
   AiFillFileText,
   AiFillBulb,
@@ -12,7 +13,168 @@ import { BiCrown } from "react-icons/bi";
 import { RiLeafLine } from "react-icons/ri";
 
 
+import LoginModal from '@/components/LoginModal';
+
+
+interface User {
+  email: string;
+  loginType: 'email' | 'google' | 'guest';
+}
+
+
+const AnimatedStatistics = () => {
+  const [activeLeftIndex, setActiveLeftIndex] = useState(0);
+  const [activeRightIndex, setActiveRightIndex] = useState(0);
+
+  const leftHeadings = [
+    "Enhance your knowledge",
+    "Achieve greater success", 
+    "Improve your health",
+    "Develop better parenting skills",
+    "Increase happiness",
+    "Be the best version of yourself!"
+  ];
+
+  const rightHeadings = [
+    "Expand your learning",
+    "Accomplish your goals",
+    "Strengthen your vitality", 
+    "Become a better caregiver",
+    "Improve your mood",
+    "Maximize your abilities"
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveLeftIndex((prev) => (prev + 1) % leftHeadings.length);
+      setActiveRightIndex((prev) => (prev + 1) % rightHeadings.length);
+    }, 2000); // Change every 2 seconds
+
+    return () => clearInterval(interval);
+  }, [leftHeadings.length, rightHeadings.length]);
+
+  return (
+    <div className="statistics__wrapper">
+      {/* Left Column */}
+      <div className="statistics__content">
+        {/* Left side headers */}
+        <div className="statistics__content--header">
+          {leftHeadings.map((heading, index) => (
+            <div 
+              key={index}
+              className={`statistics__heading ${
+                index === activeLeftIndex ? 'statistics__heading--active' : ''
+              }`}
+            >
+              {heading}
+            </div>
+          ))}
+        </div>
+
+        {/* Left side statistics */}
+        <div className="statistics__content--details">
+          <div className="statistics__data">
+            <div className="statistics__data--number">93%</div>
+            <div className="statistics__data--title">
+              of Summarist members <b>significantly increase</b> reading frequency.
+            </div>
+          </div>
+          <div className="statistics__data">
+            <div className="statistics__data--number">96%</div>
+            <div className="statistics__data--title">
+              of Summarist members <b>establish better</b> habits.
+            </div>
+          </div>
+          <div className="statistics__data">
+            <div className="statistics__data--number">90%</div>
+            <div className="statistics__data--title">
+              have made <b>significant positive change</b> to their lives.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Column */}
+      <div className="statistics__content">
+        {/* Right side statistics */}
+        <div className="statistics__content--details statistics__content--details-second">
+          <div className="statistics__data">
+            <div className="statistics__data--number">91%</div>
+            <div className="statistics__data--title">
+              of Summarist members <b>report feeling more productive</b> after incorporating the service into their daily routine.
+            </div>
+          </div>
+          <div className="statistics__data">
+            <div className="statistics__data--number">94%</div>
+            <div className="statistics__data--title">
+              of Summarist members have <b>noticed an improvement</b> in their overall comprehension and retention of information.
+            </div>
+          </div>
+          <div className="statistics__data">
+            <div className="statistics__data--number">88%</div>
+            <div className="statistics__data--title">
+              of Summarist members <b>feel more informed</b> about current events and industry trends since using the platform.
+            </div>
+          </div>
+        </div>
+
+        {/* Right side headers */}
+        <div className="statistics__content--header statistics__content--header-second">
+          {rightHeadings.map((heading, index) => (
+            <div 
+              key={index}
+              className={`statistics__heading ${
+                index === activeRightIndex ? 'statistics__heading--active' : ''
+              }`}
+            >
+              {heading}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function Home() {
+  // State for managing the login modal and user authentication
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  // Handle successful login
+  const handleLogin = (userData: User) => {
+    setUser(userData);
+    console.log('User logged in:', userData);
+    
+    // Here you can add additional login logic:
+    // - Store user data in localStorage
+    // - Update global state
+    // - Redirect to dashboard
+    // - Make API calls to your backend
+    
+    // Example: Store in localStorage
+    localStorage.setItem('user', JSON.stringify(userData));
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+  };
+
+  // Check for existing user session on component mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error('Error parsing stored user data:', error);
+        localStorage.removeItem('user');
+      }
+    }
+  }, []);
+
   return (
     <div className="min-h-screen font-sans p-8 sm:p-20 flex flex-col gap-20">
       {/* Navigation */}
@@ -28,7 +190,20 @@ export default function Home() {
             />
           </figure>
           <ul className="nav__list--wrapper flex space-x-8 text-lg">
-            <li className="nav__list nav__list--login cursor-pointer">Login</li>
+            <li className="nav__list nav__list--login cursor-pointer">
+              {user ? (
+                <div className="flex items-center space-x-4">
+                  <span className="text-green-600">Welcome, {user.email.split('@')[0]}!</span>
+                  <button onClick={handleLogout} className="text-red-600 hover:text-red-800">
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <button onClick={() => setIsLoginModalOpen(true)}>
+                  Login
+                </button>
+              )}
+            </li>
             <li className="nav__list nav__list--mobile cursor-pointer">About</li>
             <li className="nav__list nav__list--mobile cursor-pointer">Contact</li>
             <li className="nav__list nav__list--mobile cursor-pointer">Help</li>
@@ -38,7 +213,7 @@ export default function Home() {
 
       {/* Landing Section */}
       <section id="landing" className="container max-w-7xl mx-auto">
-  <div className="landing__wrapper flex flex-col sm:flex-row items-center gap-10 justify-center translate-x-2 sm:translate-x-34 -translate-y-24">
+        <div className="landing__wrapper flex flex-col sm:flex-row items-center gap-10 justify-center translate-x-2 sm:translate-x-34 -translate-y-24">
           <div className="landing__content max-w-md text-center sm:text-left -translate-y-8">
             <h1 className="landing__content__title text-4xl font-bold leading-tight">
               Gain more knowledge <br className="remove--tablet hidden sm:inline" />
@@ -49,11 +224,20 @@ export default function Home() {
               <br className="remove--tablet hidden sm:inline" />
               individuals who barely have time to read,
               <br className="remove--tablet hidden sm:inline" />
-              and even people who don’t like to read.
+              and even people who don't like to read.
             </p>
-            <button className="btn home__cta--btn mt-8 px-8 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-              Login
-            </button>
+            {user ? (
+              <button className="btn home__cta--btn mt-8 px-8 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition">
+                Go to Dashboard
+              </button>
+            ) : (
+              <button 
+                onClick={() => setIsLoginModalOpen(true)}
+                className="btn home__cta--btn mt-8 px-8 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              >
+                Login
+              </button>
+            )}
           </div>
           <figure className="landing__image--mask relative w-full max-w-lg h-64 sm:h-96 sm:translate-x-36">
             <Image
@@ -100,138 +284,77 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Statistics Sections */}
-          <div className="statistics__wrapper">
-          {/* Left Column */}
-          <div className="statistics__content">
-            {/* Left side headers */}
-            <div className="statistics__content--header">
-              <div className="statistics__heading">Enhance your knowledge</div>
-              <div className="statistics__heading">Achieve greater success</div>
-              <div className="statistics__heading">Improve your health</div>
-              <div className="statistics__heading">Develop better parenting skills</div>
-              <div className="statistics__heading">Increase happiness</div>
-              <div className="statistics__heading statistics__heading--active">Be the best version of yourself!</div>
-            </div>
-
-            {/* Left side statistics */}
-            <div className="statistics__content--details">
-              <div className="statistics__data">
-                <div className="statistics__data--number">93%</div>
-                <div className="statistics__data--title">
-                  of Summarist members <b>significantly increase</b> reading frequency.
-                </div>
-              </div>
-              <div className="statistics__data">
-                <div className="statistics__data--number">96%</div>
-                <div className="statistics__data--title">
-                  of Summarist members <b>establish better</b> habits.
-                </div>
-              </div>
-              <div className="statistics__data">
-                <div className="statistics__data--number">90%</div>
-                <div className="statistics__data--title">
-                  have made <b>significant positive change</b> to their lives.
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column */}
-          <div className="statistics__content">
-            {/* Right side statistics */}
-            <div className="statistics__content--details statistics__content--details-second">
-              <div className="statistics__data">
-                <div className="statistics__data--number">91%</div>
-                <div className="statistics__data--title">
-                  of Summarist members <b>report feeling more productive</b> after incorporating the service into their daily routine.
-                </div>
-              </div>
-              <div className="statistics__data">
-                <div className="statistics__data--number">94%</div>
-                <div className="statistics__data--title">
-                  of Summarist members have <b>noticed an improvement</b> in their overall comprehension and retention of information.
-                </div>
-              </div>
-              <div className="statistics__data">
-                <div className="statistics__data--number">88%</div>
-                <div className="statistics__data--title">
-                  of Summarist members <b>feel more informed</b> about current events and industry trends since using the platform.
-                </div>
-              </div>
-            </div>
-
-            {/* Right side headers */}
-            <div className="statistics__content--header statistics__content--header-second">
-              <div className="statistics__heading">Expand your learning</div>
-              <div className="statistics__heading">Accomplish your goals</div>
-              <div className="statistics__heading">Strengthen your vitality</div>
-              <div className="statistics__heading">Become a better caregiver</div>
-              <div className="statistics__heading">Improve your mood</div>
-              <div className="statistics__heading">Maximize your abilities</div>
-            </div>
-          </div>
-        </div>
+        {/* Statistics Sections - ONLY THIS PART IS MODIFIED */}
+        <AnimatedStatistics />
       </section>
 
       {/* Reviews Section */}
       <section id="reviews" className="container max-w-7xl mx-auto sm:translate-x-36 -translate-y-42">
-  <h2 className="section__title text-3xl font-semibold mb-12 text-center">What our members say</h2>
-  <div className="reviews__wrapper">
-    {[
-      {
-        name: "Hanna M.",
-        body: (
-          <>
-            This app has been a <b>game-changer</b> for me! It's saved me so much time and effort in reading and comprehending books. Highly recommend it to all book lovers.
-          </>
-        ),
-      },
-      {
-        name: "David B.",
-        body: (
-          <>
-            I love this app! It provides <b>concise and accurate summaries</b> of books in a way that is easy to understand. It's also very user-friendly and intuitive.
-          </>
-        ),
-      },
-      {
-        name: "Nathan S.",
-        body: (
-          <>
-            This app is a great way to get the main takeaways from a book without having to read the entire thing. <b>The summaries are well-written and informative.</b> Definitely worth downloading.
-          </>
-        ),
-      },
-      {
-        name: "Ryan R.",
-        body: (
-          <>
-            If you're a busy person who <b>loves reading but doesn't have the time</b> to read every book in full, this app is for you! The summaries are thorough and provide a great overview of the book's content.
-          </>
-        ),
-      },
-    ].map(({ name, body }, idx) => (
-      <div key={idx} className="review">
-        <div className="review__header">
-          <div className="review__name">{name}</div>
-          <div className="review__stars">
-            {[...Array(5)].map((_, i) => (
-              <BsStarFill key={i} />
-            ))}
-          </div>
+        <h2 className="section__title text-3xl font-semibold mb-12 text-center">What our members say</h2>
+        <div className="reviews__wrapper">
+          {[
+            {
+              name: "Hanna M.",
+              body: (
+                <>
+                  This app has been a <b>game-changer</b> for me! It's saved me so much time and effort in reading and comprehending books. Highly recommend it to all book lovers.
+                </>
+              ),
+            },
+            {
+              name: "David B.",
+              body: (
+                <>
+                  I love this app! It provides <b>concise and accurate summaries</b> of books in a way that is easy to understand. It's also very user-friendly and intuitive.
+                </>
+              ),
+            },
+            {
+              name: "Nathan S.",
+              body: (
+                <>
+                  This app is a great way to get the main takeaways from a book without having to read the entire thing. <b>The summaries are well-written and informative.</b> Definitely worth downloading.
+                </>
+              ),
+            },
+            {
+              name: "Ryan R.",
+              body: (
+                <>
+                  If you're a busy person who <b>loves reading but doesn't have the time</b> to read every book in full, this app is for you! The summaries are thorough and provide a great overview of the book's content.
+                </>
+              ),
+            },
+          ].map(({ name, body }, idx) => (
+            <div key={idx} className="review">
+              <div className="review__header">
+                <div className="review__name">{name}</div>
+                <div className="review__stars">
+                  {[...Array(5)].map((_, i) => (
+                    <BsStarFill key={i} />
+                  ))}
+                </div>
+              </div>
+              <div className="review__body">{body}</div>
+            </div>
+          ))}
         </div>
-        <div className="review__body">{body}</div>
-      </div>
-    ))}
-  </div>
 
-  <div className="reviews__btn--wrapper">
-    <button className="btn home__cta--btn">
-      Login
-    </button>
-  </div>
-</section>
+        <div className="reviews__btn--wrapper">
+          {user ? (
+            <button className="btn home__cta--btn">
+              Go to Dashboard
+            </button>
+          ) : (
+            <button 
+              onClick={() => setIsLoginModalOpen(true)}
+              className="btn home__cta--btn"
+            >
+              Login
+            </button>
+          )}
+        </div>
+      </section>
 
       {/* Numbers Section */}
       <section id="numbers" className="container max-w-7xl mx-auto sm:translate-x-36 -translate-y-35">
@@ -314,6 +437,13 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Login Modal */}
+      <LoginModal 
+        isOpen={isLoginModalOpen} 
+        onClose={() => setIsLoginModalOpen(false)}
+        onLogin={handleLogin}
+      />
     </div>
   );
 }

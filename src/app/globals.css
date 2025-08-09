@@ -482,17 +482,19 @@ button:disabled {
 }
 
 .footer__copyright--wrapper {
-  display: flex;
+ display: flex;
   justify-content: center;
   align-items: center;
   padding-top: 32px; 
   border-top: 1px solid rgba(3, 43, 65, 0.1);
+  text-align: center;
 }
 
 .footer__copyright {
-  color: #032b41;
-  font-weight: 500;
+  color: #6b757b; /* Changed from #032b41 to a lighter gray */
+  font-weight: 300; /* Changed from 500 to 300 for lighter weight */
   font-size: 14px;
+  text-align: center;
 }
 
 /* The problematic CSS has been removed and the media query has been updated */
