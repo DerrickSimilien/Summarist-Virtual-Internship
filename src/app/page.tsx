@@ -13,7 +13,7 @@ import { BiCrown } from "react-icons/bi";
 import { RiLeafLine } from "react-icons/ri";
 
 
-import LoginModal from '@/components/LoginModal';
+import LoginModal from '@/app/components/LoginModal';
 
 
 interface User {

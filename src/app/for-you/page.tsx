@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Header from "@/components/Header";
-import BookCard from "@/components/BookCard";
+import BookCard from "@/app/components/BookCard";
 import Link from "next/link";
 
 interface Book {
