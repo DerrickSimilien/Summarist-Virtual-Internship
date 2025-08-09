@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-
+import { useState, useEffect } from "react";
+import { X, User } from "lucide-react";
 
 interface User {
   email: string;
-  loginType: 'email' | 'google' | 'guest';
+  loginType: "email" | "google" | "guest";
 }
 
 interface LoginModalProps {
@@ -14,230 +14,190 @@ interface LoginModalProps {
   onLogin?: (user: User) => void;
 }
 
-const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
+export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
-  // Close modal on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
+      if (e.key === "Escape") onClose();
     };
 
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
     }
-
     return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
     };
   }, [isOpen, onClose]);
 
-  // Reset form when modal closes
   useEffect(() => {
     if (!isOpen) {
-      setFormData({ email: '', password: '' });
-      setError('');
+      setFormData({ email: "", password: "" });
+      setError("");
       setIsLoading(false);
     }
   }, [isOpen]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    // Clear error when user starts typing
-    if (error) setError('');
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    if (error) setError("");
   };
 
-  const handleSubmit = async (e: React.MouseEvent | React.KeyboardEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
-
-    try {
-      // Basic validation
-      if (!formData.email || !formData.password) {
-        throw new Error('Please fill in all fields');
-      }
-
-      if (!/\S+@\S+\.\S+/.test(formData.email)) {
-        throw new Error('Please enter a valid email address');
-      }
-
-      // Simulate API call (replace with your actual login logic)
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Call the onLogin callback with user data
-      onLogin && onLogin({ 
-        email: formData.email, 
-        loginType: 'email' 
-      });
-      
-      onClose();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setIsLoading(false);
+    if (!formData.email || !formData.password) {
+      setError("Please fill in all fields");
+      return;
     }
+    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+    setIsLoading(true);
+    await new Promise(res => setTimeout(res, 1000));
+    onLogin?.({ email: formData.email, loginType: "email" });
+    setIsLoading(false);
+    onClose();
   };
 
   const handleGuestLogin = () => {
-    onLogin && onLogin({ 
-      email: 'guest@example.com', 
-      loginType: 'guest' 
-    });
+    onLogin?.({ email: "guest@example.com", loginType: "guest" });
     onClose();
   };
 
   const handleGoogleLogin = () => {
-    // Replace with actual Google OAuth logic
-    onLogin && onLogin({ 
-      email: 'user@gmail.com', 
-      loginType: 'google' 
-    });
+    onLogin?.({ email: "user@gmail.com", loginType: "google" });
     onClose();
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !isLoading) {
-      handleSubmit(e);
-    }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div 
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div 
-        className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto"
+      <div
+        className="relative w-full max-w-md md:max-w-lg rounded-lg bg-white shadow-2xl p-8"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 transition-colors"
+        >
+          <X size={20} />
+        </button>
+
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold text-gray-800">
-            Log in to Summarist
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors text-xl"
-          >
-            ✕
-          </button>
+        <div className="mb-8 text-center">
+          <h2 className="text-2xl font-bold text-gray-900">Log in to Summarist</h2>
         </div>
 
         {/* Body */}
-        <div className="p-6 space-y-4">
-          {/* Error Message */}
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
-              {error}
-            </div>
-          )}
-
-          {/* Guest Login Button */}
-          <button 
+        <div className="space-y-4">
+          {/* Login as Guest Button */}
+          <button
             onClick={handleGuestLogin}
             disabled={isLoading}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 rounded-md bg-indigo-700 py-3 text-base font-medium text-white hover:bg-indigo-800 disabled:opacity-60 transition"
           >
-            👤 Login as a Guest
+            <div className="w-5 h-5 bg-white rounded-sm flex items-center justify-center">
+              <User size={12} className="text-indigo-700" />
+            </div>
+            Login as a Guest
           </button>
 
-          <div className="text-center text-gray-500 text-sm">or</div>
+          {/* Separator */}
+          <div className="text-center text-gray-500 text-sm py-2">
+            or
+          </div>
 
-          {/* Google Login Button */}
-          <button 
+          {/* Login with Google Button */}
+          <button
             onClick={handleGoogleLogin}
             disabled={isLoading}
-            className="w-full bg-blue-500 text-white py-3 rounded-lg font-medium hover:bg-blue-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 rounded-md bg-blue-600 py-3 text-base font-medium text-white hover:bg-blue-700 disabled:opacity-60 transition"
           >
-            🔍 Login with Google
+            <svg width="18" height="18" viewBox="0 0 24 24" className="text-white">
+              <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77C17.45 2.09 14.97 1 12 1s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+              <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Login with Google
           </button>
 
-          <div className="text-center text-gray-500 text-sm">or</div>
+          {/* Another Separator */}
+          <div className="text-center text-gray-500 text-sm py-2">
+            or
+          </div>
 
-          {/* Login Form */}
-          <div className="space-y-4">
+          {/* Email/Password Login Form */}
+          <form onSubmit={handleSubmit} className="space-y-3">
             <div>
               <input
+                id="email"
                 type="email"
                 name="email"
                 value={formData.email}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-                placeholder="Email Address"
+                onChange={handleChange}
                 disabled={isLoading}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50"
+                className="w-full rounded-md border border-gray-300 px-4 py-3 text-base placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-400 transition"
+                placeholder="Email Address"
               />
             </div>
+
             <div>
               <input
+                id="password"
                 type="password"
                 name="password"
                 value={formData.password}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-                placeholder="Password"
+                onChange={handleChange}
                 disabled={isLoading}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50"
+                className="w-full rounded-md border border-gray-300 px-4 py-3 text-base placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-400 transition"
+                placeholder="Password"
               />
             </div>
 
-            <button 
-              onClick={handleSubmit}
+            <button
+              type="submit"
               disabled={isLoading}
-              className="w-full bg-green-500 text-white py-3 rounded-lg font-medium hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-full rounded-md bg-green-500 py-3 text-base font-medium text-white hover:bg-green-600 disabled:opacity-60 transition mt-4"
             >
-              {isLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Logging in...
-                </>
-              ) : (
-                'Login'
-              )}
+              {isLoading ? "Logging in..." : "Login"}
             </button>
-          </div>
+          </form>
 
-          {/* Forgot Password */}
-          <div className="text-center">
-            <button 
+          {/* Forgot your password link */}
+          <div className="text-center mt-6">
+            <button
               type="button"
-              className="text-blue-500 hover:text-blue-600 text-sm transition-colors"
-              onClick={() => alert('Forgot password functionality not implemented yet')}
+              onClick={() => alert("Forgot password flow not implemented")}
+              className="text-sm text-green-500 hover:underline focus:outline-none"
             >
               Forgot your password?
             </button>
           </div>
 
-          {/* Toggle between Login/Sign Up */}
-          <div className="text-center">
-            <button 
+          {/* Footer */}
+          <div className="text-center text-sm text-gray-600 mt-4">
+            Don't have an account?{" "}
+            <button
               type="button"
-              className="text-blue-500 hover:text-blue-600 text-sm transition-colors"
-              onClick={() => alert('Sign up functionality not implemented yet')}
+              className="text-green-500 hover:underline focus:outline-none"
+              onClick={() => alert("Sign up flow not implemented")}
             >
-              Don't have an account?
+              Sign up
             </button>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default LoginModal;
+}
