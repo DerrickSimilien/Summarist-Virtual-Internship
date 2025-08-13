@@ -1,9 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import SidebarLayout from '../components/SidebarLayout';
 import BookCard from '../components/BookCard';
-import { Play, Clock } from 'lucide-react';
+import { Play, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Mock data for the featured book
 const featuredBook = {
@@ -15,50 +15,6 @@ const featuredBook = {
   averageRating: 4.3,
   duration: '3 mins 23 secs'
 };
-
-// Mock data for recommended books
-const recommendedBooks = [
-  {
-    id: '2',
-    title: 'How to Win Friends and Influence People',
-    author: 'Dale Carnegie',
-    imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1442726934i/4865.jpg',
-    subscriptionRequired: false,
-    averageRating: 4.2
-  },
-  {
-    id: '3',
-    title: "Can't Hurt Me",
-    author: 'David Goggins',
-    imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1536184191i/41721428.jpg',
-    subscriptionRequired: true,
-    averageRating: 4.6
-  },
-  {
-    id: '4',
-    title: 'Mastery',
-    author: 'Robert Greene',
-    imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1348710018i/13589182.jpg',
-    subscriptionRequired: true,
-    averageRating: 4.1
-  },
-  {
-    id: '5',
-    title: 'Atomic Habits',
-    author: 'James Clear',
-    imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1535115320i/40121378.jpg',
-    subscriptionRequired: true,
-    averageRating: 4.4
-  },
-  {
-    id: '6',
-    title: 'How to Talk to Anyone',
-    author: 'Leil Lowndes',
-    imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1387772020i/35167.jpg',
-    subscriptionRequired: true,
-    averageRating: 4.0
-  }
-];
 
 // Mock data for suggested books
 const suggestedBooks = [
@@ -96,11 +52,100 @@ const suggestedBooks = [
   }
 ];
 
+// Horizontal scrolling BookCard for recommended books only
+const RecommendedBookCard = ({ book }) => {
+  return (
+    <div className="flex-shrink-0 w-48">
+      <div className="relative mb-3">
+        <img 
+          src={book.imageLink} 
+          alt={book.title}
+          className="w-full h-64 object-cover rounded-lg shadow-sm"
+        />
+        {book.subscriptionRequired && (
+          <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded font-medium">
+            Premium
+          </div>
+        )}
+      </div>
+      
+      <div className="space-y-1">
+        <h3 className="font-semibold text-gray-900 text-sm line-clamp-2">{book.title}</h3>
+        <p className="text-gray-600 text-xs">{book.author}</p>
+      </div>
+    </div>
+  );
+};
+
 const ForYouPage = () => {
+  const [recommendedBooks, setRecommendedBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch recommended books from API
+  useEffect(() => {
+    const fetchRecommendedBooks = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('https://us-central1-summaristt.cloudfunctions.net/getBooks?status=recommended');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        setRecommendedBooks(data || []);
+      } catch (err) {
+        console.error('Error fetching recommended books:', err);
+        setError(err.message);
+        // Fallback to mock data if API fails
+        setRecommendedBooks([
+          {
+            id: '2',
+            title: 'How to Win Friends and Influence People',
+            author: 'Dale Carnegie',
+            subTitle: 'The classic guide to better relationships',
+            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1442726934i/4865.jpg',
+            subscriptionRequired: false,
+            averageRating: 4.2
+          },
+          {
+            id: '3',
+            title: "Can't Hurt Me",
+            author: 'David Goggins',
+            subTitle: 'Master Your Mind and Defy the Odds',
+            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1536184191i/41721428.jpg',
+            subscriptionRequired: true,
+            averageRating: 4.6
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecommendedBooks();
+  }, []);
+
+  // Horizontal scroll functions
+  const scrollLeft = () => {
+    const container = document.getElementById('recommended-scroll');
+    if (container) {
+      container.scrollBy({ left: -240, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    const container = document.getElementById('recommended-scroll');
+    if (container) {
+      container.scrollBy({ left: 240, behavior: 'smooth' });
+    }
+  };
+
   return (
     <SidebarLayout>
       <div className="max-w-6xl">
-        {/* Selected just for you section */}
+        {/* Selected just for you section - UNCHANGED */}
         <section className="mb-8 ml-32">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Selected just for you</h2>
           
@@ -140,23 +185,57 @@ const ForYouPage = () => {
           </div>
         </section>
 
-        {/* Recommended For You section */}
+        {/* Recommended For You section - MODIFIED with API and horizontal scrolling */}
         <section className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold text-gray-900">Recommended For You</h2>
               <p className="text-gray-600 mt-1">We think you'll like these</p>
             </div>
+            
+            {/* Navigation arrows */}
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={scrollLeft}
+                className="p-2 rounded-full bg-white shadow-md hover:shadow-lg transition-shadow duration-200 border"
+                aria-label="Scroll left"
+              >
+                <ChevronLeft className="w-5 h-5 text-gray-600" />
+              </button>
+              <button 
+                onClick={scrollRight}
+                className="p-2 rounded-full bg-white shadow-md hover:shadow-lg transition-shadow duration-200 border"
+                aria-label="Scroll right"
+              >
+                <ChevronRight className="w-5 h-5 text-gray-600" />
+              </button>
+            </div>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {recommendedBooks.map((book) => (
-              <BookCard key={book.id} book={book} />
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="text-lg text-gray-600">Loading recommended books...</div>
+            </div>
+          ) : error ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="text-lg text-red-600">Error loading books: {error}</div>
+            </div>
+          ) : (
+            <div className="relative">
+              <div 
+                id="recommended-scroll"
+                className="flex gap-6 overflow-x-auto scrollbar-hide pb-4"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {recommendedBooks.map((book) => (
+                  <RecommendedBookCard key={book.id} book={book} />
+                ))}
+              </div>
+            </div>
+          )}
         </section>
 
-        {/* Suggested Books section */}
+        {/* Suggested Books section - UNCHANGED, uses your original BookCard */}
         <section>
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -172,6 +251,22 @@ const ForYouPage = () => {
           </div>
         </section>
       </div>
+      
+      <style jsx>{`
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .line-clamp-2 {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      `}</style>
     </SidebarLayout>
   );
 };
