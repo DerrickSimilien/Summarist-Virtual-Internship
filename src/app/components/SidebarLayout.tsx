@@ -109,7 +109,9 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
         <header className="bg-white shadow-sm border-b border-gray-200">
           <div className="px-6 py-4">
             <div className="flex items-center justify-end">
-              <div className="relative">
+                <div className="relative">
+                {/* Vertical divider line */}
+                <div className="absolute right-9 top-1/2 transform -translate-y-1/2 h-8 w-px bg-gray-400"></div>
                 <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
                   type="text"
