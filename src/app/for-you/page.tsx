@@ -101,34 +101,41 @@ const ForYouPage = () => {
     <SidebarLayout>
       <div className="max-w-6xl">
         {/* Selected just for you section */}
-        <section className="mb-8">
+        <section className="mb-8 ml-32">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Selected just for you</h2>
           
-          <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg p-4 flex items-center gap-6 max-w-4xl">
-            <div className="flex-1 max-w-md">
-              <div className="text-sm text-gray-600 mb-1 leading-tight">
+          <div className="rounded-lg p-5 flex items-start max-w-2xl" style={{backgroundColor: '#FBEFD6'}}>
+            {/* Left side content - only subtitle */}
+            <div className="flex-1 pr-5 max-w-xs">
+              <div className="text-med text-black-600 leading-relaxed">
                 How Constant Innovation Creates Radically Successful Businesses
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-1">{featuredBook.title}</h3>
-              <p className="text-gray-700 mb-3 text-sm">by {featuredBook.author}</p>
-              <div className="flex items-center gap-3">
-                <button className="flex items-center gap-2 bg-black text-white px-3 py-1.5 rounded-full hover:bg-gray-800 transition-colors text-sm">
-                  <Play className="w-3 h-3 fill-current" />
-                  <span>{featuredBook.duration}</span>
-                </button>
-                <div className="flex items-center gap-1 text-xs text-gray-600">
-                  <Clock className="w-3 h-3" />
-                  <span>Quick read</span>
-                </div>
               </div>
             </div>
             
-            <div className="flex-shrink-0">
+            {/* Vertical divider line */}
+            <div className="w-px h-28 bg-gray-300 mx-5"></div>
+            
+            {/* Right side content */}
+            <div className="flex items-center gap-3">
+              {/* Book cover */}
               <img 
                 src={featuredBook.imageLink} 
                 alt={featuredBook.title}
-                className="w-24 h-36 object-cover rounded-lg shadow-md"
+                className="w-22 h-32 object-cover rounded-lg shadow-lg"
               />
+              
+              {/* Book info and controls */}
+              <div className="flex flex-col">
+                <h3 className="text-xl font-bold text-gray-900 mb-1">{featuredBook.title}</h3>
+                <p className="text-gray-700 mb-2 text-sm">by {featuredBook.author}</p>
+                
+                <div className="flex items-center gap-2">
+                  <button className="flex items-center justify-center bg-black text-white w-9 h-9 rounded-full hover:bg-gray-800 transition-colors">
+                    <Play className="w-4 h-4 fill-current" />
+                  </button>
+                  <span className="text-sm font-medium">{featuredBook.duration}</span>
+                </div>
+              </div>
             </div>
           </div>
         </section>
