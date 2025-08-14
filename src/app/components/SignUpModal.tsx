@@ -74,37 +74,106 @@ export default function SignUpModal({ isOpen, onClose, onSignUp, onGoToLogin }: 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ 
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        fontFamily: 'Roboto, sans-serif'
+      }}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
-        className="signup-modal-content relative w-full max-w-[420px] rounded-lg bg-white shadow-2xl overflow-hidden"
+        className="signup-modal-content relative w-full bg-white shadow-2xl overflow-hidden"
+        style={{ 
+          borderRadius: '8px',
+          maxWidth: '420px',
+          fontFamily: 'Roboto, sans-serif'
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 transition-colors z-10"
+          className="absolute z-10"
+          style={{ 
+            right: '20px', 
+            top: '20px',
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            color: '#9CA3AF',
+            padding: '4px',
+            borderRadius: '4px',
+            transition: 'color 0.2s'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#6B7280'}
+          onMouseLeave={(e) => e.currentTarget.style.color = '#9CA3AF'}
         >
           <X size={20} />
         </button>
 
         {/* Main Content */}
-        <div className="p-8 pb-0">
+        <div style={{ padding: '60px 32px 32px 32px' }}>
           {/* Centered Content */}
-          <div className="flex flex-col items-center pt-8 space-y-4">
-            {/* Header */}
-            <h2 className="text-2xl font-bold text-gray-900">Sign up to Summarist</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {/* Header with extra padding */}
+            <h2 style={{ 
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#111827',
+              marginBottom: '32px',
+              textAlign: 'center',
+              margin: '0 0 32px 0'
+            }}>
+              Sign up to Summarist
+            </h2>
 
-            {/* Body */}
-            <div className="modal-form-section">
+            {/* Form Container */}
+            <div style={{ width: '100%', maxWidth: '320px' }}>
+              
               {/* Sign up with Google Button */}
               <button
                 onClick={handleGoogleSignUp}
                 disabled={isLoading}
-                className="w-full relative flex items-center justify-center rounded-md bg-blue-500 py-3 text-base font-medium text-white hover:bg-blue-600 disabled:opacity-60 transition"
+                style={{
+                  width: '100%',
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#3B82F6',
+                  color: 'white',
+                  padding: '12px 16px',
+                  fontSize: '16px',
+                  fontWeight: '500',
+                  borderRadius: '4px',
+                  height: '48px',
+                  border: 'none',
+                  cursor: isLoading ? 'not-allowed' : 'pointer',
+                  transition: 'background-color 0.2s',
+                  fontFamily: 'Roboto, sans-serif',
+                  boxSizing: 'border-box',
+                  margin: '0 0 20px 0',
+                  opacity: isLoading ? '0.6' : '1'
+                }}
+                onMouseEnter={(e) => {
+                  if (!isLoading) e.currentTarget.style.backgroundColor = '#2563EB';
+                }}
+                onMouseLeave={(e) => {
+                  if (!isLoading) e.currentTarget.style.backgroundColor = '#3B82F6';
+                }}
               >
-                <svg width="34" height="34" viewBox="0 0 24 24" className="absolute left-4 bg-white rounded-sm p-0.5">
+                <svg 
+                  width="20" 
+                  height="20" 
+                  viewBox="0 0 24 24" 
+                  style={{ 
+                    position: 'absolute',
+                    left: '16px',
+                    backgroundColor: 'white',
+                    borderRadius: '2px',
+                    padding: '2px'
+                  }}
+                >
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                   <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                   <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
@@ -114,39 +183,119 @@ export default function SignUpModal({ isOpen, onClose, onSignUp, onGoToLogin }: 
               </button>
 
               {/* Separator */}
-              <div className="modal-separator flex items-center py-2">
-                <div className="flex-1 border-t border-gray-300"></div>
-                <span className="px-4 text-gray-500 text-sm">or</span>
-                <div className="flex-1 border-t border-gray-300"></div>
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                margin: '16px 0'
+              }}>
+                <div style={{ 
+                  flex: '1', 
+                  borderTop: '1px solid #D1D5DB' 
+                }}></div>
+                <span style={{ 
+                  padding: '0 16px', 
+                  color: '#6B7280', 
+                  fontSize: '14px'
+                }}>or</span>
+                <div style={{ 
+                  flex: '1', 
+                  borderTop: '1px solid #D1D5DB' 
+                }}></div>
               </div>
 
               {/* Email/Password Form */}
-              <form onSubmit={handleSubmit} className="form-group space-y-3 pb-8">
-                <input
-                  id="email"
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  disabled={isLoading}
-                  placeholder="Email Address"
-                  className="w-full rounded-md border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition disabled:bg-gray-50 disabled:text-gray-400"
-                />
-                <input
-                  id="password"
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  disabled={isLoading}
-                  placeholder="Password"
-                  className="w-full rounded-md border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition disabled:bg-gray-50 disabled:text-gray-400"
-                />
-                {error && <p className="text-red-600 text-sm">{error}</p>}
+              <form onSubmit={handleSubmit} style={{ margin: '0' }}>
+                <div style={{ marginBottom: '16px' }}>
+                  <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    disabled={isLoading}
+                    placeholder="Email Address"
+                    style={{ 
+                      width: '100%',
+                      border: '1px solid #D1D5DB',
+                      padding: '12px 16px',
+                      fontSize: '16px',
+                      borderRadius: '4px',
+                      height: '48px',
+                      outline: 'none',
+                      transition: 'border-color 0.2s',
+                      backgroundColor: isLoading ? '#F9FAFB' : 'white',
+                      color: isLoading ? '#9CA3AF' : '#111827',
+                      fontFamily: 'Roboto, sans-serif',
+                      boxSizing: 'border-box',
+                      margin: '0'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#3B82F6'}
+                    onBlur={(e) => e.target.style.borderColor = '#D1D5DB'}
+                  />
+                </div>
+                
+                <div style={{ marginBottom: '16px' }}>
+                  <input
+                    id="password"
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    disabled={isLoading}
+                    placeholder="Password"
+                    style={{ 
+                      width: '100%',
+                      border: '1px solid #D1D5DB',
+                      padding: '12px 16px',
+                      fontSize: '16px',
+                      borderRadius: '4px',
+                      height: '48px',
+                      outline: 'none',
+                      transition: 'border-color 0.2s',
+                      backgroundColor: isLoading ? '#F9FAFB' : 'white',
+                      color: isLoading ? '#9CA3AF' : '#111827',
+                      fontFamily: 'Roboto, sans-serif',
+                      boxSizing: 'border-box',
+                      margin: '0'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#3B82F6'}
+                    onBlur={(e) => e.target.style.borderColor = '#D1D5DB'}
+                  />
+                </div>
+
+                {error && (
+                  <p style={{ 
+                    color: '#DC2626',
+                    fontSize: '14px',
+                    margin: '0 0 16px 0'
+                  }}>{error}</p>
+                )}
+
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-md font-medium transition disabled:opacity-60 mt-2"
+                  style={{ 
+                    width: '100%',
+                    backgroundColor: isLoading ? 'rgba(34, 197, 94, 0.6)' : '#22C55E',
+                    color: 'white',
+                    padding: '12px 16px',
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    borderRadius: '4px',
+                    height: '48px',
+                    border: 'none',
+                    cursor: isLoading ? 'not-allowed' : 'pointer',
+                    transition: 'background-color 0.2s',
+                    fontFamily: 'Roboto, sans-serif',
+                    boxSizing: 'border-box',
+                    margin: '16px 0 0 0'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isLoading) e.currentTarget.style.backgroundColor = '#16A34A';
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isLoading) e.currentTarget.style.backgroundColor = '#22C55E';
+                  }}
                 >
                   {isLoading ? "Signing up..." : "Sign up"}
                 </button>
@@ -155,17 +304,30 @@ export default function SignUpModal({ isOpen, onClose, onSignUp, onGoToLogin }: 
           </div>
         </div>
 
-        {/* Green Banner Footer */}
-        <div className="bg-green-100 px-8 py-6">
-          <div className="text-center text-sm">
-            <button
-              type="button"
-              className="text-blue-500 hover:underline"
-              onClick={onGoToLogin}
-            >
-              Already have an account?
-            </button>
-          </div>
+        {/* Green Banner Footer with increased height */}
+        <div style={{ 
+          backgroundColor: '#DCFCE7',
+          padding: '20px 32px',
+          textAlign: 'center'
+        }}>
+          <button
+            type="button"
+            onClick={onGoToLogin}
+            style={{
+              color: '#3B82F6',
+              fontSize: '14px',
+              fontWeight: '500',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              textDecoration: 'none',
+              fontFamily: 'Roboto, sans-serif'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
+            onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
+          >
+            Already have an account?
+          </button>
         </div>
       </div>
     </div>

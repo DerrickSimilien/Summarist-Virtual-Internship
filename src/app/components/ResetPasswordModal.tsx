@@ -68,36 +68,64 @@ export default function ResetPasswordModal({ isOpen, onClose, onGoToLogin }: Res
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ 
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        fontFamily: 'Roboto, sans-serif'
+      }}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
-        className="reset-modal-content relative w-full max-w-[420px] rounded-lg bg-white shadow-2xl overflow-hidden"
+        className="reset-modal-content relative w-full bg-white shadow-2xl overflow-hidden"
+        style={{ 
+          borderRadius: '8px',
+          maxWidth: '420px',
+          fontFamily: 'Roboto, sans-serif'
+        }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close Button - positioned in top right corner of modal */}
+        {/* Close Button - positioned in top right corner */}
         <button
           onClick={onClose}
-          className="absolute text-gray-400 hover:text-gray-600 transition-colors z-10"
-          style={{ right: '24px', top: '24px' }}
+          className="absolute z-10"
+          style={{ 
+            right: '20px', 
+            top: '20px',
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            color: '#9CA3AF',
+            padding: '4px',
+            borderRadius: '4px',
+            transition: 'color 0.2s'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#6B7280'}
+          onMouseLeave={(e) => e.currentTarget.style.color = '#9CA3AF'}
         >
-          <X size={24} />
+          <X size={20} />
         </button>
 
         {/* Main Content */}
-        <div className="px-8 pb-8" style={{ paddingTop: '80px' }}>
+        <div style={{ padding: '60px 32px 32px 32px' }}>
           {/* Centered Content */}
-          <div className="flex flex-col items-center" style={{ gap: '24px' }}>
-            {/* Header with more spacing */}
-            <h2 className="text-2xl font-bold text-gray-900" style={{ marginBottom: '16px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {/* Header */}
+            <h2 style={{ 
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#111827',
+              marginBottom: '32px',
+              textAlign: 'center',
+              margin: '0 0 32px 0'
+            }}>
               Reset your password
             </h2>
 
             {!isSuccess ? (
               <>
                 {/* Form */}
-                <div className="modal-form-section w-full" style={{ maxWidth: '320px' }}>
-                  <div className="form-group">
+                <div style={{ width: '100%', maxWidth: '280px' }}>
+                  <div>
                     <input
                       type="email"
                       value={email}
@@ -107,41 +135,83 @@ export default function ResetPasswordModal({ isOpen, onClose, onGoToLogin }: Res
                       }}
                       disabled={isLoading}
                       placeholder="Email address"
-                      className="w-full border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition disabled:bg-gray-50 disabled:text-gray-400"
                       style={{ 
-                        borderRadius: '4px', 
-                        marginBottom: '24px' // Increased spacing between input and button
+                        width: '100%',
+                        border: '1px solid #D1D5DB',
+                        padding: '12px 16px',
+                        fontSize: '16px',
+                        borderRadius: '4px',
+                        height: '48px',
+                        outline: 'none',
+                        transition: 'border-color 0.2s',
+                        backgroundColor: isLoading ? '#F9FAFB' : 'white',
+                        color: isLoading ? '#9CA3AF' : '#111827',
+                        fontFamily: 'Roboto, sans-serif',
+                        boxSizing: 'border-box',
+                        margin: '0 0 24px 0'
                       }}
+                      onFocus={(e) => e.target.style.borderColor = '#3B82F6'}
+                      onBlur={(e) => e.target.style.borderColor = '#D1D5DB'}
                     />
                     
-                    {error && <p className="text-red-600 text-sm" style={{ marginBottom: '16px' }}>{error}</p>}
+                    {error && (
+                      <p style={{ 
+                        color: '#DC2626',
+                        fontSize: '14px',
+                        margin: '-16px 0 16px 0'
+                      }}>{error}</p>
+                    )}
                     
-                    {/* Reset button with reduced width */}
-                    <div className="flex justify-center">
-                      <button
-                        type="button"
-                        onClick={handleSubmit}
-                        disabled={isLoading}
-                        className="bg-green-500 hover:bg-green-600 text-blue-900 py-3 px-8 font-medium transition disabled:opacity-60"
-                        style={{ 
-                          borderRadius: '4px',
-                          minWidth: '240px' // Reduced width to match original
-                        }}
-                      >
-                        {isLoading ? "Sending..." : "Send reset password link"}
-                      </button>
-                    </div>
+                    {/* Reset button matching input width */}
+                    <button
+                      type="button"
+                      onClick={handleSubmit}
+                      disabled={isLoading}
+                      style={{ 
+                        width: '100%',
+                        backgroundColor: isLoading ? 'rgba(34, 197, 94, 0.6)' : '#22C55E',
+                        color: 'white',
+                        padding: '12px 16px',
+                        fontSize: '16px',
+                        fontWeight: '500',
+                        borderRadius: '4px',
+                        height: '48px',
+                        border: 'none',
+                        cursor: isLoading ? 'not-allowed' : 'pointer',
+                        transition: 'background-color 0.2s',
+                        fontFamily: 'Roboto, sans-serif',
+                        boxSizing: 'border-box',
+                        margin: '0'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isLoading) e.currentTarget.style.backgroundColor = '#16A34A';
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isLoading) e.currentTarget.style.backgroundColor = '#22C55E';
+                      }}
+                    >
+                      {isLoading ? "Sending..." : "Send reset password link"}
+                    </button>
                   </div>
                 </div>
               </>
             ) : (
               <>
                 {/* Success Message */}
-                <div className="modal-form-section w-full text-center" style={{ maxWidth: '320px' }}>
-                  <div className="text-green-600 text-lg font-medium" style={{ marginBottom: '16px' }}>
+                <div style={{ width: '100%', maxWidth: '380px', textAlign: 'center' }}>
+                  <div style={{ 
+                    color: '#059669',
+                    fontSize: '18px',
+                    fontWeight: '500',
+                    marginBottom: '16px'
+                  }}>
                     Reset link sent!
                   </div>
-                  <p className="text-gray-600 text-sm">
+                  <p style={{ 
+                    color: '#6B7280',
+                    fontSize: '14px',
+                    margin: '0'
+                  }}>
                     Check your email for a link to reset your password.
                   </p>
                 </div>
@@ -150,17 +220,30 @@ export default function ResetPasswordModal({ isOpen, onClose, onGoToLogin }: Res
           </div>
         </div>
 
-        {/* Green Banner Footer */}
-        <div className="bg-green-100 px-8 py-6">
-          <div className="text-center text-sm">
-            <button
-              type="button"
-              className="text-blue-500 hover:underline"
-              onClick={handleGoToLogin}
-            >
-              Go to login
-            </button>
-          </div>
+        {/* Green Banner Footer with increased height */}
+        <div style={{ 
+          backgroundColor: '#DCFCE7',
+          padding: '20px 32px',
+          textAlign: 'center'
+        }}>
+          <button
+            type="button"
+            onClick={handleGoToLogin}
+            style={{
+              color: '#3B82F6',
+              fontSize: '14px',
+              fontWeight: '500',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              textDecoration: 'none',
+              fontFamily: 'Roboto, sans-serif'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
+            onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
+          >
+            Go to login
+          </button>
         </div>
       </div>
     </div>
