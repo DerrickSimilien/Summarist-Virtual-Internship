@@ -78,7 +78,7 @@ export default function SignUpModal({ isOpen, onClose, onSignUp, onGoToLogin }: 
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
-        className="relative w-full max-w-[420px] rounded-lg bg-white shadow-2xl overflow-hidden"
+        className="signup-modal-content relative w-full max-w-[420px] rounded-lg bg-white shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -97,7 +97,7 @@ export default function SignUpModal({ isOpen, onClose, onSignUp, onGoToLogin }: 
             <h2 className="text-2xl font-bold text-gray-900">Sign up to Summarist</h2>
 
             {/* Body */}
-            <div>
+            <div className="modal-form-section">
               {/* Sign up with Google Button */}
               <button
                 onClick={handleGoogleSignUp}
@@ -114,14 +114,14 @@ export default function SignUpModal({ isOpen, onClose, onSignUp, onGoToLogin }: 
               </button>
 
               {/* Separator */}
-              <div className="flex items-center py-2">
+              <div className="modal-separator flex items-center py-2">
                 <div className="flex-1 border-t border-gray-300"></div>
                 <span className="px-4 text-gray-500 text-sm">or</span>
                 <div className="flex-1 border-t border-gray-300"></div>
               </div>
 
               {/* Email/Password Form */}
-              <form onSubmit={handleSubmit} className="space-y-3 pb-8">
+              <form onSubmit={handleSubmit} className="form-group space-y-3 pb-8">
                 <input
                   id="email"
                   type="email"

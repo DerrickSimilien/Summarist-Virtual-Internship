@@ -30,8 +30,8 @@ body {
 /* ===== Your full custom CSS starts here ===== */
 
 * {
-  /* margin: 0;
-  padding: 0; */
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
   font-family: "Roboto", sans-serif;
 }
@@ -39,6 +39,8 @@ body {
 *, ::before, ::after {
   box-sizing: border-box;
 }
+
+
 
 body {
   margin: 0;
@@ -127,6 +129,66 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Add this to your global.css file */
+
+
+
+/* Modal-specific reset to counteract global reset */
+.login-modal-content {
+  /* Reset margins and padding for modal elements */
+}
+
+.login-modal-content * {
+  margin: revert;
+  padding: revert;
+}
+
+.login-modal-content h2 {
+  margin: 0 0 1rem 0; /* Specific spacing for the title */
+}
+
+.login-modal-content .modal-form-section {
+  margin: 0;
+  padding: 0;
+}
+
+.login-modal-content .modal-form-section > * {
+  margin-bottom: 0.75rem; /* 12px spacing between form elements */
+}
+
+.login-modal-content .modal-form-section > *:last-child {
+  margin-bottom: 0;
+}
+
+.login-modal-content .modal-separator {
+  margin: 0.5rem 0; /* 8px top/bottom margin for separators */
+}
+
+.login-modal-content .modal-footer-link {
+  margin: 1.5rem 0 0 0; /* 24px top margin for footer links */
+}
+
+.login-modal-content input {
+  margin: 0; /* Reset input margins */
+  padding: 0.75rem 1rem; /* Keep the padding for inputs */
+}
+
+.login-modal-content button {
+  margin: 0; /* Reset button margins */
+  padding: 0.75rem 1.25rem; /* Keep button padding */
+}
+
+/* Specific overrides for form elements */
+.login-modal-content .form-group {
+  margin: 0;
+  padding: 0;
+}
+
+.login-modal-content .button-group {
+  margin: 0;
+  padding: 0;
 }
 
 /* HOME */
