@@ -26,41 +26,81 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
   const pathname = usePathname();
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar - Fixed Position */}
-      <div className="fixed left-0 top-0 w-64 h-full bg-gray-100 shadow-sm border-r border-gray-200 flex flex-col z-10">
-        {/* Logo */}
-        <div className="p-6 border-b border-gray-200">
+    <div className="flex min-h-screen" style={{ fontFamily: 'Roboto, sans-serif' }}>
+      {/* Sidebar - Fixed Position with exact original dimensions */}
+      <div 
+        className="fixed left-0 top-0 h-full flex flex-col border-r"
+        style={{ 
+          width: '240px', 
+          backgroundColor: '#f7f8fc', 
+          borderColor: '#e4e5e7', 
+          zIndex: 1000 
+        }}
+      >
+        {/* Logo Section - matches original height and padding */}
+        <div 
+          className="flex items-center border-b"
+          style={{ 
+            padding: '32px 32px', 
+            borderColor: '#e4e5e7',
+            height: '96px' 
+          }}
+        >
           <Link href="/" className="flex items-center">
-            <img src="/logo.png" alt="Summarist Logo" className="h-8 w-auto" />
+            <img 
+              src="/logo.png" 
+              alt="Summarist"
+              style={{ 
+                width: '160px', 
+                height: 'auto'
+              }}
+            />
           </Link>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 py-6 flex flex-col">
-          {/* Main navigation items */}
-          <ul className="space-y-1 px-3">
-            {mainNavigationItems.map((item) => {
+        {/* Navigation with exact spacing from original */}
+        <nav className="flex-1 flex flex-col" style={{ paddingTop: '40px' }}>
+          {/* Main navigation items - generous spacing like original */}
+          <ul style={{ paddingLeft: '32px', paddingRight: '32px' }}>
+            {mainNavigationItems.map((item, index) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
               
               return (
-                <li key={item.name} className="relative">
-                  {/* Green active indicator tab */}
-                  {isActive && (
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-600 rounded-r-full"></div>
-                  )}
-                  
+                <li key={item.name} style={{ marginBottom: '24px' }}>
                   <Link
                     href={item.href}
-                    className={`flex items-center px-3 py-3 text-base font-medium rounded-md transition-colors ${
-                      isActive
-                        ? 'bg-green-50 text-green-700 border-r-2 border-green-600'
-                        : 'hover:bg-gray-200'
-                    }`}
-                    style={{ color: isActive ? undefined : '#032B41' }}
+                    className="flex items-center transition-colors duration-150"
+                    style={{
+                      padding: '12px 16px',
+                      fontSize: '16px',
+                      fontWeight: '400',
+                      color: isActive ? '#2bd97c' : '#032B41',
+                      backgroundColor: isActive ? 'rgba(43, 217, 124, 0.08)' : 'transparent',
+                      textDecoration: 'none',
+                      borderRadius: '8px',
+                      position: 'relative'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = 'rgba(3, 43, 65, 0.04)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }
+                    }}
                   >
-                    <Icon className={`mr-3 h-5 w-5 ${isActive ? 'text-green-600' : 'text-gray-500'}`} />
+                    <Icon 
+                      className="flex-shrink-0" 
+                      style={{ 
+                        marginRight: '16px', 
+                        height: '20px', 
+                        width: '20px',
+                        color: isActive ? '#2bd97c' : '#6b757b'
+                      }} 
+                    />
                     {item.name}
                   </Link>
                 </li>
@@ -68,63 +108,198 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
             })}
           </ul>
 
-          {/* Spacer to push bottom items down */}
-          <div className="flex-1"></div>
+          {/* Large spacer to push bottom items down */}
+          <div className="flex-1" style={{ minHeight: '200px' }}></div>
 
-          {/* Bottom navigation items */}
-          <ul className="space-y-1 px-3 mt-4">
-            {bottomNavigationItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href;
-              
-              return (
-                <li key={item.name} className="relative">
-                  {/* Green active indicator tab */}
-                  {isActive && (
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-600 rounded-r-full"></div>
-                  )}
-                  
-                  <Link
-                    href={item.href}
-                    className={`flex items-center px-3 py-3 text-base font-medium rounded-md transition-colors ${
-                      isActive
-                        ? 'bg-green-50 text-green-700 border-r-2 border-green-600'
-                        : 'hover:bg-gray-200'
-                    }`}
-                    style={{ color: isActive ? undefined : '#032B41' }}
-                  >
-                    <Icon className={`mr-3 h-5 w-5 ${isActive ? 'text-green-600' : 'text-gray-500'}`} />
-                    {item.name}
-                  </Link>
-                </li>
-              );
-            })}
+          {/* Bottom navigation items - same spacing as main items */}
+          <ul style={{ paddingLeft: '32px', paddingRight: '32px', paddingBottom: '40px' }}>
+            {/* Settings */}
+            <li style={{ marginBottom: '24px' }}>
+              <Link
+                href="/settings"
+                className="flex items-center transition-colors duration-150"
+                style={{
+                  padding: '12px 16px',
+                  fontSize: '16px',
+                  fontWeight: '400',
+                  color: pathname === '/settings' ? '#2bd97c' : '#032B41',
+                  backgroundColor: pathname === '/settings' ? 'rgba(43, 217, 124, 0.08)' : 'transparent',
+                  textDecoration: 'none',
+                  borderRadius: '8px'
+                }}
+                onMouseEnter={(e) => {
+                  if (pathname !== '/settings') {
+                    e.currentTarget.style.backgroundColor = 'rgba(3, 43, 65, 0.04)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (pathname !== '/settings') {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }
+                }}
+              >
+                <Settings 
+                  className="flex-shrink-0" 
+                  style={{ 
+                    marginRight: '16px', 
+                    height: '20px', 
+                    width: '20px',
+                    color: pathname === '/settings' ? '#2bd97c' : '#6b757b'
+                  }} 
+                />
+                Settings
+              </Link>
+            </li>
+            
+            {/* Help & Support */}
+            <li style={{ marginBottom: '24px' }}>
+              <Link
+                href="/help"
+                className="flex items-center transition-colors duration-150"
+                style={{
+                  padding: '12px 16px',
+                  fontSize: '16px',
+                  fontWeight: '400',
+                  color: pathname === '/help' ? '#2bd97c' : '#032B41',
+                  backgroundColor: pathname === '/help' ? 'rgba(43, 217, 124, 0.08)' : 'transparent',
+                  textDecoration: 'none',
+                  borderRadius: '8px'
+                }}
+                onMouseEnter={(e) => {
+                  if (pathname !== '/help') {
+                    e.currentTarget.style.backgroundColor = 'rgba(3, 43, 65, 0.04)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (pathname !== '/help') {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }
+                }}
+              >
+                <HelpCircle 
+                  className="flex-shrink-0" 
+                  style={{ 
+                    marginRight: '16px', 
+                    height: '20px', 
+                    width: '20px',
+                    color: pathname === '/help' ? '#2bd97c' : '#6b757b'
+                  }} 
+                />
+                Help & Support
+              </Link>
+            </li>
+            
+            {/* Login */}
+            <li style={{ marginBottom: '0' }}>
+              <Link
+                href="/login"
+                className="flex items-center transition-colors duration-150"
+                style={{
+                  padding: '12px 16px',
+                  fontSize: '16px',
+                  fontWeight: '400',
+                  color: pathname === '/login' ? '#2bd97c' : '#032B41',
+                  backgroundColor: pathname === '/login' ? 'rgba(43, 217, 124, 0.08)' : 'transparent',
+                  textDecoration: 'none',
+                  borderRadius: '8px'
+                }}
+                onMouseEnter={(e) => {
+                  if (pathname !== '/login') {
+                    e.currentTarget.style.backgroundColor = 'rgba(3, 43, 65, 0.04)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (pathname !== '/login') {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }
+                }}
+              >
+                <LogIn 
+                  className="flex-shrink-0" 
+                  style={{ 
+                    marginRight: '16px', 
+                    height: '20px', 
+                    width: '20px',
+                    color: pathname === '/login' ? '#2bd97c' : '#6b757b'
+                  }} 
+                />
+                Login
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>
 
-      {/* Main content - with left margin to account for fixed sidebar */}
-      <div className="flex-1 flex flex-col ml-64">
-        {/* Top header with search */}
-        <header className="bg-white shadow-sm border-b border-gray-200">
-          <div className="px-6 py-4">
-            <div className="flex items-center justify-end">
-                <div className="relative">
-                {/* Vertical divider line */}
-                <div className="absolute right-9 top-1/2 transform -translate-y-1/2 h-8 w-px bg-gray-400"></div>
-                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+      {/* Main content area - adjusted for new sidebar width */}
+      <div className="flex-1 flex flex-col" style={{ marginLeft: '240px' }}>
+        {/* Top header with search - exact styling from original */}
+        <header 
+          className="border-b"
+          style={{ 
+            backgroundColor: 'white', 
+            borderColor: '#e4e5e7',
+            position: 'sticky',
+            top: 0,
+            zIndex: 999,
+            height: '96px'
+          }}
+        >
+          <div style={{ padding: '32px 40px', height: '100%' }}>
+            <div className="flex items-center justify-end h-full">
+              <div className="relative">
                 <input
                   type="text"
                   placeholder="Search for books"
-                  className="pl-4 pr-10 py-2 w-80 bg-gray-100 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none"
+                  className="outline-none focus:ring-2 focus:ring-offset-0 transition-all duration-200"
+                  style={{
+                    paddingLeft: '20px',
+                    paddingRight: '50px',
+                    paddingTop: '14px',
+                    paddingBottom: '14px',
+                    width: '360px',
+                    backgroundColor: '#f1f6f4',
+                    border: '2px solid #e4e7eb',
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    color: '#032b41'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#2bd97c';
+                    e.target.style.backgroundColor = '#ffffff';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#e4e7eb';
+                    e.target.style.backgroundColor = '#f1f6f4';
+                  }}
                 />
+                <div 
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center"
+                  style={{ height: '20px' }}
+                >
+                  <div 
+                    style={{ 
+                      width: '1px', 
+                      height: '44px', // INCREASED FROM 16px TO 24px
+                      backgroundColor: '#d1d5db',
+                      marginRight: '12px'
+                    }}
+                  ></div>
+                  <Search 
+                    className="pointer-events-none" 
+                    style={{ 
+                      height: '20px', 
+                      width: '20px',
+                      color: '#6b757b'
+                    }} 
+                  />
+                </div>
               </div>
             </div>
           </div>
         </header>
 
-        {/* Main content area */}
-        <main className="flex-1 p-6">
+        {/* Main content area with proper spacing */}
+        <main className="flex-1" style={{ padding: '40px', backgroundColor: 'white' }}>
           {children}
         </main>
       </div>

@@ -55,23 +55,41 @@ const suggestedBooks = [
 // Horizontal scrolling BookCard for recommended books only
 const RecommendedBookCard = ({ book }) => {
   return (
-    <div className="flex-shrink-0 w-48">
-      <div className="relative mb-3">
+    <div className="flex-shrink-0" style={{ width: '172px' }}>
+      <div className="relative" style={{ marginBottom: '10px' }}>
         <img 
           src={book.imageLink} 
           alt={book.title}
-          className="w-full h-64 object-cover rounded-lg shadow-sm"
+          className="w-full object-cover rounded-lg shadow-sm"
+          style={{ height: '230px' }}
         />
         {book.subscriptionRequired && (
-          <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded font-medium">
+          <div 
+            className="absolute top-2 right-2 text-white text-xs px-2 py-1 rounded font-medium"
+            style={{ backgroundColor: '#f59e0b' }}
+          >
             Premium
           </div>
         )}
       </div>
       
-      <div className="space-y-1">
-        <h3 className="font-semibold text-gray-900 text-sm line-clamp-2">{book.title}</h3>
-        <p className="text-gray-600 text-xs">{book.author}</p>
+      <div style={{ paddingTop: '4px' }}>
+        <h3 
+          className="font-semibold text-sm line-clamp-2" 
+          style={{ 
+            color: '#111827', 
+            marginBottom: '4px',
+            lineHeight: '1.4'
+          }}
+        >
+          {book.title}
+        </h3>
+        <p 
+          className="text-xs" 
+          style={{ color: '#6b7280' }}
+        >
+          {book.author}
+        </p>
       </div>
     </div>
   );
@@ -117,6 +135,30 @@ const ForYouPage = () => {
             imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1536184191i/41721428.jpg',
             subscriptionRequired: true,
             averageRating: 4.6
+          },
+          {
+            id: '4',
+            title: 'Mastery',
+            author: 'Robert Greene',
+            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1348866497i/13589182.jpg',
+            subscriptionRequired: true,
+            averageRating: 4.1
+          },
+          {
+            id: '5',
+            title: 'Atomic Habits',
+            author: 'James Clear',
+            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1535115320i/40121378.jpg',
+            subscriptionRequired: true,
+            averageRating: 4.4
+          },
+          {
+            id: '6',
+            title: 'How to Talk to Anyone',
+            author: 'Leil Lowndes',
+            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1391446893i/35450.jpg',
+            subscriptionRequired: true,
+            averageRating: 3.9
           }
         ]);
       } finally {
@@ -127,105 +169,143 @@ const ForYouPage = () => {
     fetchRecommendedBooks();
   }, []);
 
-  // Horizontal scroll functions
-  const scrollLeft = () => {
-    const container = document.getElementById('recommended-scroll');
-    if (container) {
-      container.scrollBy({ left: -240, behavior: 'smooth' });
-    }
-  };
-
-  const scrollRight = () => {
-    const container = document.getElementById('recommended-scroll');
-    if (container) {
-      container.scrollBy({ left: 240, behavior: 'smooth' });
-    }
-  };
-
   return (
     <SidebarLayout>
-      <div className="max-w-6xl">
-        {/* Selected just for you section - UNCHANGED */}
-        <section className="mb-8 ml-32">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Selected just for you</h2>
+      {/* Main content container - removed extra margin since SidebarLayout handles it */}
+      <div style={{ maxWidth: '1200px', width: '100%' }}>
+        
+        {/* Selected just for you section - moved slightly to the right */}
+        <section style={{ marginBottom: '32px', marginLeft: '146px' }}>
+          <h2 
+            className="text-2xl font-bold" 
+            style={{ color: '#111827', marginBottom: '24px' }}
+          >
+            Selected just for you
+          </h2>
           
-          <div className="rounded-lg p-5 flex items-start max-w-2xl" style={{backgroundColor: '#FBEFD6'}}>
+          <div 
+            className="rounded-lg flex items-start"
+            style={{ 
+              backgroundColor: '#FBEFD6', 
+              maxWidth: '640px', 
+              minHeight: '144px',
+              padding: '32px 24px 24px 24px'
+            }}
+          >
             {/* Left side content - only subtitle */}
-            <div className="flex-1 pr-5 max-w-xs">
-              <div className="text-med text-black-600 leading-relaxed">
+            <div className="flex-1" style={{ paddingRight: '20px', maxWidth: '288px' }}>
+              <div 
+                className="leading-relaxed"
+                style={{ fontSize: '16px', color: '#374151' }}
+              >
                 How Constant Innovation Creates Radically Successful Businesses
               </div>
             </div>
             
             {/* Vertical divider line */}
-            <div className="w-px h-28 bg-gray-300 mx-5"></div>
+            <div 
+              style={{ 
+                width: '1px', 
+                height: '112px', 
+                backgroundColor: '#d1d5db', 
+                margin: '0 20px' 
+              }}
+            ></div>
             
             {/* Right side content */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center" style={{ gap: '12px' }}>
               {/* Book cover */}
               <img 
                 src={featuredBook.imageLink} 
                 alt={featuredBook.title}
-                className="w-22 h-32 object-cover rounded-lg shadow-lg"
+                className="object-cover rounded-lg shadow-lg"
+                style={{ width: '88px', height: '128px' }}
               />
               
               {/* Book info and controls */}
               <div className="flex flex-col">
-                <h3 className="text-xl font-bold text-gray-900 mb-1">{featuredBook.title}</h3>
-                <p className="text-gray-700 mb-2 text-sm">by {featuredBook.author}</p>
+                <h3 
+                  className="text-xl font-bold"
+                  style={{ color: '#111827', marginBottom: '4px' }}
+                >
+                  {featuredBook.title}
+                </h3>
+                <p 
+                  className="text-sm"
+                  style={{ color: '#374151', marginBottom: '8px' }}
+                >
+                  by {featuredBook.author}
+                </p>
                 
-                <div className="flex items-center gap-2">
-                  <button className="flex items-center justify-center bg-black text-white w-9 h-9 rounded-full hover:bg-gray-800 transition-colors">
+                <div className="flex items-center" style={{ gap: '8px' }}>
+                  <button 
+                    className="flex items-center justify-center rounded-full transition-colors"
+                    style={{ 
+                      backgroundColor: '#000', 
+                      color: 'white',
+                      width: '36px',
+                      height: '36px'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#374151';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#000';
+                    }}
+                  >
                     <Play className="w-4 h-4 fill-current" />
                   </button>
-                  <span className="text-sm font-medium">{featuredBook.duration}</span>
+                  <span 
+                    className="text-sm font-medium"
+                    style={{ color: '#111827' }}
+                  >
+                    {featuredBook.duration}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Recommended For You section - MODIFIED with API and horizontal scrolling */}
-        <section className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">Recommended For You</h2>
-              <p className="text-gray-600 mt-1">We think you'll like these</p>
-            </div>
-            
-            {/* Navigation arrows */}
-            <div className="flex items-center gap-2">
-              <button 
-                onClick={scrollLeft}
-                className="p-2 rounded-full bg-white shadow-md hover:shadow-lg transition-shadow duration-200 border"
-                aria-label="Scroll left"
-              >
-                <ChevronLeft className="w-5 h-5 text-gray-600" />
-              </button>
-              <button 
-                onClick={scrollRight}
-                className="p-2 rounded-full bg-white shadow-md hover:shadow-lg transition-shadow duration-200 border"
-                aria-label="Scroll right"
-              >
-                <ChevronRight className="w-5 h-5 text-gray-600" />
-              </button>
-            </div>
+        {/* Recommended For You section - removed navigation arrows */}
+        <section style={{ marginBottom: '32px' }}>
+          <div style={{ marginBottom: '24px' }}>
+            <h2 
+              className="text-2xl font-bold"
+              style={{ color: '#111827' }}
+            >
+              Recommended For You
+            </h2>
+            <p 
+              style={{ color: '#6b7280', marginTop: '4px' }}
+            >
+              We think you'll like these
+            </p>
           </div>
           
           {loading ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="text-lg text-gray-600">Loading recommended books...</div>
+            <div className="flex items-center justify-center" style={{ height: '256px' }}>
+              <div className="text-lg" style={{ color: '#6b7280' }}>
+                Loading recommended books...
+              </div>
             </div>
           ) : error ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="text-lg text-red-600">Error loading books: {error}</div>
+            <div className="flex items-center justify-center" style={{ height: '256px' }}>
+              <div className="text-lg" style={{ color: '#dc2626' }}>
+                Error loading books: {error}
+              </div>
             </div>
           ) : (
             <div className="relative">
               <div 
                 id="recommended-scroll"
-                className="flex gap-6 overflow-x-auto scrollbar-hide pb-4"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                className="flex overflow-x-auto scrollbar-hide"
+                style={{ 
+                  gap: '24px',
+                  paddingBottom: '16px',
+                  scrollbarWidth: 'none', 
+                  msOverflowStyle: 'none'
+                }}
               >
                 {recommendedBooks.map((book) => (
                   <RecommendedBookCard key={book.id} book={book} />
@@ -235,16 +315,30 @@ const ForYouPage = () => {
           )}
         </section>
 
-        {/* Suggested Books section - UNCHANGED, uses your original BookCard */}
+        {/* Suggested Books section */}
         <section>
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between" style={{ marginBottom: '24px' }}>
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Suggested Books</h2>
-              <p className="text-gray-600 mt-1">Browse those books</p>
+              <h2 
+                className="text-2xl font-bold"
+                style={{ color: '#111827' }}
+              >
+                Suggested Books
+              </h2>
+              <p 
+                style={{ color: '#6b7280', marginTop: '4px' }}
+              >
+                Browse those books
+              </p>
             </div>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div 
+            className="grid gap-4"
+            style={{
+              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))'
+            }}
+          >
             {suggestedBooks.map((book) => (
               <BookCard key={book.id} book={book} />
             ))}
