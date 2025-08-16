@@ -16,80 +16,77 @@ const featuredBook = {
   duration: '3 mins 23 secs'
 };
 
-// Mock data for suggested books
-const suggestedBooks = [
-  {
-    id: '7',
-    title: 'The 7 Habits of Highly Effective People',
-    author: 'Stephen R. Covey',
-    imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1421842784i/36072.jpg',
-    subscriptionRequired: false,
-    averageRating: 4.1
-  },
-  {
-    id: '8',
-    title: 'Rich Dad Poor Dad',
-    author: 'Robert T. Kiyosaki',
-    imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1388211242i/69571.jpg',
-    subscriptionRequired: true,
-    averageRating: 4.2
-  },
-  {
-    id: '9',
-    title: 'The Power of Now',
-    author: 'Eckhart Tolle',
-    imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1386925471i/6708.jpg',
-    subscriptionRequired: true,
-    averageRating: 4.0
-  },
-  {
-    id: '10',
-    title: 'Think and Grow Rich',
-    author: 'Napoleon Hill',
-    imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1463241782i/30186948.jpg',
-    subscriptionRequired: false,
-    averageRating: 4.1
-  }
-];
-
-// Horizontal scrolling BookCard for recommended books only
+// Smaller BookCard component to match original design
 const RecommendedBookCard = ({ book }) => {
   return (
-    <div className="flex-shrink-0" style={{ width: '172px' }}>
-      <div className="relative" style={{ marginBottom: '10px' }}>
+    <div className="flex-shrink-0" style={{ width: '140px', paddingTop: '40px' }}>
+      <div className="relative" style={{ marginBottom: '8px' }}>
         <img 
           src={book.imageLink} 
           alt={book.title}
           className="w-full object-cover rounded-lg shadow-sm"
-          style={{ height: '230px' }}
+          style={{ height: '180px' }}
         />
         {book.subscriptionRequired && (
           <div 
-            className="absolute top-2 right-2 text-white text-xs px-2 py-1 rounded font-medium"
-            style={{ backgroundColor: '#f59e0b' }}
+            className="absolute text-white text-xs px-2 py-1 rounded font-medium"
+            style={{ 
+              backgroundColor: '#032B41',
+              top: '-36px',
+              right: '6px'
+            }}
           >
             Premium
           </div>
         )}
       </div>
       
-      <div style={{ paddingTop: '4px' }}>
+      <div style={{ paddingTop: '2px' }}>
         <h3 
-          className="font-semibold text-sm line-clamp-2" 
+          className="font-semibold text-xs line-clamp-2" 
           style={{ 
             color: '#111827', 
-            marginBottom: '4px',
-            lineHeight: '1.4'
+            marginBottom: '2px',
+            lineHeight: '1.3'
           }}
         >
           {book.title}
         </h3>
         <p 
           className="text-xs" 
-          style={{ color: '#6b7280' }}
+          style={{ color: '#6b7280', marginBottom: '2px' }}
         >
           {book.author}
         </p>
+        
+        {/* Subtitle */}
+        {book.subTitle && (
+          <p 
+            className="text-xs" 
+            style={{ color: '#394547', marginBottom: '6px' }}
+          >
+            {book.subTitle}
+          </p>
+        )}
+        
+        {/* Duration and Rating row */}
+        <div className="flex items-center justify-between text-xs" style={{ marginTop: '6px' }}>
+          {/* Duration */}
+          <div className="flex items-center" style={{ gap: '3px', color: '#6b7280' }}>
+            <Clock className="w-3 h-3" />
+            <span>
+              {book.totalDuration ? 
+                `${Math.floor(book.totalDuration / 60)}:${String(book.totalDuration % 60).padStart(2, '0')}` : 
+                '03:24'}
+            </span>
+          </div>
+          
+          {/* Rating */}
+          <div className="flex items-center" style={{ gap: '3px', color: '#6b7280' }}>
+            <span>☆</span>
+            <span>{book.averageRating || '4.0'}</span>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -97,8 +94,11 @@ const RecommendedBookCard = ({ book }) => {
 
 const ForYouPage = () => {
   const [recommendedBooks, setRecommendedBooks] = useState([]);
+  const [suggestedBooks, setSuggestedBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [suggestedLoading, setSuggestedLoading] = useState(true);
+  const [suggestedError, setSuggestedError] = useState(null);
 
   // Fetch recommended books from API
   useEffect(() => {
@@ -169,13 +169,73 @@ const ForYouPage = () => {
     fetchRecommendedBooks();
   }, []);
 
+  // Fetch suggested books from API
+  useEffect(() => {
+    const fetchSuggestedBooks = async () => {
+      try {
+        setSuggestedLoading(true);
+        const response = await fetch('https://us-central1-summaristt.cloudfunctions.net/getBooks?status=suggested');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        setSuggestedBooks(data || []);
+      } catch (err) {
+        console.error('Error fetching suggested books:', err);
+        setSuggestedError(err.message);
+        // Fallback to mock data if API fails
+        setSuggestedBooks([
+          {
+            id: '7',
+            title: 'The 7 Habits of Highly Effective People',
+            author: 'Stephen R. Covey',
+            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1421842784i/36072.jpg',
+            subscriptionRequired: false,
+            averageRating: 4.1
+          },
+          {
+            id: '8',
+            title: 'Rich Dad Poor Dad',
+            author: 'Robert T. Kiyosaki',
+            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1388211242i/69571.jpg',
+            subscriptionRequired: true,
+            averageRating: 4.2
+          },
+          {
+            id: '9',
+            title: 'The Power of Now',
+            author: 'Eckhart Tolle',
+            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1386925471i/6708.jpg',
+            subscriptionRequired: true,
+            averageRating: 4.0
+          },
+          {
+            id: '10',
+            title: 'Think and Grow Rich',
+            author: 'Napoleon Hill',
+            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1463241782i/30186948.jpg',
+            subscriptionRequired: false,
+            averageRating: 4.1
+          }
+        ]);
+      } finally {
+        setSuggestedLoading(false);
+      }
+    };
+
+    fetchSuggestedBooks();
+  }, []);
+
   return (
     <SidebarLayout>
-      {/* Main content container - removed extra margin since SidebarLayout handles it */}
-      <div style={{ maxWidth: '1200px', width: '100%' }}>
+      {/* Main content container - centered and constrained width */}
+      <div className="flex justify-center" style={{ width: '100%' }}>
+        <div style={{ maxWidth: '800px', width: '100%' }}>
         
-        {/* Selected just for you section - moved slightly to the right */}
-        <section style={{ marginBottom: '32px', marginLeft: '146px' }}>
+        {/* Selected just for you section - centered */}
+        <section style={{ marginBottom: '32px' }}>
           <h2 
             className="text-2xl font-bold" 
             style={{ color: '#111827', marginBottom: '24px' }}
@@ -267,7 +327,7 @@ const ForYouPage = () => {
           </div>
         </section>
 
-        {/* Recommended For You section - removed navigation arrows */}
+        {/* Recommended For You section */}
         <section style={{ marginBottom: '32px' }}>
           <div style={{ marginBottom: '24px' }}>
             <h2 
@@ -277,7 +337,7 @@ const ForYouPage = () => {
               Recommended For You
             </h2>
             <p 
-              style={{ color: '#6b7280', marginTop: '4px' }}
+              style={{ color: '#6b7280', marginTop: '6px' }}
             >
               We think you'll like these
             </p>
@@ -301,10 +361,11 @@ const ForYouPage = () => {
                 id="recommended-scroll"
                 className="flex overflow-x-auto scrollbar-hide"
                 style={{ 
-                  gap: '24px',
+                  gap: '16px',
                   paddingBottom: '16px',
                   scrollbarWidth: 'none', 
-                  msOverflowStyle: 'none'
+                  msOverflowStyle: 'none',
+                  paddingRight: '20px'
                 }}
               >
                 {recommendedBooks.map((book) => (
@@ -317,33 +378,53 @@ const ForYouPage = () => {
 
         {/* Suggested Books section */}
         <section>
-          <div className="flex items-center justify-between" style={{ marginBottom: '24px' }}>
-            <div>
-              <h2 
-                className="text-2xl font-bold"
-                style={{ color: '#111827' }}
-              >
-                Suggested Books
-              </h2>
-              <p 
-                style={{ color: '#6b7280', marginTop: '4px' }}
-              >
-                Browse those books
-              </p>
-            </div>
+          <div style={{ marginBottom: '24px' }}>
+            <h2 
+              className="text-2xl font-bold"
+              style={{ color: '#111827' }}
+            >
+              Suggested Books
+            </h2>
+            <p 
+              style={{ color: '#6b7280', marginTop: '4px' }}
+            >
+              Browse those books
+            </p>
           </div>
           
-          <div 
-            className="grid gap-4"
-            style={{
-              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))'
-            }}
-          >
-            {suggestedBooks.map((book) => (
-              <BookCard key={book.id} book={book} />
-            ))}
-          </div>
+          {suggestedLoading ? (
+            <div className="flex items-center justify-center" style={{ height: '256px' }}>
+              <div className="text-lg" style={{ color: '#6b7280' }}>
+                Loading suggested books...
+              </div>
+            </div>
+          ) : suggestedError ? (
+            <div className="flex items-center justify-center" style={{ height: '256px' }}>
+              <div className="text-lg" style={{ color: '#dc2626' }}>
+                Error loading books: {suggestedError}
+              </div>
+            </div>
+          ) : (
+            <div className="relative">
+              <div 
+                id="suggested-scroll"
+                className="flex overflow-x-auto scrollbar-hide"
+                style={{ 
+                  gap: '16px',
+                  paddingBottom: '16px',
+                  scrollbarWidth: 'none', 
+                  msOverflowStyle: 'none',
+                  paddingRight: '20px'
+                }}
+              >
+                {suggestedBooks.map((book) => (
+                  <RecommendedBookCard key={book.id} book={book} />
+                ))}
+              </div>
+            </div>
+          )}
         </section>
+        </div>
       </div>
       
       <style jsx>{`
@@ -357,6 +438,12 @@ const ForYouPage = () => {
         .line-clamp-2 {
           display: -webkit-box;
           -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        .line-clamp-1 {
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
           -webkit-box-orient: vertical;
           overflow: hidden;
         }
