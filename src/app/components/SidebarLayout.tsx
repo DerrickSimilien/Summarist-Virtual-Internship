@@ -109,123 +109,53 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
           </ul>
 
           {/* Large spacer to push bottom items down */}
-          <div className="flex-1" style={{ minHeight: '200px' }}></div>
+          <div className="flex-1"></div>
 
           {/* Bottom navigation items - same spacing as main items */}
           <ul style={{ paddingLeft: '32px', paddingRight: '32px', paddingBottom: '40px' }}>
-            {/* Settings */}
-            <li style={{ marginBottom: '24px' }}>
-              <Link
-                href="/settings"
-                className="flex items-center transition-colors duration-150"
-                style={{
-                  padding: '12px 16px',
-                  fontSize: '16px',
-                  fontWeight: '400',
-                  color: pathname === '/settings' ? '#2bd97c' : '#032B41',
-                  backgroundColor: pathname === '/settings' ? 'rgba(43, 217, 124, 0.08)' : 'transparent',
-                  textDecoration: 'none',
-                  borderRadius: '8px'
-                }}
-                onMouseEnter={(e) => {
-                  if (pathname !== '/settings') {
-                    e.currentTarget.style.backgroundColor = 'rgba(3, 43, 65, 0.04)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (pathname !== '/settings') {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                  }
-                }}
-              >
-                <Settings 
-                  className="flex-shrink-0" 
-                  style={{ 
-                    marginRight: '16px', 
-                    height: '20px', 
-                    width: '20px',
-                    color: pathname === '/settings' ? '#2bd97c' : '#6b757b'
-                  }} 
-                />
-                Settings
-              </Link>
-            </li>
-            
-            {/* Help & Support */}
-            <li style={{ marginBottom: '24px' }}>
-              <Link
-                href="/help"
-                className="flex items-center transition-colors duration-150"
-                style={{
-                  padding: '12px 16px',
-                  fontSize: '16px',
-                  fontWeight: '400',
-                  color: pathname === '/help' ? '#2bd97c' : '#032B41',
-                  backgroundColor: pathname === '/help' ? 'rgba(43, 217, 124, 0.08)' : 'transparent',
-                  textDecoration: 'none',
-                  borderRadius: '8px'
-                }}
-                onMouseEnter={(e) => {
-                  if (pathname !== '/help') {
-                    e.currentTarget.style.backgroundColor = 'rgba(3, 43, 65, 0.04)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (pathname !== '/help') {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                  }
-                }}
-              >
-                <HelpCircle 
-                  className="flex-shrink-0" 
-                  style={{ 
-                    marginRight: '16px', 
-                    height: '20px', 
-                    width: '20px',
-                    color: pathname === '/help' ? '#2bd97c' : '#6b757b'
-                  }} 
-                />
-                Help & Support
-              </Link>
-            </li>
-            
-            {/* Login */}
-            <li style={{ marginBottom: '0' }}>
-              <Link
-                href="/login"
-                className="flex items-center transition-colors duration-150"
-                style={{
-                  padding: '12px 16px',
-                  fontSize: '16px',
-                  fontWeight: '400',
-                  color: pathname === '/login' ? '#2bd97c' : '#032B41',
-                  backgroundColor: pathname === '/login' ? 'rgba(43, 217, 124, 0.08)' : 'transparent',
-                  textDecoration: 'none',
-                  borderRadius: '8px'
-                }}
-                onMouseEnter={(e) => {
-                  if (pathname !== '/login') {
-                    e.currentTarget.style.backgroundColor = 'rgba(3, 43, 65, 0.04)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (pathname !== '/login') {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                  }
-                }}
-              >
-                <LogIn 
-                  className="flex-shrink-0" 
-                  style={{ 
-                    marginRight: '16px', 
-                    height: '20px', 
-                    width: '20px',
-                    color: pathname === '/login' ? '#2bd97c' : '#6b757b'
-                  }} 
-                />
-                Login
-              </Link>
-            </li>
+            {bottomNavigationItems.map((item, index) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href;
+              
+              return (
+                <li key={item.name} style={{ marginBottom: index === bottomNavigationItems.length - 1 ? '0' : '24px' }}>
+                  <Link
+                    href={item.href}
+                    className="flex items-center transition-colors duration-150"
+                    style={{
+                      padding: '12px 16px',
+                      fontSize: '16px',
+                      fontWeight: '400',
+                      color: isActive ? '#2bd97c' : '#032B41',
+                      backgroundColor: isActive ? 'rgba(43, 217, 124, 0.08)' : 'transparent',
+                      textDecoration: 'none',
+                      borderRadius: '8px'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = 'rgba(3, 43, 65, 0.04)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }
+                    }}
+                  >
+                    <Icon 
+                      className="flex-shrink-0" 
+                      style={{ 
+                        marginRight: '16px', 
+                        height: '20px', 
+                        width: '20px',
+                        color: isActive ? '#2bd97c' : '#6b757b'
+                      }} 
+                    />
+                    {item.name}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
       </div>

@@ -43,18 +43,18 @@ const RecommendedBookCard = ({ book }) => {
       
       <div style={{ paddingTop: '2px' }}>
         <h3 
-          className="font-semibold text-xs line-clamp-2" 
+          className="font-semibold line-clamp-2" 
           style={{ 
             color: '#111827', 
             marginBottom: '2px',
-            lineHeight: '1.3'
+            lineHeight: '1.3',
+            fontSize: '16px'
           }}
         >
           {book.title}
         </h3>
         <p 
-          className="text-xs" 
-          style={{ color: '#6b7280', marginBottom: '2px' }}
+          style={{ color: '#6b7280', marginBottom: '2px', fontSize: '14px' }}
         >
           {book.author}
         </p>
@@ -62,15 +62,14 @@ const RecommendedBookCard = ({ book }) => {
         {/* Subtitle */}
         {book.subTitle && (
           <p 
-            className="text-xs" 
-            style={{ color: '#394547', marginBottom: '6px' }}
+            style={{ color: '#394547', marginBottom: '6px', fontSize: '14px' }}
           >
             {book.subTitle}
           </p>
         )}
         
         {/* Duration and Rating row */}
-        <div className="flex items-center justify-between text-xs" style={{ marginTop: '6px' }}>
+        <div className="flex items-center justify-between text-small" style={{ marginTop: '6px' }}>
           {/* Duration */}
           <div className="flex items-center" style={{ gap: '3px', color: '#6b7280' }}>
             <Clock className="w-3 h-3" />
@@ -361,7 +360,7 @@ const ForYouPage = () => {
                 id="recommended-scroll"
                 className="flex overflow-x-auto scrollbar-hide"
                 style={{ 
-                  gap: '16px',
+                  gap: '26px',
                   paddingBottom: '16px',
                   scrollbarWidth: 'none', 
                   msOverflowStyle: 'none',
@@ -410,7 +409,7 @@ const ForYouPage = () => {
                 id="suggested-scroll"
                 className="flex overflow-x-auto scrollbar-hide"
                 style={{ 
-                  gap: '16px',
+                  gap: '28px',
                   paddingBottom: '16px',
                   scrollbarWidth: 'none', 
                   msOverflowStyle: 'none',
