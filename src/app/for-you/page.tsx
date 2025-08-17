@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation'; // Changed from 'next/router' to 'next/navigation'
 import SidebarLayout from '../components/SidebarLayout';
 import BookCard from '../components/BookCard';
 import { Play, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -18,8 +19,18 @@ const featuredBook = {
 
 // Smaller BookCard component to match original design
 const RecommendedBookCard = ({ book }) => {
+  const router = useRouter();
+
+  const handleBookClick = () => {
+    router.push(`/book/${book.id}`);
+  };
+
   return (
-    <div className="flex-shrink-0" style={{ width: '140px', paddingTop: '40px' }}>
+    <div 
+      className="flex-shrink-0 cursor-pointer transition-transform hover:scale-105" 
+      style={{ width: '140px', paddingTop: '40px' }}
+      onClick={handleBookClick}
+    >
       <div className="relative" style={{ marginBottom: '8px' }}>
         <img 
           src={book.imageLink} 
@@ -92,12 +103,18 @@ const RecommendedBookCard = ({ book }) => {
 };
 
 const ForYouPage = () => {
+  const router = useRouter();
   const [recommendedBooks, setRecommendedBooks] = useState([]);
   const [suggestedBooks, setSuggestedBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [suggestedLoading, setSuggestedLoading] = useState(true);
   const [suggestedError, setSuggestedError] = useState(null);
+
+  // Handle featured book click
+  const handleFeaturedBookClick = () => {
+    router.push(`/book/${featuredBook.id}`);
+  };
 
   // Fetch recommended books from API
   useEffect(() => {
@@ -243,13 +260,14 @@ const ForYouPage = () => {
           </h2>
           
           <div 
-            className="rounded-lg flex items-start"
+            className="rounded-lg flex items-start cursor-pointer transition-transform hover:scale-[1.02]"
             style={{ 
               backgroundColor: '#FBEFD6', 
               maxWidth: '640px', 
               minHeight: '144px',
               padding: '32px 24px 24px 24px'
             }}
+            onClick={handleFeaturedBookClick}
           >
             {/* Left side content - only subtitle */}
             <div className="flex-1" style={{ paddingRight: '20px', maxWidth: '288px' }}>
@@ -310,6 +328,9 @@ const ForYouPage = () => {
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.backgroundColor = '#000';
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent the card click when play button is clicked
                     }}
                   >
                     <Play className="w-4 h-4 fill-current" />
