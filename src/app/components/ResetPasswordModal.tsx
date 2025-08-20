@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../../lib/firebase";
 
 interface ResetPasswordModalProps {
   isOpen: boolean;
@@ -53,11 +55,30 @@ export default function ResetPasswordModal({ isOpen, onClose, onGoToLogin }: Res
     setIsLoading(true);
     setError("");
     
-    // Simulate API call
-    await new Promise(res => setTimeout(res, 1500));
-    
-    setIsLoading(false);
-    setIsSuccess(true);
+    try {
+      // Send password reset email using Firebase
+      await sendPasswordResetEmail(auth, email);
+      setIsLoading(false);
+      setIsSuccess(true);
+    } catch (error: any) {
+      console.error("Error sending password reset email:", error);
+      setIsLoading(false);
+      
+      // Handle specific Firebase errors
+      switch (error.code) {
+        case 'auth/user-not-found':
+          setError("No account found with this email address.");
+          break;
+        case 'auth/invalid-email':
+          setError("Please enter a valid email address.");
+          break;
+        case 'auth/too-many-requests':
+          setError("Too many requests. Please try again later.");
+          break;
+        default:
+          setError("Failed to send reset email. Please try again.");
+      }
+    }
   };
 
   const handleGoToLogin = () => {
@@ -125,7 +146,7 @@ export default function ResetPasswordModal({ isOpen, onClose, onGoToLogin }: Res
               <>
                 {/* Form */}
                 <div style={{ width: '100%', maxWidth: '280px' }}>
-                  <div>
+                  <form onSubmit={handleSubmit}>
                     <input
                       type="email"
                       value={email}
@@ -164,8 +185,7 @@ export default function ResetPasswordModal({ isOpen, onClose, onGoToLogin }: Res
                     
                     {/* Reset button matching input width */}
                     <button
-                      type="button"
-                      onClick={handleSubmit}
+                      type="submit"
                       disabled={isLoading}
                       style={{ 
                         width: '100%',
@@ -192,7 +212,7 @@ export default function ResetPasswordModal({ isOpen, onClose, onGoToLogin }: Res
                     >
                       {isLoading ? "Sending..." : "Send reset password link"}
                     </button>
-                  </div>
+                  </form>
                 </div>
               </>
             ) : (

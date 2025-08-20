@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { X, User } from "lucide-react";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "../../lib/firebase";
 import ResetPasswordModal from './ResetPasswordModal'; // Adjust path as needed
 import SignUpModal from './SignUpModal'; // Adjust path as needed
 
@@ -17,6 +20,7 @@ interface LoginModalProps {
 }
 
 export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
+  const router = useRouter();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -43,7 +47,7 @@ export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps
       setFormData({ email: "", password: "" });
       setError("");
       setIsLoading(false);
-      setShowResetModal(false); // Reset the modal state when login modal closes
+      setShowResetModal(false);
       setShowSignUpModal(false);
     }
   }, [isOpen]);
@@ -63,21 +67,126 @@ export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps
       setError("Please enter a valid email address");
       return;
     }
+
     setIsLoading(true);
-    await new Promise(res => setTimeout(res, 1000));
-    onLogin?.({ email: formData.email, loginType: "email" });
-    setIsLoading(false);
-    onClose();
+    setError("");
+
+    try {
+      // Sign in with Firebase
+      const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
+      const user = userCredential.user;
+      
+      // Call the onLogin callback if provided
+      onLogin?.({ email: user.email || formData.email, loginType: "email" });
+      
+      // Close modal
+      onClose();
+      
+      // Redirect to for-you page
+      router.push("/for-you");
+      
+    } catch (error: any) {
+      console.error("Error signing in:", error);
+      
+      // Handle specific Firebase errors
+      switch (error.code) {
+        case 'auth/user-not-found':
+          setError("No account found with this email address.");
+          break;
+        case 'auth/wrong-password':
+          setError("Incorrect password. Please try again.");
+          break;
+        case 'auth/invalid-email':
+          setError("Please enter a valid email address.");
+          break;
+        case 'auth/user-disabled':
+          setError("This account has been disabled.");
+          break;
+        case 'auth/too-many-requests':
+          setError("Too many failed attempts. Please try again later.");
+          break;
+        default:
+          setError("Failed to sign in. Please check your credentials.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleGuestLogin = () => {
-    onLogin?.({ email: "guest@example.com", loginType: "guest" });
-    onClose();
+  const handleGuestLogin = async () => {
+    setIsLoading(true);
+    setError("");
+
+    try {
+      // Use the dummy guest credentials from the requirements
+      const guestEmail = "guest@gmail.com";
+      const guestPassword = "guest123";
+      
+      // Sign in with the dummy guest account
+      const userCredential = await signInWithEmailAndPassword(auth, guestEmail, guestPassword);
+      const user = userCredential.user;
+      
+      // Call the onLogin callback if provided
+      onLogin?.({ email: user.email || guestEmail, loginType: "guest" });
+      
+      // Close modal
+      onClose();
+      
+      // Redirect to for-you page
+      router.push("/for-you");
+      
+    } catch (error: any) {
+      console.error("Error with guest login:", error);
+      
+      // If guest account doesn't exist, provide a helpful error
+      if (error.code === 'auth/user-not-found') {
+        setError("Guest account not found. Please contact support.");
+      } else {
+        setError("Failed to login as guest. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleGoogleLogin = () => {
-    onLogin?.({ email: "user@gmail.com", loginType: "google" });
-    onClose();
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    setError("");
+
+    try {
+      // Sign in with Google
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      
+      // Call the onLogin callback if provided
+      onLogin?.({ email: user.email || "", loginType: "google" });
+      
+      // Close modal
+      onClose();
+      
+      // Redirect to for-you page
+      router.push("/for-you");
+      
+    } catch (error: any) {
+      console.error("Error with Google login:", error);
+      
+      // Handle specific Firebase errors
+      switch (error.code) {
+        case 'auth/popup-closed-by-user':
+          setError("Login was cancelled.");
+          break;
+        case 'auth/popup-blocked':
+          setError("Popup was blocked. Please allow popups and try again.");
+          break;
+        case 'auth/account-exists-with-different-credential':
+          setError("An account already exists with this email but different sign-in method.");
+          break;
+        default:
+          setError("Failed to login with Google. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!isOpen) return null;

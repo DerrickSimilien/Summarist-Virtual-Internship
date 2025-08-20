@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "../../lib/firebase";
 
 interface User {
   email: string;
@@ -16,6 +19,7 @@ interface SignUpModalProps {
 }
 
 export default function SignUpModal({ isOpen, onClose, onSignUp, onGoToLogin }: SignUpModalProps) {
+  const router = useRouter();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -58,16 +62,85 @@ export default function SignUpModal({ isOpen, onClose, onSignUp, onGoToLogin }: 
       setError("Please enter a valid email address");
       return;
     }
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+
     setIsLoading(true);
-    await new Promise(res => setTimeout(res, 1000));
-    onSignUp?.({ email: formData.email, loginType: "email" });
-    setIsLoading(false);
-    onClose();
+    setError("");
+
+    try {
+      // Create user with Firebase
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      const user = userCredential.user;
+      
+      // Call the onSignUp callback if provided
+      onSignUp?.({ email: user.email || formData.email, loginType: "email" });
+      
+      // Close modal
+      onClose();
+      
+      // Redirect to for-you page
+      router.push("/for-you");
+      
+    } catch (error: any) {
+      console.error("Error creating user:", error);
+      
+      // Handle specific Firebase errors
+      switch (error.code) {
+        case 'auth/email-already-in-use':
+          setError("This email is already registered. Please try logging in instead.");
+          break;
+        case 'auth/weak-password':
+          setError("Password is too weak. Please choose a stronger password.");
+          break;
+        case 'auth/invalid-email':
+          setError("Please enter a valid email address.");
+          break;
+        default:
+          setError("Failed to create account. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleGoogleSignUp = () => {
-    onSignUp?.({ email: "user@gmail.com", loginType: "google" });
-    onClose();
+  const handleGoogleSignUp = async () => {
+    setIsLoading(true);
+    setError("");
+
+    try {
+      // Sign up with Google
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      
+      // Call the onSignUp callback if provided
+      onSignUp?.({ email: user.email || "", loginType: "google" });
+      
+      // Close modal
+      onClose();
+      
+      // Redirect to for-you page
+      router.push("/for-you");
+      
+    } catch (error: any) {
+      console.error("Error with Google sign up:", error);
+      
+      // Handle specific Firebase errors
+      switch (error.code) {
+        case 'auth/popup-closed-by-user':
+          setError("Sign up was cancelled.");
+          break;
+        case 'auth/popup-blocked':
+          setError("Popup was blocked. Please allow popups and try again.");
+          break;
+        default:
+          setError("Failed to sign up with Google. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!isOpen) return null;
