@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation'; // Use useParams for App Router
+import { useParams } from 'next/navigation';
 import SidebarLayout from '../../components/SidebarLayout';
 import { Star, Clock, BookOpen, Headphones, Bookmark, Lightbulb } from 'lucide-react';
 
 const BookDetailPage = () => {
   const params = useParams();
-  const id = params?.id; // Get the dynamic route parameter
+  const id = params?.id;
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -37,6 +37,44 @@ const BookDetailPage = () => {
     fetchBookDetails();
   }, [id]);
 
+  // Hardcoded durations matching the original site (same as ForYouPage)
+  const getBookDuration = (bookTitle) => {
+    const durations = {
+      // Recommended Books
+      'How to Win Friends and Influence People': '03:24',
+      "Can't Hurt Me": '04:52',
+      "Can't Hurt Me": '04:52', // curly apostrophe version
+      'Mastery': '04:40',
+      'Atomic Habits': '03:24',
+      'How to Talk to Anyone': '03:22',
+      'Jim Collins': '03:01',
+      'Good to Great': '03:01',
+      'The Intelligent Investor': '02:48',
+      'The 4 Day Week': '02:20',
+      
+      // Suggested Books
+      'The 7 Habits of Highly Effective People': '04:36',
+      'Zero to One': '03:24',
+      'Rich Dad Poor Dad': '05:38',
+      'The 10X Rule': '03:18',
+      'Deep Work': '02:50',
+      'The 5 Second Rule': '02:45',
+      'The Power of Now': '03:12',
+      'Think and Grow Rich': '04:25',
+      'The 12 Week Year': '03:36',
+      'Getting Things Done': '02:24',
+      'The Second Machine Age': '03:36',
+      
+      // Additional books that might appear
+      'The Lean Startup': '03:23'
+    };
+    return durations[bookTitle] || '03:24';
+  };
+
+  const formatRating = (rating) => {
+    return rating ? rating.toFixed(1) : '0.0';
+  };
+
   if (loading) {
     return (
       <SidebarLayout>
@@ -60,16 +98,6 @@ const BookDetailPage = () => {
       </SidebarLayout>
     );
   }
-
-  const formatDuration = (totalSeconds) => {
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-  };
-
-  const formatRating = (rating) => {
-    return rating ? rating.toFixed(1) : '0.0';
-  };
 
   return (
     <SidebarLayout>
@@ -137,11 +165,11 @@ const BookDetailPage = () => {
                   </span>
                 </div>
 
-                {/* Duration */}
+                {/* Duration - Now using hardcoded durations */}
                 <div className="flex items-center" style={{ gap: '4px' }}>
                   <Clock className="w-5 h-5" style={{ color: '#032B41' }} />
                   <span style={{ color: '#032B41' }}>
-                    {formatDuration(book.totalDuration || 0)}
+                    {getBookDuration(book.title)}
                   </span>
                 </div>
 
@@ -158,7 +186,7 @@ const BookDetailPage = () => {
                 <div className="flex items-center" style={{ gap: '4px' }}>
                   <Lightbulb className="w-5 h-5" style={{ color: '#032B41', fill: 'none', stroke: '#032B41' }} />
                   <span style={{ color: '#032B41' }}>
-                    {book.keyIdeas || 7} Key ideas
+                    {book.keyIdeas || 11} Key ideas
                   </span>
                 </div>
               </div>

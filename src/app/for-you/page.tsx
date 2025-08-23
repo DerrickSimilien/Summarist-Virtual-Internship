@@ -17,19 +17,29 @@ const RecommendedBookCard = ({ book }) => {
   // Hardcoded durations matching the original site
   const getBookDuration = (bookTitle) => {
     const durations = {
+      // Recommended Books
       'How to Win Friends and Influence People': '03:24',
       "Can't Hurt Me": '04:52', 
       'Mastery': '04:40',
       'Atomic Habits': '03:24',
       'How to Talk to Anyone': '03:22',
+      'Jim Collins': '03:01',
+      'Good to Great': '03:01',
+      'The Intelligent Investor': '02:48',
+      'The 4 Day Week': '02:20',
+      
+      // Suggested Books  
       'The 7 Habits of Highly Effective People': '04:36',
-      'Rich Dad Poor Dad': '04:18',
+      'Rich Dad Poor Dad': '05:38',
       'The Power of Now': '03:12',
       'Think and Grow Rich': '04:25',
-      'Zero to One': '03:48',
+      'Zero to One': '03:24',
       'The 10X Rule': '04:15',
       'Deep Work': '04:02',
-      'The Second Machine Age': '03:36'
+      'The Second Machine Age': '03:36',
+      'The 5 Second Rule': '02:45',
+      'The 12 Week Year': '03:36',
+      'Getting Things Done': '02:24'
     };
     return durations[bookTitle] || '03:24';
   };
