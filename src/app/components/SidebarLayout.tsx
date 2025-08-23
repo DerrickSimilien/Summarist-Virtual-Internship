@@ -1,7 +1,9 @@
-import React from 'react';
-import { Home, Bookmark, Highlighter, Search, Settings, HelpCircle, LogIn } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Home, Bookmark, Highlighter, Search, Settings, HelpCircle, LogIn, LogOut } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from '../../lib/firebase';
 
 interface SidebarLayoutProps {
   children: React.ReactNode;
@@ -15,15 +17,37 @@ const mainNavigationItems = [
   { name: 'Search', href: '/search', icon: Search },
 ];
 
-// Bottom navigation items (pushed to bottom)
+// Bottom navigation items (settings and help)
 const bottomNavigationItems = [
   { name: 'Settings', href: '/settings', icon: Settings },
   { name: 'Help & Support', href: '/help', icon: HelpCircle },
-  { name: 'Login', href: '/login', icon: LogIn },
 ];
 
 const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
   const pathname = usePathname();
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Listen for authentication state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Handle logout
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      router.push('/'); // Redirect to home page
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
   return (
     <div className="flex min-h-screen" style={{ fontFamily: 'Roboto, sans-serif' }}>
@@ -118,7 +142,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
               const isActive = pathname === item.href;
               
               return (
-                <li key={item.name} style={{ marginBottom: index === bottomNavigationItems.length - 1 ? '0' : '24px' }}>
+                <li key={item.name} style={{ marginBottom: '24px' }}>
                   <Link
                     href={item.href}
                     className="flex items-center transition-colors duration-150"
@@ -156,6 +180,79 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
                 </li>
               );
             })}
+
+            {/* Login/Logout Button */}
+            <li key="auth">
+              {!loading && (
+                user ? (
+                  // Show Logout when user is authenticated
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center transition-colors duration-150 w-full text-left"
+                    style={{
+                      padding: '12px 16px',
+                      fontSize: '16px',
+                      fontWeight: '400',
+                      color: '#032B41',
+                      backgroundColor: 'transparent',
+                      textDecoration: 'none',
+                      borderRadius: '8px',
+                      border: 'none',
+                      cursor: 'pointer'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(3, 43, 65, 0.04)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }}
+                  >
+                    <LogOut 
+                      className="flex-shrink-0" 
+                      style={{ 
+                        marginRight: '16px', 
+                        height: '20px', 
+                        width: '20px',
+                        color: '#6b757b'
+                      }} 
+                    />
+                    Logout
+                  </button>
+                ) : (
+                  // Show Login when user is not authenticated
+                  <Link
+                    href="/"
+                    className="flex items-center transition-colors duration-150"
+                    style={{
+                      padding: '12px 16px',
+                      fontSize: '16px',
+                      fontWeight: '400',
+                      color: '#032B41',
+                      backgroundColor: 'transparent',
+                      textDecoration: 'none',
+                      borderRadius: '8px'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(3, 43, 65, 0.04)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }}
+                  >
+                    <LogIn 
+                      className="flex-shrink-0" 
+                      style={{ 
+                        marginRight: '16px', 
+                        height: '20px', 
+                        width: '20px',
+                        color: '#6b757b'
+                      }} 
+                    />
+                    Login
+                  </Link>
+                )
+              )}
+            </li>
           </ul>
         </nav>
       </div>

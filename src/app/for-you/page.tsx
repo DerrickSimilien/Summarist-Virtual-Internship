@@ -1,21 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // Changed from 'next/router' to 'next/navigation'
+import { useRouter } from 'next/navigation';
 import SidebarLayout from '../components/SidebarLayout';
 import BookCard from '../components/BookCard';
 import { Play, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
-
-// Mock data for the featured book
-const featuredBook = {
-  id: '1',
-  title: 'The Lean Startup',
-  author: 'Eric Ries',
-  imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1333576876i/10127019.jpg',
-  subscriptionRequired: false,
-  averageRating: 4.3,
-  duration: '3 mins 23 secs'
-};
 
 // Smaller BookCard component to match original design
 const RecommendedBookCard = ({ book }) => {
@@ -23,6 +12,26 @@ const RecommendedBookCard = ({ book }) => {
 
   const handleBookClick = () => {
     router.push(`/book/${book.id}`);
+  };
+
+  // Hardcoded durations matching the original site
+  const getBookDuration = (bookTitle) => {
+    const durations = {
+      'How to Win Friends and Influence People': '03:24',
+      "Can't Hurt Me": '04:52', 
+      'Mastery': '04:40',
+      'Atomic Habits': '03:24',
+      'How to Talk to Anyone': '03:22',
+      'The 7 Habits of Highly Effective People': '04:36',
+      'Rich Dad Poor Dad': '04:18',
+      'The Power of Now': '03:12',
+      'Think and Grow Rich': '04:25',
+      'Zero to One': '03:48',
+      'The 10X Rule': '04:15',
+      'Deep Work': '04:02',
+      'The Second Machine Age': '03:36'
+    };
+    return durations[bookTitle] || '03:24';
   };
 
   return (
@@ -81,13 +90,11 @@ const RecommendedBookCard = ({ book }) => {
         
         {/* Duration and Rating row */}
         <div className="flex items-center justify-between text-small" style={{ marginTop: '6px' }}>
-          {/* Duration */}
+          {/* Duration - Using hardcoded durations from original site */}
           <div className="flex items-center" style={{ gap: '3px', color: '#6b7280' }}>
             <Clock className="w-3 h-3" />
             <span>
-              {book.totalDuration ? 
-                `${Math.floor(book.totalDuration / 60)}:${String(book.totalDuration % 60).padStart(2, '0')}` : 
-                '03:24'}
+              {getBookDuration(book.title)}
             </span>
           </div>
           
@@ -104,16 +111,57 @@ const RecommendedBookCard = ({ book }) => {
 
 const ForYouPage = () => {
   const router = useRouter();
+  const [selectedBook, setSelectedBook] = useState(null);
   const [recommendedBooks, setRecommendedBooks] = useState([]);
   const [suggestedBooks, setSuggestedBooks] = useState([]);
+  const [selectedLoading, setSelectedLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [suggestedLoading, setSuggestedLoading] = useState(true);
   const [suggestedError, setSuggestedError] = useState(null);
 
-  // Handle featured book click
-  const handleFeaturedBookClick = () => {
-    router.push(`/book/${featuredBook.id}`);
+  // Fetch selected book from API
+  useEffect(() => {
+    const fetchSelectedBook = async () => {
+      try {
+        setSelectedLoading(true);
+        const response = await fetch('https://us-central1-summaristt.cloudfunctions.net/getBooks?status=selected');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        // The API returns an array, so take the first book
+        if (data && data.length > 0) {
+          setSelectedBook(data[0]);
+        }
+      } catch (err) {
+        console.error('Error fetching selected book:', err);
+        // Fallback to the original hardcoded book if API fails
+        setSelectedBook({
+          id: '1',
+          title: 'The Lean Startup',
+          author: 'Eric Ries',
+          imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1333576876i/10127019.jpg',
+          subscriptionRequired: false,
+          averageRating: 4.3,
+          duration: '3 mins 23 secs',
+          subTitle: 'How Constant Innovation Creates Radically Successful Businesses'
+        });
+      } finally {
+        setSelectedLoading(false);
+      }
+    };
+
+    fetchSelectedBook();
+  }, []);
+
+  // Handle selected book click
+  const handleSelectedBookClick = () => {
+    if (selectedBook) {
+      router.push(`/book/${selectedBook.id}`);
+    }
   };
 
   // Fetch recommended books from API
@@ -132,51 +180,8 @@ const ForYouPage = () => {
       } catch (err) {
         console.error('Error fetching recommended books:', err);
         setError(err.message);
-        // Fallback to mock data if API fails
-        setRecommendedBooks([
-          {
-            id: '2',
-            title: 'How to Win Friends and Influence People',
-            author: 'Dale Carnegie',
-            subTitle: 'The classic guide to better relationships',
-            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1442726934i/4865.jpg',
-            subscriptionRequired: false,
-            averageRating: 4.2
-          },
-          {
-            id: '3',
-            title: "Can't Hurt Me",
-            author: 'David Goggins',
-            subTitle: 'Master Your Mind and Defy the Odds',
-            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1536184191i/41721428.jpg',
-            subscriptionRequired: true,
-            averageRating: 4.6
-          },
-          {
-            id: '4',
-            title: 'Mastery',
-            author: 'Robert Greene',
-            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1348866497i/13589182.jpg',
-            subscriptionRequired: true,
-            averageRating: 4.1
-          },
-          {
-            id: '5',
-            title: 'Atomic Habits',
-            author: 'James Clear',
-            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1535115320i/40121378.jpg',
-            subscriptionRequired: true,
-            averageRating: 4.4
-          },
-          {
-            id: '6',
-            title: 'How to Talk to Anyone',
-            author: 'Leil Lowndes',
-            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1391446893i/35450.jpg',
-            subscriptionRequired: true,
-            averageRating: 3.9
-          }
-        ]);
+        // No fallback - use empty array to show error instead
+        setRecommendedBooks([]);
       } finally {
         setLoading(false);
       }
@@ -201,41 +206,8 @@ const ForYouPage = () => {
       } catch (err) {
         console.error('Error fetching suggested books:', err);
         setSuggestedError(err.message);
-        // Fallback to mock data if API fails
-        setSuggestedBooks([
-          {
-            id: '7',
-            title: 'The 7 Habits of Highly Effective People',
-            author: 'Stephen R. Covey',
-            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1421842784i/36072.jpg',
-            subscriptionRequired: false,
-            averageRating: 4.1
-          },
-          {
-            id: '8',
-            title: 'Rich Dad Poor Dad',
-            author: 'Robert T. Kiyosaki',
-            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1388211242i/69571.jpg',
-            subscriptionRequired: true,
-            averageRating: 4.2
-          },
-          {
-            id: '9',
-            title: 'The Power of Now',
-            author: 'Eckhart Tolle',
-            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1386925471i/6708.jpg',
-            subscriptionRequired: true,
-            averageRating: 4.0
-          },
-          {
-            id: '10',
-            title: 'Think and Grow Rich',
-            author: 'Napoleon Hill',
-            imageLink: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1463241782i/30186948.jpg',
-            subscriptionRequired: false,
-            averageRating: 4.1
-          }
-        ]);
+        // No fallback - use empty array to show error instead
+        setSuggestedBooks([]);
       } finally {
         setSuggestedLoading(false);
       }
@@ -259,92 +231,106 @@ const ForYouPage = () => {
             Selected just for you
           </h2>
           
-          <div 
-            className="rounded-lg flex items-start cursor-pointer transition-transform hover:scale-[1.02]"
-            style={{ 
-              backgroundColor: '#FBEFD6', 
-              maxWidth: '640px', 
-              minHeight: '144px',
-              padding: '32px 24px 24px 24px'
-            }}
-            onClick={handleFeaturedBookClick}
-          >
-            {/* Left side content - only subtitle */}
-            <div className="flex-1" style={{ paddingRight: '20px', maxWidth: '288px' }}>
-              <div 
-                className="leading-relaxed"
-                style={{ fontSize: '16px', color: '#374151' }}
-              >
-                How Constant Innovation Creates Radically Successful Businesses
+          {selectedLoading ? (
+            <div className="flex items-center justify-center" style={{ height: '144px' }}>
+              <div className="text-lg" style={{ color: '#6b7280' }}>
+                Loading selected book...
               </div>
             </div>
-            
-            {/* Vertical divider line */}
+          ) : selectedBook ? (
             <div 
+              className="rounded-lg flex items-start cursor-pointer transition-transform hover:scale-[1.02]"
               style={{ 
-                width: '1px', 
-                height: '112px', 
-                backgroundColor: '#d1d5db', 
-                margin: '0 20px' 
+                backgroundColor: '#FBEFD6', 
+                maxWidth: '640px', 
+                minHeight: '144px',
+                padding: '32px 24px 24px 24px'
               }}
-            ></div>
-            
-            {/* Right side content */}
-            <div className="flex items-center" style={{ gap: '12px' }}>
-              {/* Book cover */}
-              <img 
-                src={featuredBook.imageLink} 
-                alt={featuredBook.title}
-                className="object-cover rounded-lg shadow-lg"
-                style={{ width: '88px', height: '128px' }}
-              />
+              onClick={handleSelectedBookClick}
+            >
+              {/* Left side content - subtitle */}
+              <div className="flex-1" style={{ paddingRight: '20px', maxWidth: '288px' }}>
+                <div 
+                  className="leading-relaxed"
+                  style={{ fontSize: '16px', color: '#374151' }}
+                >
+                  {selectedBook.subTitle || selectedBook.summary || 'How Constant Innovation Creates Radically Successful Businesses'}
+                </div>
+              </div>
               
-              {/* Book info and controls */}
-              <div className="flex flex-col">
-                <h3 
-                  className="text-xl font-bold"
-                  style={{ color: '#111827', marginBottom: '4px' }}
-                >
-                  {featuredBook.title}
-                </h3>
-                <p 
-                  className="text-sm"
-                  style={{ color: '#374151', marginBottom: '8px' }}
-                >
-                  by {featuredBook.author}
-                </p>
+              {/* Vertical divider line */}
+              <div 
+                style={{ 
+                  width: '1px', 
+                  height: '112px', 
+                  backgroundColor: '#d1d5db', 
+                  margin: '0 20px' 
+                }}
+              ></div>
+              
+              {/* Right side content */}
+              <div className="flex items-center" style={{ gap: '12px' }}>
+                {/* Book cover */}
+                <img 
+                  src={selectedBook.imageLink} 
+                  alt={selectedBook.title}
+                  className="object-cover rounded-lg shadow-lg"
+                  style={{ width: '88px', height: '128px' }}
+                />
                 
-                <div className="flex items-center" style={{ gap: '8px' }}>
-                  <button 
-                    className="flex items-center justify-center rounded-full transition-colors"
-                    style={{ 
-                      backgroundColor: '#000', 
-                      color: 'white',
-                      width: '36px',
-                      height: '36px'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#374151';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = '#000';
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent the card click when play button is clicked
-                    }}
+                {/* Book info and controls */}
+                <div className="flex flex-col">
+                  <h3 
+                    className="text-xl font-bold"
+                    style={{ color: '#111827', marginBottom: '4px' }}
                   >
-                    <Play className="w-4 h-4 fill-current" />
-                  </button>
-                  <span 
-                    className="text-sm font-medium"
-                    style={{ color: '#111827' }}
+                    {selectedBook.title}
+                  </h3>
+                  <p 
+                    className="text-sm"
+                    style={{ color: '#374151', marginBottom: '8px' }}
                   >
-                    {featuredBook.duration}
-                  </span>
+                    by {selectedBook.author}
+                  </p>
+                  
+                  <div className="flex items-center" style={{ gap: '8px' }}>
+                    <button 
+                      className="flex items-center justify-center rounded-full transition-colors"
+                      style={{ 
+                        backgroundColor: '#000', 
+                        color: 'white',
+                        width: '36px',
+                        height: '36px'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#374151';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#000';
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent the card click when play button is clicked
+                      }}
+                    >
+                      <Play className="w-4 h-4 fill-current" />
+                    </button>
+                    <span 
+                      className="text-sm font-medium"
+                      style={{ color: '#111827' }}
+                    >
+                      {selectedBook.duration || '3 mins 23 secs'}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="flex items-center justify-center" style={{ height: '144px' }}>
+              <div className="text-lg" style={{ color: '#dc2626' }}>
+                Error loading selected book
+              </div>
+            </div>
+          )}
         </section>
 
         {/* Recommended For You section */}
