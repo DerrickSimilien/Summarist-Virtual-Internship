@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../../lib/firebase';
 import SidebarLayout from '../../components/SidebarLayout';
@@ -10,6 +10,7 @@ import { Star, Clock, BookOpen, Headphones, Bookmark, Lightbulb } from 'lucide-r
 
 const BookDetailPage = () => {
   const params = useParams();
+  const router = useRouter();
   const id = params?.id;
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -101,8 +102,15 @@ const BookDetailPage = () => {
       setIsLoginModalOpen(true);
       return;
     }
-    // TODO: Implement read functionality for authenticated users
-    console.log('User is authenticated, proceed with read functionality');
+    
+    // If book is premium, redirect to choose-plan page
+    if (book?.subscriptionRequired) {
+      router.push('/choose-plan');
+      return;
+    }
+    
+    // TODO: Implement read functionality for non-premium books
+    console.log('User is authenticated, proceed with read functionality for free book');
   };
 
   // Handle Listen button click
@@ -111,8 +119,15 @@ const BookDetailPage = () => {
       setIsLoginModalOpen(true);
       return;
     }
-    // TODO: Implement listen functionality for authenticated users
-    console.log('User is authenticated, proceed with listen functionality');
+    
+    // If book is premium, redirect to choose-plan page
+    if (book?.subscriptionRequired) {
+      router.push('/choose-plan');
+      return;
+    }
+    
+    // TODO: Implement listen functionality for non-premium books
+    console.log('User is authenticated, proceed with listen functionality for free book');
   };
 
   // Handle successful login
