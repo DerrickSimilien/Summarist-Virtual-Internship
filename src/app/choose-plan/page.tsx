@@ -1,7 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FileText, Sprout, Handshake, ChevronUp, ChevronDown } from 'lucide-react';
+import { ChevronUp, ChevronDown } from 'lucide-react';
+import { IoDocumentTextSharp } from 'react-icons/io5';
+import { RiPlantFill } from 'react-icons/ri';
+import { FaHandshake } from 'react-icons/fa6';
 
 const ChoosePlanPage = () => {
   const [selectedPlan, setSelectedPlan] = useState('yearly');
@@ -16,29 +19,23 @@ const ChoosePlanPage = () => {
       <div 
         className="relative"
         style={{ 
-          background: 'linear-gradient(135deg, #2D5A87 0%, #1A365D 100%)',
+          backgroundColor: '#032B41',
           paddingTop: '80px',
-          paddingBottom: '160px'
+          paddingBottom: '200px',
+          borderBottomLeftRadius: '16rem',
+          borderBottomRightRadius: '16rem'
         }}
       >
-        <div 
-          className="absolute bottom-0 left-0 right-0"
-          style={{
-            height: '100px',
-            background: 'white',
-            borderRadius: '50% 50% 0 0 / 100px 100px 0 0'
-          }}
-        ></div>
-        
         <div className="relative z-10 text-center" style={{ padding: '0 24px' }}>
           <h1 
             className="font-bold text-white"
             style={{ 
               fontSize: '48px',
+              fontFamily: 'Roboto, sans-serif',
               lineHeight: '1.1',
-              marginBottom: '24px',
+              margin: '0px 0px 40px',
               maxWidth: '800px',
-              margin: '0 auto'
+              margin: '0 auto 40px auto'
             }}
           >
             Get unlimited access to many amazing books to read
@@ -48,96 +45,36 @@ const ChoosePlanPage = () => {
             className="text-white"
             style={{ 
               fontSize: '20px',
+              fontFamily: 'Roboto, sans-serif',
               opacity: 0.9,
-              marginBottom: '48px'
+              margin: '0px 0px 32px'
             }}
           >
             Turn ordinary moments into amazing learning opportunities
           </p>
 
           <div 
-            className="relative mx-auto"
+            className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2"
             style={{ 
-              width: '240px',
+              width: '400px',
               height: '240px',
               backgroundColor: 'white',
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
             }}
           >
-            <div 
-              className="relative"
-              style={{ 
-                width: '120px',
-                height: '80px',
-                backgroundColor: '#f8f9fa',
-                borderRadius: '8px',
-                border: '2px solid #e9ecef'
+            <img 
+              src="/pricingtop.png" 
+              alt="Learning illustration"
+              style={{
+                width: '320px',
+                height: '180px',
+                objectFit: 'contain'
               }}
-            >
-              <div 
-                style={{
-                  position: 'absolute',
-                  top: '8px',
-                  left: '8px',
-                  width: '8px',
-                  height: '8px',
-                  backgroundColor: '#28a745',
-                  borderRadius: '50%'
-                }}
-              ></div>
-              <div 
-                style={{
-                  position: 'absolute',
-                  top: '24px',
-                  left: '8px',
-                  right: '8px',
-                  height: '2px',
-                  backgroundColor: '#28a745'
-                }}
-              ></div>
-              <div 
-                style={{
-                  position: 'absolute',
-                  top: '32px',
-                  left: '8px',
-                  width: '60%',
-                  height: '2px',
-                  backgroundColor: '#28a745'
-                }}
-              ></div>
-              
-              <div 
-                style={{
-                  position: 'absolute',
-                  bottom: '-20px',
-                  right: '8px',
-                  width: '24px',
-                  height: '40px'
-                }}
-              >
-                <div 
-                  style={{
-                    width: '12px',
-                    height: '12px',
-                    backgroundColor: '#8B5CF6',
-                    borderRadius: '50%',
-                    margin: '0 auto 2px'
-                  }}
-                ></div>
-                <div 
-                  style={{
-                    width: '16px',
-                    height: '20px',
-                    backgroundColor: '#374151',
-                    borderRadius: '2px',
-                    margin: '0 auto'
-                  }}
-                ></div>
-              </div>
-            </div>
+            />
           </div>
         </div>
       </div>
@@ -160,11 +97,12 @@ const ChoosePlanPage = () => {
               style={{ 
                 width: '64px',
                 height: '64px',
-                backgroundColor: '#1F2937',
-                borderRadius: '16px'
+                backgroundColor: 'white',
+                borderRadius: '16px',
+                margin: '0 auto 16px auto'
               }}
             >
-              <FileText className="w-8 h-8 text-white" />
+              <IoDocumentTextSharp className="w-10 h-10" style={{ color: '#032B41' }} />
             </div>
             <h3 
               className="font-bold mb-2"
@@ -191,11 +129,12 @@ const ChoosePlanPage = () => {
               style={{ 
                 width: '64px',
                 height: '64px',
-                backgroundColor: '#1F2937',
-                borderRadius: '16px'
+                backgroundColor: 'white',
+                borderRadius: '16px',
+                margin: '0 auto 16px auto'
               }}
             >
-              <Sprout className="w-8 h-8 text-white" />
+              <RiPlantFill className="w-10 h-10" style={{ color: '#032B41' }} />
             </div>
             <h3 
               className="font-bold mb-2"
@@ -222,11 +161,12 @@ const ChoosePlanPage = () => {
               style={{ 
                 width: '64px',
                 height: '64px',
-                backgroundColor: '#1F2937',
-                borderRadius: '16px'
+                backgroundColor: 'white',
+                borderRadius: '16px',
+                margin: '0 auto 16px auto'
               }}
             >
-              <Handshake className="w-8 h-8 text-white" />
+              <FaHandshake className="w-10 h-10" style={{ color: '#032B41' }} />
             </div>
             <h3 
               className="font-bold mb-2"
@@ -259,14 +199,13 @@ const ChoosePlanPage = () => {
             Choose the plan that fits you
           </h2>
 
-          <div className="space-y-4" style={{ maxWidth: '600px', margin: '0 auto' }}>
+          <div className="space-y-4" style={{ margin: '0 92.4px' }}>
             <div 
-              className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all ${
-                selectedPlan === 'yearly' ? 'border-green-400' : 'border-gray-200'
-              }`}
+              className="relative rounded-lg cursor-pointer transition-all"
               style={{ 
-                backgroundColor: selectedPlan === 'yearly' ? '#F0FDF4' : 'white',
-                border: selectedPlan === 'yearly' ? '2px solid #4ADE80' : '2px solid #E5E7EB'
+                backgroundColor: '#F1F6F4',
+                padding: '24px',
+                border: selectedPlan === 'yearly' ? '4px solid #4ADE80' : '4px solid #bac8ce'
               }}
               onClick={() => setSelectedPlan('yearly')}
             >
@@ -277,32 +216,58 @@ const ChoosePlanPage = () => {
                     checked={selectedPlan === 'yearly'}
                     onChange={() => setSelectedPlan('yearly')}
                     className="w-5 h-5 mr-4"
-                    style={{ accentColor: '#4ADE80' }}
+                    style={{ 
+                      accentColor: 'transparent',
+                      appearance: 'none',
+                      border: '2px solid #032B41',
+                      borderRadius: '50%',
+                      position: 'relative'
+                    }}
                   />
+                  {selectedPlan === 'yearly' && (
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        left: '26px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: '8px',
+                        height: '8px',
+                        backgroundColor: '#032B41',
+                        borderRadius: '50%',
+                        pointerEvents: 'none'
+                      }}
+                    />
+                  )}
                   <div>
                     <h3 
-                      className="font-bold"
                       style={{ 
-                        color: '#1F2937',
-                        fontSize: '20px'
+                        color: '#032B41',
+                        fontSize: '18px',
+                        fontFamily: 'Roboto, sans-serif',
+                        fontWeight: 'bold',
+                        margin: '0px 0px 8px'
                       }}
                     >
                       Premium Plus Yearly
                     </h3>
                     <p 
-                      className="font-bold"
                       style={{ 
-                        color: '#1F2937',
+                        color: '#032B41',
                         fontSize: '24px',
-                        margin: '4px 0'
+                        fontFamily: 'Roboto, sans-serif',
+                        fontWeight: 'bold',
+                        margin: '0px 0px 8px'
                       }}
                     >
                       $99.99/year
                     </p>
                     <p 
                       style={{ 
-                        color: '#6B7280',
-                        fontSize: '14px'
+                        color: '#6B757B',
+                        fontSize: '14px',
+                        fontFamily: 'Roboto, sans-serif',
+                        margin: '0px'
                       }}
                     >
                       7-day free trial included
@@ -317,12 +282,11 @@ const ChoosePlanPage = () => {
             </div>
 
             <div 
-              className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all ${
-                selectedPlan === 'monthly' ? 'border-green-400' : 'border-gray-200'
-              }`}
+              className="relative rounded-lg cursor-pointer transition-all"
               style={{ 
-                backgroundColor: selectedPlan === 'monthly' ? '#F0FDF4' : 'white',
-                border: selectedPlan === 'monthly' ? '2px solid #4ADE80' : '2px solid #E5E7EB'
+                backgroundColor: '#F1F6F4',
+                padding: '24px',
+                border: selectedPlan === 'monthly' ? '4px solid #4ADE80' : '4px solid #bac8ce'
               }}
               onClick={() => setSelectedPlan('monthly')}
             >
@@ -333,32 +297,58 @@ const ChoosePlanPage = () => {
                     checked={selectedPlan === 'monthly'}
                     onChange={() => setSelectedPlan('monthly')}
                     className="w-5 h-5 mr-4"
-                    style={{ accentColor: '#4ADE80' }}
+                    style={{ 
+                      accentColor: 'transparent',
+                      appearance: 'none',
+                      border: '2px solid #032B41',
+                      borderRadius: '50%',
+                      position: 'relative'
+                    }}
                   />
+                  {selectedPlan === 'monthly' && (
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        left: '26px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: '8px',
+                        height: '8px',
+                        backgroundColor: '#032B41',
+                        borderRadius: '50%',
+                        pointerEvents: 'none'
+                      }}
+                    />
+                  )}
                   <div>
                     <h3 
-                      className="font-bold"
                       style={{ 
-                        color: '#1F2937',
-                        fontSize: '20px'
+                        color: '#032B41',
+                        fontSize: '18px',
+                        fontFamily: 'Roboto, sans-serif',
+                        fontWeight: 'bold',
+                        margin: '0px 0px 8px'
                       }}
                     >
                       Premium Monthly
                     </h3>
                     <p 
-                      className="font-bold"
                       style={{ 
-                        color: '#1F2937',
+                        color: '#032B41',
                         fontSize: '24px',
-                        margin: '4px 0'
+                        fontFamily: 'Roboto, sans-serif',
+                        fontWeight: 'bold',
+                        margin: '0px 0px 8px'
                       }}
                     >
                       $9.99/month
                     </p>
                     <p 
                       style={{ 
-                        color: '#6B7280',
-                        fontSize: '14px'
+                        color: '#6B757B',
+                        fontSize: '14px',
+                        fontFamily: 'Roboto, sans-serif',
+                        margin: '0px'
                       }}
                     >
                       No trial included
@@ -640,6 +630,47 @@ const ChoosePlanPage = () => {
           </p>
         </div>
       </footer>
+
+      {/* Fixed Bottom Navigation Bar */}
+      <div 
+        className="fixed bottom-0 left-0 right-0 bg-white border-t z-50"
+        style={{ 
+          borderTop: '1px solid #E5E7EB',
+          boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.1)',
+          padding: '16px 24px'
+        }}
+      >
+        <div className="max-w-4xl mx-auto text-center">
+          <button 
+            className="font-bold text-white rounded-md transition-colors w-full max-w-md"
+            style={{ 
+              backgroundColor: '#22C55E',
+              padding: '16px 48px',
+              fontSize: '18px',
+              border: 'none',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#16A34A';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#22C55E';
+            }}
+          >
+            Start your free 7-day trial
+          </button>
+
+          <p 
+            className="mt-2"
+            style={{ 
+              color: '#9CA3AF',
+              fontSize: '12px'
+            }}
+          >
+            Cancel your trial at any time before it ends, and you won't be charged.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
