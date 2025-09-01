@@ -730,6 +730,18 @@ button:disabled {
 }
 
 
+.plan__img--mask{
+    display: flex;
+    justify-content: center;
+    max-width: 340px;
+    margin: 0 auto;
+    border-radius: 180px 180px 0 0;
+    overflow: hidden;
+    position: absolute;
+    bottom: 0;
+    left: 40%;
+}
+
 
 /* The problematic CSS has been removed and the media query has been updated */
 
