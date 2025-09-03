@@ -10,26 +10,24 @@ const ChoosePlanPage = () => {
   const [selectedPlan, setSelectedPlan] = useState('yearly');
   const [expandedFaq, setExpandedFaq] = useState('trial');
 
-  // --- Sticky CTA handoff logic ---
   const [showFixedCTA, setShowFixedCTA] = useState(true);
-  const inlineCtaRef = useRef<HTMLDivElement | null>(null);
+  const inlineCtaRef = useRef(null);
 
   useEffect(() => {
     if (!inlineCtaRef.current) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // Hide fixed bar when the inline CTA is visible in viewport
         setShowFixedCTA(!entry.isIntersecting);
       },
-      { threshold: 0.5 } // tweak if needed
+      { threshold: 0.5 }
     );
 
     observer.observe(inlineCtaRef.current);
     return () => observer.disconnect();
   }, []);
 
-  const toggleFaq = (faqId: string) => {
+  const toggleFaq = (faqId) => {
     setExpandedFaq(expandedFaq === faqId ? null : faqId);
   };
 
@@ -38,7 +36,6 @@ const ChoosePlanPage = () => {
       style={{
         minHeight: '100vh',
         backgroundColor: 'white',
-        // prevent overlap when the fixed bar is visible
         paddingBottom: showFixedCTA ? 96 : 0,
       }}
     >
@@ -52,7 +49,7 @@ const ChoosePlanPage = () => {
           borderBottomRightRadius: '16rem',
         }}
       >
-        <div className=" z-10 text-center" style={{ padding: '0 24px' }}>
+        <div className="z-10 text-center" style={{ padding: '0 24px' }}>
           <h1
             className="font-bold text-white"
             style={{
@@ -61,7 +58,7 @@ const ChoosePlanPage = () => {
               lineHeight: '1.1',
               margin: '0px 0px 40px',
               maxWidth: '800px',
-              margin: '0 auto',
+              margin: '0 auto 40px auto',
             }}
           >
             Get unlimited access to many amazing books to read
@@ -79,7 +76,7 @@ const ChoosePlanPage = () => {
             Turn ordinary moments into amazing learning opportunities
           </p>
 
-          <div className=" plan__img--mask">
+          <div className="plan__img--mask">
             <img
               src="/pricingtop.png"
               alt="Learning illustration"
@@ -116,7 +113,7 @@ const ChoosePlanPage = () => {
                 margin: '0 auto 16px auto',
               }}
             >
-              <IoDocumentTextSharp className="w-10 h-10" style={{ color: '#032B41' }} />
+              <IoDocumentTextSharp className="w-14 h-14" style={{ color: '#032B41' }} />
             </div>
             <h3
               className="font-bold mb-2"
@@ -148,7 +145,7 @@ const ChoosePlanPage = () => {
                 margin: '0 auto 16px auto',
               }}
             >
-              <RiPlantFill className="w-10 h-10" style={{ color: '#032B41' }} />
+              <RiPlantFill className="w-14 h-14" style={{ color: '#032B41' }} />
             </div>
             <h3
               className="font-bold mb-2"
@@ -180,7 +177,7 @@ const ChoosePlanPage = () => {
                 margin: '0 auto 16px auto',
               }}
             >
-              <FaHandshake className="w-10 h-10" style={{ color: '#032B41' }} />
+              <FaHandshake className="w-14 h-14" style={{ color: '#032B41' }} />
             </div>
             <h3
               className="font-bold mb-2"
@@ -219,10 +216,7 @@ const ChoosePlanPage = () => {
               style={{
                 backgroundColor: '#F1F6F4',
                 padding: '24px',
-                border:
-                  selectedPlan === 'yearly'
-                    ? '4px solid #4ADE80'
-                    : '4px solid #bac8ce',
+                border: selectedPlan === 'yearly' ? '4px solid #4ADE80' : '4px solid #bac8ce',
               }}
               onClick={() => setSelectedPlan('yearly')}
             >
@@ -303,10 +297,7 @@ const ChoosePlanPage = () => {
               style={{
                 backgroundColor: '#F1F6F4',
                 padding: '24px',
-                border:
-                  selectedPlan === 'monthly'
-                    ? '4px solid #4ADE80'
-                    : '4px solid #bac8ce',
+                border: selectedPlan === 'monthly' ? '4px solid #4ADE80' : '4px solid #bac8ce',
               }}
               onClick={() => setSelectedPlan('monthly')}
             >
@@ -379,23 +370,24 @@ const ChoosePlanPage = () => {
             </div>
           </div>
 
-          {/* INLINE CTA (observed to hide/show fixed bar) */}
           <div ref={inlineCtaRef} className="text-center">
             <button
-              className="font-bold text-white rounded-md transition-colors"
+              className="font-medium rounded-md transition-colors"
               style={{
-                backgroundColor: '#22C55E',
+                backgroundColor: '#2bd97c',
+                color: '#032B41',
                 padding: '16px 48px',
-                fontSize: '18px',
+                fontSize: '16px',
+                fontFamily: 'Roboto, sans-serif',
                 marginTop: '32px',
                 border: 'none',
                 cursor: 'pointer',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#16A34A';
+                e.currentTarget.style.backgroundColor = '#26c770';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#22C55E';
+                e.currentTarget.style.backgroundColor = '#2bd97c';
               }}
             >
               Start your free 7-day trial
@@ -707,41 +699,42 @@ const ChoosePlanPage = () => {
         </div>
       </footer>
 
-      {/* Fixed Bottom Navigation Bar (only when inline CTA is off-screen) */}
       {showFixedCTA && (
         <div
-          className="fixed bottom-0 left-0 right-0 bg-white border-t z-50"
+          className="fixed bottom-0 left-0 right-0 bg-white z-50"
           style={{
-            borderTop: '1px solid #E5E7EB',
-            boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.1)',
-            padding: '16px 24px',
+            padding: '16px 24px'
           }}
         >
-          <div className="max-w-4xl mx-auto text-center">
+          <div className="flex flex-col items-center justify-center">
             <button
-              className="font-bold text-white rounded-md transition-colors w-full max-w-md"
+              className="font-medium rounded-md transition-colors"
               style={{
-                backgroundColor: '#22C55E',
+                backgroundColor: '#2bd97c',
+                color: '#032B41',
                 padding: '16px 48px',
-                fontSize: '18px',
+                fontSize: '16px',
+                fontFamily: 'Roboto, sans-serif',
                 border: 'none',
                 cursor: 'pointer',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#16A34A';
+                e.currentTarget.style.backgroundColor = '#26c770';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#22C55E';
+                e.currentTarget.style.backgroundColor = '#2bd97c';
               }}
             >
               Start your free 7-day trial
             </button>
 
             <p
-              className="mt-2"
+              className="text-center"
               style={{
-                color: '#9CA3AF',
+                color: '#6b757b',
                 fontSize: '12px',
+                fontFamily: 'Roboto, sans-serif',
+                marginTop: '8px',
               }}
             >
               Cancel your trial at any time before it ends, and you won't be charged.
