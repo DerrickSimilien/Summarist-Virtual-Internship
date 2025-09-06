@@ -362,12 +362,13 @@ const ChoosePlanPage = () => {
             return (
               <div
                 key={item.id}
-                className={`${!isLast ? 'border-b border-gray-200' : ''} px-2 sm:px-4`}
+                className={`${!isLast ? 'border-b border-gray-200' : ''}`}
+                style={{ paddingTop: '32px', paddingBottom: '32px' }}
               >
                 <button
                   onClick={() => toggleFaq(item.id)}
-                  className="flex w-full items-center justify-between text-left py-6"
-                  style={{ background: 'transparent' }}
+                  className="flex w-full items-center justify-between text-left"
+                  style={{ background: 'transparent', border: 'none', padding: '0', cursor: 'pointer' }}
                   aria-expanded={isOpen}
                 >
                   <h3 className="text-[22px] leading-snug font-medium text-[#032B41] m-0">
@@ -381,7 +382,7 @@ const ChoosePlanPage = () => {
                 </button>
 
                 {isOpen && (
-                  <div className="text-[16px] leading-relaxed text-gray-600 pb-6">
+                  <div className="text-[16px] leading-relaxed text-gray-600" style={{ paddingTop: '16px' }}>
                     {item.a}
                   </div>
                 )}
@@ -392,36 +393,34 @@ const ChoosePlanPage = () => {
       </div>
 
       <footer
-        className="border-t"
         style={{
-          borderTop: '1px solid #E5E7EB',
-          backgroundColor: '#F9FAFB',
+          backgroundColor: '#EAF6F2',
           padding: '48px 24px',
         }}
       >
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8" style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div>
-            <h4 className="font-bold mb-4" style={{ color: '#1F2937', fontSize: '16px' }}>
+            <h4 style={{ color: '#032B41', fontSize: '18px', fontFamily: 'Roboto, sans-serif', margin: '0px 0px 16px' }}>
               Actions
             </h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" style={{ color: '#6B7280', fontSize: '14px' }}>
+                <a href="#" style={{ color: '#394547', fontSize: '14px', fontFamily: 'Roboto, sans-serif' }}>
                   Summarist Magazine
                 </a>
               </li>
               <li>
-                <a href="#" style={{ color: '#6B7280', fontSize: '14px' }}>
+                <a href="#" style={{ color: '#394547', fontSize: '14px', fontFamily: 'Roboto, sans-serif' }}>
                   Cancel Subscription
                 </a>
               </li>
               <li>
-                <a href="#" style={{ color: '#6B7280', fontSize: '14px' }}>
+                <a href="#" style={{ color: '#394547', fontSize: '14px', fontFamily: 'Roboto, sans-serif' }}>
                   Help
                 </a>
               </li>
               <li>
-                <a href="#" style={{ color: '#6B7280', fontSize: '14px' }}>
+                <a href="#" style={{ color: '#394547', fontSize: '14px', fontFamily: 'Roboto, sans-serif' }}>
                   Contact us
                 </a>
               </li>
@@ -429,27 +428,27 @@ const ChoosePlanPage = () => {
           </div>
 
           <div>
-            <h4 className="font-bold mb-4" style={{ color: '#1F2937', fontSize: '16px' }}>
+            <h4 style={{ color: '#032B41', fontSize: '18px', fontFamily: 'Roboto, sans-serif', margin: '0px 0px 16px' }}>
               Useful Links
             </h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" style={{ color: '#6B7280', fontSize: '14px' }}>
+                <a href="#" style={{ color: '#394547', fontSize: '14px', fontFamily: 'Roboto, sans-serif' }}>
                   Pricing
                 </a>
               </li>
               <li>
-                <a href="#" style={{ color: '#6B7280', fontSize: '14px' }}>
+                <a href="#" style={{ color: '#394547', fontSize: '14px', fontFamily: 'Roboto, sans-serif' }}>
                   Summarist Business
                 </a>
               </li>
               <li>
-                <a href="#" style={{ color: '#6B7280', fontSize: '14px' }}>
+                <a href="#" style={{ color: '#394547', fontSize: '14px', fontFamily: 'Roboto, sans-serif' }}>
                   Gift Cards
                 </a>
               </li>
               <li>
-                <a href="#" style={{ color: '#6B7280', fontSize: '14px' }}>
+                <a href="#" style={{ color: '#394547', fontSize: '14px', fontFamily: 'Roboto, sans-serif' }}>
                   Authors &amp; Publishers
                 </a>
               </li>
@@ -457,27 +456,27 @@ const ChoosePlanPage = () => {
           </div>
 
           <div>
-            <h4 className="font-bold mb-4" style={{ color: '#1F2937', fontSize: '16px' }}>
+            <h4 style={{ color: '#032B41', fontSize: '18px', fontFamily: 'Roboto, sans-serif', margin: '0px 0px 16px' }}>
               Company
             </h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" style={{ color: '#6B7280', fontSize: '14px' }}>
+                <a href="#" style={{ color: '#394547', fontSize: '14px', fontFamily: 'Roboto, sans-serif' }}>
                   About
                 </a>
               </li>
               <li>
-                <a href="#" style={{ color: '#6B7280', fontSize: '14px' }}>
+                <a href="#" style={{ color: '#394547', fontSize: '14px', fontFamily: 'Roboto, sans-serif' }}>
                   Careers
                 </a>
               </li>
               <li>
-                <a href="#" style={{ color: '#6B7280', fontSize: '14px' }}>
+                <a href="#" style={{ color: '#394547', fontSize: '14px', fontFamily: 'Roboto, sans-serif' }}>
                   Partners
                 </a>
               </li>
               <li>
-                <a href="#" style={{ color: '#6B7280', fontSize: '14px' }}>
+                <a href="#" style={{ color: '#394547', fontSize: '14px', fontFamily: 'Roboto, sans-serif' }}>
                   Code of Conduct
                 </a>
               </li>
@@ -485,27 +484,27 @@ const ChoosePlanPage = () => {
           </div>
 
           <div>
-            <h4 className="font-bold mb-4" style={{ color: '#1F2937', fontSize: '16px' }}>
+            <h4 style={{ color: '#032B41', fontSize: '18px', fontFamily: 'Roboto, sans-serif', margin: '0px 0px 16px' }}>
               Other
             </h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" style={{ color: '#6B7280', fontSize: '14px' }}>
+                <a href="#" style={{ color: '#394547', fontSize: '14px', fontFamily: 'Roboto, sans-serif' }}>
                   Sitemap
                 </a>
               </li>
               <li>
-                <a href="#" style={{ color: '#6B7280', fontSize: '14px' }}>
+                <a href="#" style={{ color: '#394547', fontSize: '14px', fontFamily: 'Roboto, sans-serif' }}>
                   Legal Notice
                 </a>
               </li>
               <li>
-                <a href="#" style={{ color: '#6B7280', fontSize: '14px' }}>
+                <a href="#" style={{ color: '#394547', fontSize: '14px', fontFamily: 'Roboto, sans-serif' }}>
                   Terms of Service
                 </a>
               </li>
               <li>
-                <a href="#" style={{ color: '#6B7280', fontSize: '14px' }}>
+                <a href="#" style={{ color: '#394547', fontSize: '14px', fontFamily: 'Roboto, sans-serif' }}>
                   Privacy Policies
                 </a>
               </li>
@@ -514,7 +513,9 @@ const ChoosePlanPage = () => {
         </div>
 
         <div className="text-center mt-8 pt-8 border-t" style={{ borderTop: '1px solid #E5E7EB' }}>
-          <p style={{ color: '#6B7280', fontSize: '14px' }}>Copyright © 2023 Summarist.</p>
+          <p style={{ color: '#034B41', fontSize: '16px', fontFamily: 'Roboto, sans-serif' }}>
+            Copyright © 2023 Summarist.
+          </p>
         </div>
       </footer>
 
