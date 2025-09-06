@@ -31,6 +31,18 @@ const ChoosePlanPage = () => {
     setExpandedFaq(expandedFaq === faqId ? null : faqId);
   };
 
+  const getButtonText = () => {
+    return selectedPlan === 'yearly' ? 'Start your free 7-day trial' : 'Start your first month';
+  };
+
+  const getDisclaimerText = () => {
+    if (selectedPlan === 'yearly') {
+      return "Cancel your trial at any time before it ends, and you won't be charged.";
+    } else {
+      return "30-day money back guarantee, no questions asked.";
+    }
+  };
+
   return (
     <div
       style={{
@@ -44,7 +56,7 @@ const ChoosePlanPage = () => {
         style={{
           backgroundColor: '#032B41',
           paddingTop: '80px',
-          paddingBottom: '400px',
+          paddingBottom: '270px',
           borderBottomLeftRadius: '16rem',
           borderBottomRightRadius: '16rem',
         }}
@@ -239,7 +251,7 @@ const ChoosePlanPage = () => {
                     <div
                       style={{
                         position: 'absolute',
-                        left: '26px',
+                        left: '32px',
                         top: '50%',
                         transform: 'translateY(-50%)',
                         width: '8px',
@@ -288,8 +300,20 @@ const ChoosePlanPage = () => {
               </div>
             </div>
 
-            <div className="text-center" style={{ margin: '24px 0' }}>
+            <div className="flex items-center justify-center" style={{ margin: '24px 0' }}>
+              <div style={{ 
+                width: '80px', 
+                height: '1px', 
+                backgroundColor: '#E5E7EB', 
+                marginRight: '16px' 
+              }}></div>
               <span style={{ color: '#9CA3AF', fontSize: '16px' }}>or</span>
+              <div style={{ 
+                width: '80px', 
+                height: '1px', 
+                backgroundColor: '#E5E7EB', 
+                marginLeft: '16px' 
+              }}></div>
             </div>
 
             <div
@@ -320,7 +344,7 @@ const ChoosePlanPage = () => {
                     <div
                       style={{
                         position: 'absolute',
-                        left: '26px',
+                        left: '32px',
                         top: '50%',
                         transform: 'translateY(-50%)',
                         width: '8px',
@@ -390,17 +414,18 @@ const ChoosePlanPage = () => {
                 e.currentTarget.style.backgroundColor = '#2bd97c';
               }}
             >
-              Start your free 7-day trial
+              {getButtonText()}
             </button>
 
             <p
-              className="text-center mt-4"
+              className="text-center"
               style={{
                 color: '#9CA3AF',
                 fontSize: '14px',
+                marginTop: '24px',
               }}
             >
-              Cancel your trial at any time before it ends, and you won't be charged.
+              {getDisclaimerText()}
             </p>
           </div>
         </div>
@@ -482,7 +507,7 @@ const ChoosePlanPage = () => {
                   lineHeight: '1.6',
                 }}
               >
-                Yes, you can switch between subscription plans at any time through your account settings.
+                While an annual plan is active, it is not feasible to switch to a monthly plan. However, once the current month ends, transitioning from a monthly plan to an annual plan is an option.
               </div>
             )}
           </div>
@@ -521,8 +546,7 @@ const ChoosePlanPage = () => {
                   lineHeight: '1.6',
                 }}
               >
-                Premium includes unlimited access to our entire library of book summaries, audio versions, and
-                personalized recommendations.
+                Premium membership provides you with the ultimate Summarist experience, including unrestricted entry to many best-selling books high-quality audio, the ability to download titles for offline reading, and the option to send your reads to your Kindle.
               </div>
             )}
           </div>
@@ -558,8 +582,7 @@ const ChoosePlanPage = () => {
                   lineHeight: '1.6',
                 }}
               >
-                Yes, you can cancel your subscription at any time. If you cancel during your trial period, you won't be
-                charged.
+                You will not be charged if you cancel your trial before its conclusion. While you will not have complete access to the entire Summarist library, you can still expand your knowledge with one curated book per day.
               </div>
             )}
           </div>
@@ -725,7 +748,7 @@ const ChoosePlanPage = () => {
                 e.currentTarget.style.backgroundColor = '#2bd97c';
               }}
             >
-              Start your free 7-day trial
+              {getButtonText()}
             </button>
 
             <p
@@ -737,7 +760,7 @@ const ChoosePlanPage = () => {
                 marginTop: '8px',
               }}
             >
-              Cancel your trial at any time before it ends, and you won't be charged.
+              {getDisclaimerText()}
             </p>
           </div>
         </div>
