@@ -441,10 +441,15 @@ const ChoosePlanPage = () => {
               style={{ background: 'none', border: 'none', cursor: 'pointer' }}
             >
               <h3
-                className="font-bold"
+                className="font-medium"
                 style={{
-                  color: '#1F2937',
-                  fontSize: '20px',
+                  color: '#032B41',
+                  fontSize: '24px',
+                  fontFamily: 'Roboto, sans-serif',
+                  fontWeight: '500',
+                  position: 'relative',
+                  marginBottom: '0',
+                  transition: '.3s',
                 }}
               >
                 How does the free 7-day trial work?
@@ -483,10 +488,15 @@ const ChoosePlanPage = () => {
               style={{ background: 'none', border: 'none', cursor: 'pointer' }}
             >
               <h3
-                className="font-bold"
+                className="font-medium"
                 style={{
-                  color: '#1F2937',
-                  fontSize: '20px',
+                  color: '#032B41',
+                  fontSize: '24px',
+                  fontFamily: 'Roboto, sans-serif',
+                  fontWeight: '500',
+                  position: 'relative',
+                  marginBottom: '0',
+                  transition: '.3s',
                 }}
               >
                 Can I switch subscriptions from monthly to yearly, or yearly to monthly?
