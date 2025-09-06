@@ -11,7 +11,7 @@ const ChoosePlanPage = () => {
   const [expandedFaq, setExpandedFaq] = useState('trial');
 
   const [showFixedCTA, setShowFixedCTA] = useState(true);
-  const inlineCtaRef = useRef(null);
+  const inlineCtaRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!inlineCtaRef.current) return;
@@ -27,7 +27,7 @@ const ChoosePlanPage = () => {
     return () => observer.disconnect();
   }, []);
 
-  const toggleFaq = (faqId) => {
+  const toggleFaq = (faqId: string | null) => {
     setExpandedFaq(expandedFaq === faqId ? null : faqId);
   };
 
@@ -39,7 +39,7 @@ const ChoosePlanPage = () => {
     if (selectedPlan === 'yearly') {
       return "Cancel your trial at any time before it ends, and you won't be charged.";
     } else {
-      return "30-day money back guarantee, no questions asked.";
+      return '30-day money back guarantee, no questions asked.';
     }
   };
 
@@ -70,7 +70,8 @@ const ChoosePlanPage = () => {
               lineHeight: '1.1',
               margin: '0px 0px 40px',
               maxWidth: '800px',
-              margin: '0 auto 40px auto',
+              marginLeft: 'auto',
+              marginRight: 'auto',
             }}
           >
             Get unlimited access to many amazing books to read
@@ -102,18 +103,8 @@ const ChoosePlanPage = () => {
         </div>
       </div>
 
-      <div
-        className="text-center"
-        style={{
-          padding: '64px 24px',
-          maxWidth: '1000px',
-          margin: '0 auto',
-        }}
-      >
-        <div
-          className="grid grid-cols-1 md:grid-cols-3 gap-12"
-          style={{ marginBottom: '64px' }}
-        >
+      <div className="text-center" style={{ padding: '64px 24px', maxWidth: '1000px', margin: '0 auto' }}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12" style={{ marginBottom: '64px' }}>
           <div className="text-center">
             <div
               className="mx-auto mb-4 flex items-center justify-center"
@@ -127,23 +118,10 @@ const ChoosePlanPage = () => {
             >
               <IoDocumentTextSharp className="w-14 h-14" style={{ color: '#032B41' }} />
             </div>
-            <h3
-              className="font-bold mb-2"
-              style={{
-                color: '#1F2937',
-                fontSize: '18px',
-              }}
-            >
+            <h3 className="font-bold mb-2" style={{ color: '#1F2937', fontSize: '18px' }}>
               Key ideas in few min
             </h3>
-            <p
-              style={{
-                color: '#6B7280',
-                fontSize: '16px',
-              }}
-            >
-              with many books to read
-            </p>
+            <p style={{ color: '#6B7280', fontSize: '16px' }}>with many books to read</p>
           </div>
 
           <div className="text-center">
@@ -159,23 +137,10 @@ const ChoosePlanPage = () => {
             >
               <RiPlantFill className="w-14 h-14" style={{ color: '#032B41' }} />
             </div>
-            <h3
-              className="font-bold mb-2"
-              style={{
-                color: '#1F2937',
-                fontSize: '18px',
-              }}
-            >
+            <h3 className="font-bold mb-2" style={{ color: '#1F2937', fontSize: '18px' }}>
               3 million people growing
             </h3>
-            <p
-              style={{
-                color: '#6B7280',
-                fontSize: '16px',
-              }}
-            >
-              with Summarist everyday
-            </p>
+            <p style={{ color: '#6B7280', fontSize: '16px' }}>with Summarist everyday</p>
           </div>
 
           <div className="text-center">
@@ -191,34 +156,15 @@ const ChoosePlanPage = () => {
             >
               <FaHandshake className="w-14 h-14" style={{ color: '#032B41' }} />
             </div>
-            <h3
-              className="font-bold mb-2"
-              style={{
-                color: '#1F2937',
-                fontSize: '18px',
-              }}
-            >
+            <h3 className="font-bold mb-2" style={{ color: '#1F2937', fontSize: '18px' }}>
               Precise recommendations
             </h3>
-            <p
-              style={{
-                color: '#6B7280',
-                fontSize: '16px',
-              }}
-            >
-              collections curated by experts
-            </p>
+            <p style={{ color: '#6B7280', fontSize: '16px' }}>collections curated by experts</p>
           </div>
         </div>
 
         <div style={{ marginBottom: '48px' }}>
-          <h2
-            className="font-bold text-center mb-8"
-            style={{
-              color: '#1F2937',
-              fontSize: '32px',
-            }}
-          >
+          <h2 className="font-bold text-center mb-8" style={{ color: '#1F2937', fontSize: '32px' }}>
             Choose the plan that fits you
           </h2>
 
@@ -285,14 +231,7 @@ const ChoosePlanPage = () => {
                     >
                       $99.99/year
                     </p>
-                    <p
-                      style={{
-                        color: '#6B757B',
-                        fontSize: '14px',
-                        fontFamily: 'Roboto, sans-serif',
-                        margin: '0px',
-                      }}
-                    >
+                    <p style={{ color: '#6B757B', fontSize: '14px', fontFamily: 'Roboto, sans-serif', margin: '0px' }}>
                       7-day free trial included
                     </p>
                   </div>
@@ -300,20 +239,10 @@ const ChoosePlanPage = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-center" style={{ margin: '24px 0' }}>
-              <div style={{ 
-                width: '80px', 
-                height: '1px', 
-                backgroundColor: '#E5E7EB', 
-                marginRight: '16px' 
-              }}></div>
-              <span style={{ color: '#9CA3AF', fontSize: '16px' }}>or</span>
-              <div style={{ 
-                width: '80px', 
-                height: '1px', 
-                backgroundColor: '#E5E7EB', 
-                marginLeft: '16px' 
-              }}></div>
+            <div className="flex items-center justify-center my-6">
+              <div className="w-20 h-px bg-gray-200 mr-4" />
+              <span className="text-gray-400 text-base">or</span>
+              <div className="w-20 h-px bg-gray-200 ml-4" />
             </div>
 
             <div
@@ -378,14 +307,7 @@ const ChoosePlanPage = () => {
                     >
                       $9.99/month
                     </p>
-                    <p
-                      style={{
-                        color: '#6B757B',
-                        fontSize: '14px',
-                        fontFamily: 'Roboto, sans-serif',
-                        margin: '0px',
-                      }}
-                    >
+                    <p style={{ color: '#6B757B', fontSize: '14px', fontFamily: 'Roboto, sans-serif', margin: '0px' }}>
                       No trial included
                     </p>
                   </div>
@@ -417,186 +339,68 @@ const ChoosePlanPage = () => {
               {getButtonText()}
             </button>
 
-            <p
-              className="text-center"
-              style={{
-                color: '#9CA3AF',
-                fontSize: '14px',
-                marginTop: '24px',
-              }}
-            >
-              {getDisclaimerText()}
-            </p>
+            <p className="text-center text-gray-400 text-sm mt-6">{getDisclaimerText()}</p>
           </div>
         </div>
 
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <div
-            className="border-b border-gray-200 py-6"
-            style={{ borderBottom: '1px solid #E5E7EB' }}
-          >
-            <button
-              className="flex justify-between items-center w-full text-left"
-              onClick={() => toggleFaq('trial')}
-              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-            >
-              <h3
-                className="font-medium"
-                style={{
-                  color: '#032B41',
-                  fontSize: '24px',
-                  fontFamily: 'Roboto, sans-serif',
-                  fontWeight: '500',
-                  position: 'relative',
-                  marginBottom: '0',
-                  transition: '.3s',
-                }}
-              >
-                How does the free 7-day trial work?
-              </h3>
-              {expandedFaq === 'trial' ? (
-                <ChevronUp className="w-6 h-6 text-gray-400" />
-              ) : (
-                <ChevronDown className="w-6 h-6 text-gray-400" />
-              )}
-            </button>
+        {/* ===================== FAQ (Tailwind) ===================== */}
+        <div className="max-w-[900px] mx-auto px-6 mt-14">
+  {[
+    {
+      id: 'trial',
+      q: 'How does the free 7-day trial work?',
+      a: `Begin your complimentary 7-day trial with a Summarist annual membership. You are under no obligation to continue your subscription, and you will only be billed when the trial period expires. With Premium access, you can learn at your own pace and as frequently as you desire, and you may terminate your subscription prior to the conclusion of the 7-day free trial.`,
+    },
+    {
+      id: 'switch',
+      q: 'Can I switch subscriptions from monthly to yearly, or yearly to monthly?',
+      a: `While an annual plan is active, it is not feasible to switch to a monthly plan. However, once the current month ends, transitioning from a monthly plan to an annual plan is an option.`,
+    },
+    {
+      id: 'premium',
+      q: "What's included in the Premium plan?",
+      a: `Premium membership provides you with the ultimate Summarist experience, including unrestricted entry to many best-selling books high-quality audio, the ability to download titles for offline reading, and the option to send your reads to your Kindle.`,
+    },
+    {
+      id: 'cancel',
+      q: 'Can I cancel during my trial or subscription?',
+      a: `You will not be charged if you cancel your trial before its conclusion. While you will not have complete access to the entire Summarist library, you can still expand your knowledge with one curated book per day.`,
+    },
+  ].map((item, idx, arr) => {
+    const isOpen = expandedFaq === item.id;
+    const isLast = idx === arr.length - 1;
+    return (
+      <div
+        key={item.id}
+        className={`group py-10 ${!isLast ? 'border-b border-gray-200' : ''}`}
+      >
+        <button
+          onClick={() => toggleFaq(item.id)}
+          className="flex w-full items-center justify-between text-left"
+          style={{ background: 'transparent' }}
+          aria-expanded={isOpen}
+        >
+          <h3 className="text-[22px] leading-snug font-medium text-[#032B41]">
+            {item.q}
+          </h3>
+          {isOpen ? (
+            <ChevronUp className="shrink-0 w-6 h-6 text-gray-400" />
+          ) : (
+            <ChevronDown className="shrink-0 w-6 h-6 text-gray-400" />
+          )}
+        </button>
 
-            {expandedFaq === 'trial' && (
-              <div
-                className="mt-4"
-                style={{
-                  color: '#4B5563',
-                  fontSize: '16px',
-                  lineHeight: '1.6',
-                }}
-              >
-                Begin your complimentary 7-day trial with a Summarist annual membership. You are under no obligation to
-                continue your subscription, and you will only be billed when the trial period expires. With Premium
-                access, you can learn at your own pace and as frequently as you desire, and you may terminate your
-                subscription prior to the conclusion of the 7-day free trial.
-              </div>
-            )}
+        {isOpen && (
+          <div className="mt-4 text-[16px] leading-relaxed text-gray-600">
+            {item.a}
           </div>
+        )}
+      </div>
+    );
+  })}
+</div>
 
-          <div
-            className="border-b border-gray-200 py-6"
-            style={{ borderBottom: '1px solid #E5E7EB' }}
-          >
-            <button
-              className="flex justify-between items-center w-full text-left"
-              onClick={() => toggleFaq('switch')}
-              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-            >
-              <h3
-                className="font-medium"
-                style={{
-                  color: '#032B41',
-                  fontSize: '24px',
-                  fontFamily: 'Roboto, sans-serif',
-                  fontWeight: '500',
-                  position: 'relative',
-                  marginBottom: '0',
-                  transition: '.3s',
-                }}
-              >
-                Can I switch subscriptions from monthly to yearly, or yearly to monthly?
-              </h3>
-              {expandedFaq === 'switch' ? (
-                <ChevronUp className="w-6 h-6 text-gray-400" />
-              ) : (
-                <ChevronDown className="w-6 h-6 text-gray-400" />
-              )}
-            </button>
-
-            {expandedFaq === 'switch' && (
-              <div
-                className="mt-4"
-                style={{
-                  color: '#4B5563',
-                  fontSize: '16px',
-                  lineHeight: '1.6',
-                }}
-              >
-                While an annual plan is active, it is not feasible to switch to a monthly plan. However, once the current month ends, transitioning from a monthly plan to an annual plan is an option.
-              </div>
-            )}
-          </div>
-
-          <div
-            className="border-b border-gray-200 py-6"
-            style={{ borderBottom: '1px solid #E5E7EB' }}
-          >
-            <button
-              className="flex justify-between items-center w-full text-left"
-              onClick={() => toggleFaq('premium')}
-              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-            >
-              <h3
-                className="font-bold"
-                style={{
-                  color: '#1F2937',
-                  fontSize: '20px',
-                }}
-              >
-                What's included in the Premium plan?
-              </h3>
-              {expandedFaq === 'premium' ? (
-                <ChevronUp className="w-6 h-6 text-gray-400" />
-              ) : (
-                <ChevronDown className="w-6 h-6 text-gray-400" />
-              )}
-            </button>
-
-            {expandedFaq === 'premium' && (
-              <div
-                className="mt-4"
-                style={{
-                  color: '#4B5563',
-                  fontSize: '16px',
-                  lineHeight: '1.6',
-                }}
-              >
-                Premium membership provides you with the ultimate Summarist experience, including unrestricted entry to many best-selling books high-quality audio, the ability to download titles for offline reading, and the option to send your reads to your Kindle.
-              </div>
-            )}
-          </div>
-
-          <div className="py-6">
-            <button
-              className="flex justify-between items-center w-full text-left"
-              onClick={() => toggleFaq('cancel')}
-              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-            >
-              <h3
-                className="font-bold"
-                style={{
-                  color: '#1F2937',
-                  fontSize: '20px',
-                }}
-              >
-                Can I cancel during my trial or subscription?
-              </h3>
-              {expandedFaq === 'cancel' ? (
-                <ChevronUp className="w-6 h-6 text-gray-400" />
-              ) : (
-                <ChevronDown className="w-6 h-6 text-gray-400" />
-              )}
-            </button>
-
-            {expandedFaq === 'cancel' && (
-              <div
-                className="mt-4"
-                style={{
-                  color: '#4B5563',
-                  fontSize: '16px',
-                  lineHeight: '1.6',
-                }}
-              >
-                You will not be charged if you cancel your trial before its conclusion. While you will not have complete access to the entire Summarist library, you can still expand your knowledge with one curated book per day.
-              </div>
-            )}
-          </div>
-        </div>
+        {/* =================== /FAQ (Tailwind end) ================== */}
       </div>
 
       <footer
@@ -607,10 +411,7 @@ const ChoosePlanPage = () => {
           padding: '48px 24px',
         }}
       >
-        <div
-          className="grid grid-cols-2 md:grid-cols-4 gap-8"
-          style={{ maxWidth: '1200px', margin: '0 auto' }}
-        >
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8" style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div>
             <h4 className="font-bold mb-4" style={{ color: '#1F2937', fontSize: '16px' }}>
               Actions
@@ -661,7 +462,7 @@ const ChoosePlanPage = () => {
               </li>
               <li>
                 <a href="#" style={{ color: '#6B7280', fontSize: '14px' }}>
-                  Authors & Publishers
+                  Authors &amp; Publishers
                 </a>
               </li>
             </ul>
@@ -724,21 +525,13 @@ const ChoosePlanPage = () => {
           </div>
         </div>
 
-        <div
-          className="text-center mt-8 pt-8 border-t"
-          style={{ borderTop: '1px solid #E5E7EB' }}
-        >
+        <div className="text-center mt-8 pt-8 border-t" style={{ borderTop: '1px solid #E5E7EB' }}>
           <p style={{ color: '#6B7280', fontSize: '14px' }}>Copyright © 2023 Summarist.</p>
         </div>
       </footer>
 
       {showFixedCTA && (
-        <div
-          className="fixed bottom-0 left-0 right-0 bg-white z-50"
-          style={{
-            padding: '16px 24px'
-          }}
-        >
+        <div className="fixed bottom-0 left-0 right-0 bg-white z-50" style={{ padding: '16px 24px' }}>
           <div className="flex flex-col items-center justify-center">
             <button
               className="font-medium rounded-md transition-colors"
@@ -761,15 +554,7 @@ const ChoosePlanPage = () => {
               {getButtonText()}
             </button>
 
-            <p
-              className="text-center"
-              style={{
-                color: '#6b757b',
-                fontSize: '12px',
-                fontFamily: 'Roboto, sans-serif',
-                marginTop: '8px',
-              }}
-            >
+            <p className="text-center" style={{ color: '#6b757b', fontSize: '12px', fontFamily: 'Roboto, sans-serif', marginTop: '8px' }}>
               {getDisclaimerText()}
             </p>
           </div>
