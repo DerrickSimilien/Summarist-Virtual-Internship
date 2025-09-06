@@ -7,22 +7,17 @@ import { RiPlantFill } from 'react-icons/ri';
 import { FaHandshake } from 'react-icons/fa6';
 
 const ChoosePlanPage = () => {
-  const [selectedPlan, setSelectedPlan] = useState('yearly');
-  const [expandedFaq, setExpandedFaq] = useState('trial');
+  const [selectedPlan, setSelectedPlan] = useState<'yearly' | 'monthly'>('yearly');
+  const [expandedFaq, setExpandedFaq] = useState<string | null>('trial');
 
   const [showFixedCTA, setShowFixedCTA] = useState(true);
   const inlineCtaRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!inlineCtaRef.current) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setShowFixedCTA(!entry.isIntersecting);
-      },
-      { threshold: 0.5 }
-    );
-
+    const observer = new IntersectionObserver(([entry]) => {
+      setShowFixedCTA(!entry.isIntersecting);
+    }, { threshold: 0.5 });
     observer.observe(inlineCtaRef.current);
     return () => observer.disconnect();
   }, []);
@@ -31,17 +26,13 @@ const ChoosePlanPage = () => {
     setExpandedFaq(expandedFaq === faqId ? null : faqId);
   };
 
-  const getButtonText = () => {
-    return selectedPlan === 'yearly' ? 'Start your free 7-day trial' : 'Start your first month';
-  };
+  const getButtonText = () =>
+    selectedPlan === 'yearly' ? 'Start your free 7-day trial' : 'Start your first month';
 
-  const getDisclaimerText = () => {
-    if (selectedPlan === 'yearly') {
-      return "Cancel your trial at any time before it ends, and you won't be charged.";
-    } else {
-      return '30-day money back guarantee, no questions asked.';
-    }
-  };
+  const getDisclaimerText = () =>
+    selectedPlan === 'yearly'
+      ? "Cancel your trial at any time before it ends, and you won't be charged."
+      : '30-day money back guarantee, no questions asked.';
 
   return (
     <div
@@ -343,64 +334,61 @@ const ChoosePlanPage = () => {
           </div>
         </div>
 
-        {/* ===================== FAQ (Tailwind) ===================== */}
         <div className="max-w-[900px] mx-auto px-6 mt-14">
-  {[
-    {
-      id: 'trial',
-      q: 'How does the free 7-day trial work?',
-      a: `Begin your complimentary 7-day trial with a Summarist annual membership. You are under no obligation to continue your subscription, and you will only be billed when the trial period expires. With Premium access, you can learn at your own pace and as frequently as you desire, and you may terminate your subscription prior to the conclusion of the 7-day free trial.`,
-    },
-    {
-      id: 'switch',
-      q: 'Can I switch subscriptions from monthly to yearly, or yearly to monthly?',
-      a: `While an annual plan is active, it is not feasible to switch to a monthly plan. However, once the current month ends, transitioning from a monthly plan to an annual plan is an option.`,
-    },
-    {
-      id: 'premium',
-      q: "What's included in the Premium plan?",
-      a: `Premium membership provides you with the ultimate Summarist experience, including unrestricted entry to many best-selling books high-quality audio, the ability to download titles for offline reading, and the option to send your reads to your Kindle.`,
-    },
-    {
-      id: 'cancel',
-      q: 'Can I cancel during my trial or subscription?',
-      a: `You will not be charged if you cancel your trial before its conclusion. While you will not have complete access to the entire Summarist library, you can still expand your knowledge with one curated book per day.`,
-    },
-  ].map((item, idx, arr) => {
-    const isOpen = expandedFaq === item.id;
-    const isLast = idx === arr.length - 1;
-    return (
-      <div
-        key={item.id}
-        className={`group py-10 ${!isLast ? 'border-b border-gray-200' : ''}`}
-      >
-        <button
-          onClick={() => toggleFaq(item.id)}
-          className="flex w-full items-center justify-between text-left"
-          style={{ background: 'transparent' }}
-          aria-expanded={isOpen}
-        >
-          <h3 className="text-[22px] leading-snug font-medium text-[#032B41]">
-            {item.q}
-          </h3>
-          {isOpen ? (
-            <ChevronUp className="shrink-0 w-6 h-6 text-gray-400" />
-          ) : (
-            <ChevronDown className="shrink-0 w-6 h-6 text-gray-400" />
-          )}
-        </button>
+          {[
+            {
+              id: 'trial',
+              q: 'How does the free 7-day trial work?',
+              a: `Begin your complimentary 7-day trial with a Summarist annual membership. You are under no obligation to continue your subscription, and you will only be billed when the trial period expires. With Premium access, you can learn at your own pace and as frequently as you desire, and you may terminate your subscription prior to the conclusion of the 7-day free trial.`,
+            },
+            {
+              id: 'switch',
+              q: 'Can I switch subscriptions from monthly to yearly, or yearly to monthly?',
+              a: `While an annual plan is active, it is not feasible to switch to a monthly plan. However, once the current month ends, transitioning from a monthly plan to an annual plan is an option.`,
+            },
+            {
+              id: 'premium',
+              q: "What's included in the Premium plan?",
+              a: `Premium membership provides you with the ultimate Summarist experience, including unrestricted entry to many best-selling books high-quality audio, the ability to download titles for offline reading, and the option to send your reads to your Kindle.`,
+            },
+            {
+              id: 'cancel',
+              q: 'Can I cancel during my trial or subscription?',
+              a: `You will not be charged if you cancel your trial before its conclusion. While you will not have complete access to the entire Summarist library, you can still expand your knowledge with one curated book per day.`,
+            },
+          ].map((item, idx, arr) => {
+            const isOpen = expandedFaq === item.id;
+            const isLast = idx === arr.length - 1;
+            return (
+              <div
+                key={item.id}
+                className={`${!isLast ? 'border-b border-gray-200' : ''} px-2 sm:px-4`}
+              >
+                <button
+                  onClick={() => toggleFaq(item.id)}
+                  className="flex w-full items-center justify-between text-left py-6"
+                  style={{ background: 'transparent' }}
+                  aria-expanded={isOpen}
+                >
+                  <h3 className="text-[22px] leading-snug font-medium text-[#032B41] m-0">
+                    {item.q}
+                  </h3>
+                  {isOpen ? (
+                    <ChevronUp className="shrink-0 w-6 h-6 text-gray-400" />
+                  ) : (
+                    <ChevronDown className="shrink-0 w-6 h-6 text-gray-400" />
+                  )}
+                </button>
 
-        {isOpen && (
-          <div className="mt-4 text-[16px] leading-relaxed text-gray-600">
-            {item.a}
-          </div>
-        )}
-      </div>
-    );
-  })}
-</div>
-
-        {/* =================== /FAQ (Tailwind end) ================== */}
+                {isOpen && (
+                  <div className="text-[16px] leading-relaxed text-gray-600 pb-6">
+                    {item.a}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <footer
@@ -554,7 +542,10 @@ const ChoosePlanPage = () => {
               {getButtonText()}
             </button>
 
-            <p className="text-center" style={{ color: '#6b757b', fontSize: '12px', fontFamily: 'Roboto, sans-serif', marginTop: '8px' }}>
+            <p
+              className="text-center"
+              style={{ color: '#6b757b', fontSize: '12px', fontFamily: 'Roboto, sans-serif', marginTop: '8px' }}
+            >
               {getDisclaimerText()}
             </p>
           </div>
