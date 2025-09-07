@@ -1,25 +1,43 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { ChevronUp, ChevronDown } from 'lucide-react';
-import { IoDocumentTextSharp } from 'react-icons/io5';
-import { RiPlantFill } from 'react-icons/ri';
-import { FaHandshake } from 'react-icons/fa6';
+import { ChevronUp, ChevronDown, FileText, Leaf, Handshake } from 'lucide-react';
 
 const ChoosePlanPage = () => {
   const [selectedPlan, setSelectedPlan] = useState<'yearly' | 'monthly'>('yearly');
   const [expandedFaq, setExpandedFaq] = useState<string | null>('trial');
 
-  const [showFixedCTA, setShowFixedCTA] = useState(true);
+  const [showFixedCTA, setShowFixedCTA] = useState(false);
   const inlineCtaRef = useRef<HTMLDivElement | null>(null);
+  const footerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    if (!inlineCtaRef.current) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      setShowFixedCTA(!entry.isIntersecting);
+    if (!inlineCtaRef.current || !footerRef.current) return;
+    
+    let inlineCtaVisible = true;
+    let footerVisible = false;
+    
+    const updateFixedCTA = () => {
+      setShowFixedCTA(!inlineCtaVisible && !footerVisible);
+    };
+    
+    const inlineCtaObserver = new IntersectionObserver(([entry]) => {
+      inlineCtaVisible = entry.isIntersecting;
+      updateFixedCTA();
     }, { threshold: 0.5 });
-    observer.observe(inlineCtaRef.current);
-    return () => observer.disconnect();
+    
+    const footerObserver = new IntersectionObserver(([entry]) => {
+      footerVisible = entry.isIntersecting;
+      updateFixedCTA();
+    }, { threshold: 0.1 });
+    
+    inlineCtaObserver.observe(inlineCtaRef.current);
+    footerObserver.observe(footerRef.current);
+    
+    return () => {
+      inlineCtaObserver.disconnect();
+      footerObserver.disconnect();
+    };
   }, []);
 
   const toggleFaq = (faqId: string | null) => {
@@ -107,7 +125,7 @@ const ChoosePlanPage = () => {
                 margin: '0 auto 16px auto',
               }}
             >
-              <IoDocumentTextSharp className="w-14 h-14" style={{ color: '#032B41' }} />
+              <FileText className="w-14 h-14" style={{ color: '#032B41' }} />
             </div>
             <h3 className="font-bold mb-2" style={{ color: '#1F2937', fontSize: '18px' }}>
               Key ideas in few min
@@ -126,7 +144,7 @@ const ChoosePlanPage = () => {
                 margin: '0 auto 16px auto',
               }}
             >
-              <RiPlantFill className="w-14 h-14" style={{ color: '#032B41' }} />
+              <Leaf className="w-14 h-14" style={{ color: '#032B41' }} />
             </div>
             <h3 className="font-bold mb-2" style={{ color: '#1F2937', fontSize: '18px' }}>
               3 million people growing
@@ -145,7 +163,7 @@ const ChoosePlanPage = () => {
                 margin: '0 auto 16px auto',
               }}
             >
-              <FaHandshake className="w-14 h-14" style={{ color: '#032B41' }} />
+              <Handshake className="w-14 h-14" style={{ color: '#032B41' }} />
             </div>
             <h3 className="font-bold mb-2" style={{ color: '#1F2937', fontSize: '18px' }}>
               Precise recommendations
@@ -382,7 +400,7 @@ const ChoosePlanPage = () => {
                 </button>
 
                 {isOpen && (
-                  <div className="text-[16px] leading-relaxed text-gray-600" style={{ paddingTop: '16px' }}>
+                  <div className="text-[16px] leading-relaxed text-gray-600 text-left" style={{ paddingTop: '16px', textAlign: 'left', lineHeight: '1.6' }}>
                     {item.a}
                   </div>
                 )}
@@ -393,6 +411,7 @@ const ChoosePlanPage = () => {
       </div>
 
       <footer
+        ref={footerRef}
         style={{
           backgroundColor: '#EAF6F2',
           padding: '48px 24px',
@@ -513,7 +532,7 @@ const ChoosePlanPage = () => {
         </div>
 
         <div className="text-center mt-8 pt-8 border-t" style={{ borderTop: '1px solid #E5E7EB' }}>
-          <p style={{ color: '#034B41', fontSize: '16px', fontFamily: 'Roboto, sans-serif' }}>
+          <p style={{ color: '#032B41', fontSize: '16px', fontFamily: 'Roboto, sans-serif', fontWeight: '500' }}>
             Copyright © 2023 Summarist.
           </p>
         </div>
