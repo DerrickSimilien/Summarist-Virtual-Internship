@@ -8,6 +8,7 @@ const ChoosePlanPage = () => {
   const [expandedFaq, setExpandedFaq] = useState<string | null>('trial');
 
   const [showFixedCTA, setShowFixedCTA] = useState(false);
+  const [isAtTop, setIsAtTop] = useState(true);
   const inlineCtaRef = useRef<HTMLDivElement | null>(null);
   const footerRef = useRef<HTMLElement | null>(null);
 
@@ -21,6 +22,13 @@ const ChoosePlanPage = () => {
       setShowFixedCTA(!inlineCtaVisible && !footerVisible);
     };
     
+    const handleScroll = () => {
+      setIsAtTop(window.scrollY <= 5);
+    };
+    
+    // Check initial scroll position immediately
+    handleScroll();
+    
     const inlineCtaObserver = new IntersectionObserver(([entry]) => {
       inlineCtaVisible = entry.isIntersecting;
       updateFixedCTA();
@@ -31,12 +39,16 @@ const ChoosePlanPage = () => {
       updateFixedCTA();
     }, { threshold: 0.1 });
     
+    // Add scroll listener
+    window.addEventListener('scroll', handleScroll);
+    
     inlineCtaObserver.observe(inlineCtaRef.current);
     footerObserver.observe(footerRef.current);
     
     return () => {
       inlineCtaObserver.disconnect();
       footerObserver.disconnect();
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
@@ -348,7 +360,9 @@ const ChoosePlanPage = () => {
               {getButtonText()}
             </button>
 
-            <p className="text-center text-gray-400 text-sm mt-6">{getDisclaimerText()}</p>
+            {!isAtTop && (
+              <p className="text-center text-gray-400 text-sm mt-6">{getDisclaimerText()}</p>
+            )}
           </div>
         </div>
 
@@ -555,7 +569,7 @@ const ChoosePlanPage = () => {
           </div>
         </div>
 
-        <div className="text-center mt-8 pt-8">
+        <div className="text-center" style={{ marginTop: '65px', paddingTop: '32px' }}>
           <p style={{ 
             color: '#032B41', 
             fontSize: '16px', 
