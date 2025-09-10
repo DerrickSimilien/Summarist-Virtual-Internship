@@ -574,12 +574,12 @@ button:disabled {
   text-align: center;
 }
 
-.footer__copyright {
-  color: #6b757b; /* Changed from #032b41 to a lighter gray */
-  font-weight: 300; /* Changed from 500 to 300 for lighter weight */
+/* .footer__copyright {
+  color: #6b757b; 
+  font-weight: 300; 
   font-size: 14px;
   text-align: center;
-}
+} */
 
 /* Add these styles to your global CSS file to fix the layout issues */
 

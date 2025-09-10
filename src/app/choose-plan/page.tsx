@@ -419,7 +419,13 @@ const ChoosePlanPage = () => {
       >
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8" style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div>
-            <h4 style={{ color: '#032B41', fontSize: '18px', fontFamily: 'Roboto, sans-serif', margin: '0px 0px 16px' }}>
+            <h4 style={{ 
+              color: '#032B41', 
+              fontSize: '18px', 
+              fontFamily: 'Roboto, sans-serif', 
+              fontWeight: '600',
+              margin: '0px 0px 16px' 
+            }}>
               Actions
             </h4>
             <ul className="space-y-2">
@@ -447,7 +453,13 @@ const ChoosePlanPage = () => {
           </div>
 
           <div>
-            <h4 style={{ color: '#032B41', fontSize: '18px', fontFamily: 'Roboto, sans-serif', margin: '0px 0px 16px' }}>
+            <h4 style={{ 
+              color: '#032B41', 
+              fontSize: '18px', 
+              fontFamily: 'Roboto, sans-serif', 
+              fontWeight: '600',
+              margin: '0px 0px 16px' 
+            }}>
               Useful Links
             </h4>
             <ul className="space-y-2">
@@ -475,7 +487,13 @@ const ChoosePlanPage = () => {
           </div>
 
           <div>
-            <h4 style={{ color: '#032B41', fontSize: '18px', fontFamily: 'Roboto, sans-serif', margin: '0px 0px 16px' }}>
+            <h4 style={{ 
+              color: '#032B41', 
+              fontSize: '18px', 
+              fontFamily: 'Roboto, sans-serif', 
+              fontWeight: '600',
+              margin: '0px 0px 16px' 
+            }}>
               Company
             </h4>
             <ul className="space-y-2">
@@ -503,7 +521,13 @@ const ChoosePlanPage = () => {
           </div>
 
           <div>
-            <h4 style={{ color: '#032B41', fontSize: '18px', fontFamily: 'Roboto, sans-serif', margin: '0px 0px 16px' }}>
+            <h4 style={{ 
+              color: '#032B41', 
+              fontSize: '18px', 
+              fontFamily: 'Roboto, sans-serif', 
+              fontWeight: '600',
+              margin: '0px 0px 16px' 
+            }}>
               Other
             </h4>
             <ul className="space-y-2">
@@ -531,8 +555,14 @@ const ChoosePlanPage = () => {
           </div>
         </div>
 
-        <div className="text-center mt-8 pt-8 border-t" style={{ borderTop: '1px solid #E5E7EB' }}>
-          <p style={{ color: '#032B41', fontSize: '16px', fontFamily: 'Roboto, sans-serif', fontWeight: '500' }}>
+        <div className="text-center mt-8 pt-8">
+          <p style={{ 
+            color: '#032B41', 
+            fontSize: '16px', 
+            fontFamily: 'Roboto, sans-serif', 
+            fontWeight: '500',
+            margin: '0'
+          }}>
             Copyright © 2023 Summarist.
           </p>
         </div>
