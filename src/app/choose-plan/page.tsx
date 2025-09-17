@@ -1,16 +1,41 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { ChevronUp, ChevronDown, FileText, Leaf, Handshake } from 'lucide-react';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { auth } from '../../lib/firebase';
+import LoginModal from '../components/LoginModal';
 
 const ChoosePlanPage = () => {
+  const router = useRouter();
   const [selectedPlan, setSelectedPlan] = useState<'yearly' | 'monthly'>('yearly');
   const [expandedFaq, setExpandedFaq] = useState<string | null>('trial');
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   const [showFixedCTA, setShowFixedCTA] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
   const inlineCtaRef = useRef<HTMLDivElement | null>(null);
   const footerRef = useRef<HTMLElement | null>(null);
+
+  // Firebase Auth State Listener
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setAuthLoading(false);
+      
+      // If user just logged in and came back to this page, auto-redirect to checkout
+      if (currentUser && showLoginModal) {
+        setShowLoginModal(false);
+        // Optional: Auto-redirect to checkout after login
+        // router.push(`/checkout?plan=${selectedPlan}`);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [showLoginModal, selectedPlan, router]);
 
   useEffect(() => {
     if (!inlineCtaRef.current || !footerRef.current) return;
@@ -63,6 +88,26 @@ const ChoosePlanPage = () => {
     selectedPlan === 'yearly'
       ? "Cancel your trial at any time before it ends, and you won't be charged."
       : '30-day money back guarantee, no questions asked.';
+
+  const handleButtonClick = () => {
+    // Check if user is authenticated
+    if (user) {
+      // User is logged in, proceed to checkout
+      router.push(`/checkout?plan=${selectedPlan}`);
+    } else {
+      // User is not logged in, show login modal
+      setShowLoginModal(true);
+    }
+  };
+
+  const handleLoginSuccess = () => {
+    // This function will be called after successful login
+    // We want to prevent the default redirect to /for-you
+    // and keep the user on this page instead
+    setShowLoginModal(false);
+    // The user state will be updated automatically by the auth listener
+    // User can then click the button again to proceed to checkout
+  };
 
   return (
     <div
@@ -350,6 +395,7 @@ const ChoosePlanPage = () => {
                 border: 'none',
                 cursor: 'pointer',
               }}
+              onClick={handleButtonClick}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = '#26c770';
               }}
@@ -596,6 +642,7 @@ const ChoosePlanPage = () => {
                 border: 'none',
                 cursor: 'pointer',
               }}
+              onClick={handleButtonClick}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = '#26c770';
               }}
@@ -614,6 +661,16 @@ const ChoosePlanPage = () => {
             </p>
           </div>
         </div>
+      )}
+
+      {/* Login Modal */}
+      {showLoginModal && (
+        <LoginModal
+          isOpen={showLoginModal}
+          onClose={() => setShowLoginModal(false)}
+          onLogin={handleLoginSuccess}
+          redirectPath="/choose-plan"
+        />
       )}
     </div>
   );

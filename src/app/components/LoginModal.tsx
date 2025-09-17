@@ -17,9 +17,10 @@ interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
   onLogin?: (user: User) => void;
+  redirectPath?: string; // Added this line
 }
 
-export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
+export default function LoginModal({ isOpen, onClose, onLogin, redirectPath }: LoginModalProps) {
   const router = useRouter();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
@@ -82,8 +83,8 @@ export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps
       // Close modal
       onClose();
       
-      // Redirect to for-you page
-      router.push("/for-you");
+      // Redirect to specified path or default to for-you page
+      router.push(redirectPath || "/for-you");
       
     } catch (error: any) {
       console.error("Error signing in:", error);
@@ -132,8 +133,8 @@ export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps
       // Close modal
       onClose();
       
-      // Redirect to for-you page
-      router.push("/for-you");
+      // Redirect to specified path or default to for-you page
+      router.push(redirectPath || "/for-you");
       
     } catch (error: any) {
       console.error("Error with guest login:", error);
@@ -164,8 +165,8 @@ export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps
       // Close modal
       onClose();
       
-      // Redirect to for-you page
-      router.push("/for-you");
+      // Redirect to specified path or default to for-you page
+      router.push(redirectPath || "/for-you");
       
     } catch (error: any) {
       console.error("Error with Google login:", error);
