@@ -54,18 +54,20 @@ const CheckoutPage = () => {
     <div style={{ 
       minHeight: '100vh', 
       backgroundColor: '#f7f9fa',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      display: 'flex'
     }}>
-      {/* Header */}
-      <div style={{
+      {/* Left Side - White background with subscription details */}
+      <div style={{ 
+        flex: '1',
         backgroundColor: 'white',
-        borderBottom: '1px solid #e3e8ee',
-        padding: '16px 24px',
+        padding: '40px 48px',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between'
+        flexDirection: 'column',
+        minHeight: '100vh'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {/* Header with back arrow, Summarist, and TEST MODE */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '40px' }}>
           <button
             onClick={() => router.back()}
             style={{
@@ -82,16 +84,16 @@ const CheckoutPage = () => {
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ 
-              fontSize: '18px', 
+              fontSize: '14px', 
               fontWeight: '600', 
-              color: '#1f2937' 
+              color: '#1A1A1AE6' 
             }}>
               Summarist
             </span>
             <span style={{
               backgroundColor: '#fbbf24',
               color: '#92400e',
-              fontSize: '12px',
+              fontSize: '14px',
               fontWeight: '600',
               padding: '2px 8px',
               borderRadius: '12px',
@@ -101,25 +103,15 @@ const CheckoutPage = () => {
             </span>
           </div>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div style={{
-        maxWidth: '1000px',
-        margin: '0 auto',
-        padding: '32px 24px',
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '48px',
-        minHeight: 'calc(100vh - 80px)'
-      }}>
-        {/* Left Side - Subscription Details */}
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+        {/* Subscription Details */}
+        <div>
           <h1 style={{
-            fontSize: '24px',
+            fontSize: '16px',
             fontWeight: '600',
-            color: '#1f2937',
-            margin: '0 0 8px 0'
+            color: '#1A1A1A99',
+            margin: '0 0 8px 0',
+            lineHeight: '1.2'
           }}>
             {currentPlan.title}
           </h1>
@@ -140,302 +132,320 @@ const CheckoutPage = () => {
             </span>
           </div>
         </div>
+      </div>
 
-        {/* Right Side - Payment Form */}
-        <div style={{ backgroundColor: 'white', borderRadius: '8px', padding: '32px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)' }}>
-          <h2 style={{
-            fontSize: '18px',
-            fontWeight: '600',
-            color: '#1f2937',
-            margin: '0 0 24px 0'
-          }}>
-            Contact information
-          </h2>
+      {/* Right Side - Payment Form with shadow separation */}
+      <div style={{ 
+        flex: '1',
+        backgroundColor: '#f7f9fa',
+        padding: '40px 48px',
+        borderLeft: '1px solid #e5e7eb',
+        boxShadow: '-4px 0 6px -1px rgba(0, 0, 0, 0.1)',
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center'
+      }}>
+        <div style={{ width: '100%', maxWidth: '400px' }}>
+        <h2 style={{
+          fontSize: '18px',
+          fontWeight: '600',
+          color: '#1f2937',
+          margin: '0 0 24px 0'
+        }}>
+          Contact information
+        </h2>
 
-          <form onSubmit={handleSubmit}>
-            {/* Email */}
-            <div style={{ marginBottom: '24px' }}>
-              <label style={{
-                display: 'block',
-                fontSize: '14px',
-                fontWeight: '500',
-                color: '#374151',
-                marginBottom: '8px'
-              }}>
-                Email
-              </label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '6px',
-                  fontSize: '16px',
-                  backgroundColor: '#f9fafb'
-                }}
-              />
-            </div>
-
-            <h3 style={{
-              fontSize: '18px',
-              fontWeight: '600',
-              color: '#1f2937',
-              margin: '32px 0 16px 0'
-            }}>
-              Payment method
-            </h3>
-
-            <p style={{
+        <form onSubmit={handleSubmit}>
+          {/* Email */}
+          <div style={{ marginBottom: '24px' }}>
+            <label style={{
+              display: 'block',
               fontSize: '14px',
               fontWeight: '500',
               color: '#374151',
-              margin: '0 0 8px 0'
+              marginBottom: '8px'
             }}>
-              Card information
-            </p>
+              Email
+            </label>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => handleInputChange('email', e.target.value)}
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                border: '1px solid #d1d5db',
+                borderRadius: '6px',
+                fontSize: '16px',
+                backgroundColor: '#f9fafb',
+                boxSizing: 'border-box'
+              }}
+            />
+          </div>
 
-            {/* Card Number */}
+          <h3 style={{
+            fontSize: '18px',
+            fontWeight: '600',
+            color: '#1f2937',
+            margin: '32px 0 16px 0'
+          }}>
+            Payment method
+          </h3>
+
+          <p style={{
+            fontSize: '14px',
+            fontWeight: '500',
+            color: '#374151',
+            margin: '0 0 8px 0'
+          }}>
+            Card information
+          </p>
+
+          {/* Card Number */}
+          <div style={{
+            position: 'relative',
+            marginBottom: '1px'
+          }}>
+            <input
+              type="text"
+              placeholder="1234 1234 1234 1234"
+              value={formData.cardNumber}
+              onChange={(e) => handleInputChange('cardNumber', e.target.value)}
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                paddingRight: '120px',
+                border: '1px solid #d1d5db',
+                borderBottomLeftRadius: '0',
+                borderBottomRightRadius: '0',
+                borderTopLeftRadius: '6px',
+                borderTopRightRadius: '6px',
+                fontSize: '16px',
+                borderBottom: 'none',
+                boxSizing: 'border-box'
+              }}
+            />
+            {/* Card Icons */}
             <div style={{
-              position: 'relative',
-              marginBottom: '1px'
+              position: 'absolute',
+              right: '16px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              display: 'flex',
+              gap: '4px'
             }}>
-              <input
-                type="text"
-                placeholder="1234 1234 1234 1234"
-                value={formData.cardNumber}
-                onChange={(e) => handleInputChange('cardNumber', e.target.value)}
+              <div style={{ width: '28px', height: '18px', backgroundColor: '#1a73e8', borderRadius: '2px', fontSize: '8px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>VISA</div>
+              <div style={{ width: '28px', height: '18px', backgroundColor: '#eb001b', borderRadius: '2px' }}></div>
+              <div style={{ width: '28px', height: '18px', backgroundColor: '#0066cc', borderRadius: '2px' }}></div>
+              <div style={{ width: '28px', height: '18px', backgroundColor: '#00a653', borderRadius: '2px' }}></div>
+            </div>
+          </div>
+
+          {/* Expiry and CVC */}
+          <div style={{ display: 'flex' }}>
+            <input
+              type="text"
+              placeholder="MM / YY"
+              value={formData.expiryDate}
+              onChange={(e) => handleInputChange('expiryDate', e.target.value)}
+              style={{
+                flex: '1',
+                padding: '12px 16px',
+                border: '1px solid #d1d5db',
+                borderBottomLeftRadius: '6px',
+                borderTopRightRadius: '0',
+                borderBottomRightRadius: '0',
+                borderTopLeftRadius: '0',
+                borderRight: 'none',
+                fontSize: '16px',
+                boxSizing: 'border-box'
+              }}
+            />
+            <input
+              type="text"
+              placeholder="CVC"
+              value={formData.cvc}
+              onChange={(e) => handleInputChange('cvc', e.target.value)}
+              style={{
+                flex: '1',
+                padding: '12px 16px',
+                border: '1px solid #d1d5db',
+                borderBottomRightRadius: '6px',
+                borderTopLeftRadius: '0',
+                borderBottomLeftRadius: '0',
+                borderTopRightRadius: '0',
+                fontSize: '16px',
+                boxSizing: 'border-box'
+              }}
+            />
+            <div style={{
+              width: '32px',
+              height: '48px',
+              border: '1px solid #d1d5db',
+              borderLeft: 'none',
+              borderBottomRightRadius: '6px',
+              borderTopRightRadius: '0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#f9fafb'
+            }}>
+              <div style={{ fontSize: '10px', color: '#6b7280' }}>🔒</div>
+            </div>
+          </div>
+
+          {/* Cardholder Name */}
+          <div style={{ marginTop: '24px', marginBottom: '24px' }}>
+            <label style={{
+              display: 'block',
+              fontSize: '14px',
+              fontWeight: '500',
+              color: '#374151',
+              marginBottom: '8px'
+            }}>
+              Cardholder name
+            </label>
+            <input
+              type="text"
+              placeholder="Full name on card"
+              value={formData.cardholderName}
+              onChange={(e) => handleInputChange('cardholderName', e.target.value)}
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                border: '1px solid #d1d5db',
+                borderRadius: '6px',
+                fontSize: '16px',
+                boxSizing: 'border-box'
+              }}
+            />
+          </div>
+
+          {/* Billing Address */}
+          <div style={{ marginBottom: '24px' }}>
+            <label style={{
+              display: 'block',
+              fontSize: '14px',
+              fontWeight: '500',
+              color: '#374151',
+              marginBottom: '8px'
+            }}>
+              Billing address
+            </label>
+            
+            {/* Country Dropdown */}
+            <div style={{ position: 'relative', marginBottom: '1px' }}>
+              <select
+                value={formData.country}
+                onChange={(e) => handleInputChange('country', e.target.value)}
                 style={{
                   width: '100%',
                   padding: '12px 16px',
-                  paddingRight: '120px',
                   border: '1px solid #d1d5db',
-                  borderBottomLeftRadius: '0',
-                  borderBottomRightRadius: '0',
                   borderTopLeftRadius: '6px',
                   borderTopRightRadius: '6px',
+                  borderBottomLeftRadius: '0',
+                  borderBottomRightRadius: '0',
                   fontSize: '16px',
-                  borderBottom: 'none'
+                  backgroundColor: 'white',
+                  appearance: 'none',
+                  paddingRight: '40px',
+                  borderBottom: 'none',
+                  boxSizing: 'border-box'
                 }}
-              />
-              {/* Card Icons */}
-              <div style={{
+              >
+                <option value="United States">United States</option>
+                <option value="Canada">Canada</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="Australia">Australia</option>
+                <option value="Germany">Germany</option>
+                <option value="France">France</option>
+                <option value="Spain">Spain</option>
+                <option value="Italy">Italy</option>
+                <option value="Japan">Japan</option>
+                <option value="Brazil">Brazil</option>
+              </select>
+              <ChevronDown style={{
                 position: 'absolute',
                 right: '16px',
                 top: '50%',
                 transform: 'translateY(-50%)',
-                display: 'flex',
-                gap: '8px'
-              }}>
-                <div style={{ width: '24px', height: '16px', backgroundColor: '#1a73e8', borderRadius: '2px', fontSize: '8px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>VISA</div>
-                <div style={{ width: '24px', height: '16px', backgroundColor: '#eb001b', borderRadius: '2px' }}></div>
-                <div style={{ width: '24px', height: '16px', backgroundColor: '#0066cc', borderRadius: '2px' }}></div>
-                <div style={{ width: '24px', height: '16px', backgroundColor: '#00a653', borderRadius: '2px' }}></div>
-              </div>
+                width: '16px',
+                height: '16px',
+                color: '#6b7280'
+              }} />
             </div>
 
-            {/* Expiry and CVC */}
-            <div style={{ display: 'flex' }}>
-              <input
-                type="text"
-                placeholder="MM / YY"
-                value={formData.expiryDate}
-                onChange={(e) => handleInputChange('expiryDate', e.target.value)}
-                style={{
-                  flex: '1',
-                  padding: '12px 16px',
-                  border: '1px solid #d1d5db',
-                  borderBottomLeftRadius: '6px',
-                  borderTopRightRadius: '0',
-                  borderBottomRightRadius: '0',
-                  borderTopLeftRadius: '0',
-                  borderRight: 'none',
-                  fontSize: '16px'
-                }}
-              />
-              <input
-                type="text"
-                placeholder="CVC"
-                value={formData.cvc}
-                onChange={(e) => handleInputChange('cvc', e.target.value)}
-                style={{
-                  flex: '1',
-                  padding: '12px 16px',
-                  border: '1px solid #d1d5db',
-                  borderBottomRightRadius: '6px',
-                  borderTopLeftRadius: '0',
-                  borderBottomLeftRadius: '0',
-                  borderTopRightRadius: '0',
-                  fontSize: '16px'
-                }}
-              />
-              <div style={{
-                width: '32px',
-                height: '48px',
-                border: '1px solid #d1d5db',
-                borderLeft: 'none',
-                borderBottomRightRadius: '6px',
-                borderTopRightRadius: '0',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: '#f9fafb'
-              }}>
-                <div style={{ fontSize: '10px', color: '#6b7280' }}>🔒</div>
-              </div>
-            </div>
-
-            {/* Cardholder Name */}
-            <div style={{ marginTop: '24px', marginBottom: '24px' }}>
-              <label style={{
-                display: 'block',
-                fontSize: '14px',
-                fontWeight: '500',
-                color: '#374151',
-                marginBottom: '8px'
-              }}>
-                Cardholder name
-              </label>
-              <input
-                type="text"
-                placeholder="Full name on card"
-                value={formData.cardholderName}
-                onChange={(e) => handleInputChange('cardholderName', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '6px',
-                  fontSize: '16px'
-                }}
-              />
-            </div>
-
-            {/* Billing Address */}
-            <div style={{ marginBottom: '24px' }}>
-              <label style={{
-                display: 'block',
-                fontSize: '14px',
-                fontWeight: '500',
-                color: '#374151',
-                marginBottom: '8px'
-              }}>
-                Billing address
-              </label>
-              
-              {/* Country Dropdown */}
-              <div style={{ position: 'relative', marginBottom: '1px' }}>
-                <select
-                  value={formData.country}
-                  onChange={(e) => handleInputChange('country', e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '12px 16px',
-                    border: '1px solid #d1d5db',
-                    borderTopLeftRadius: '6px',
-                    borderTopRightRadius: '6px',
-                    borderBottomLeftRadius: '0',
-                    borderBottomRightRadius: '0',
-                    fontSize: '16px',
-                    backgroundColor: 'white',
-                    appearance: 'none',
-                    paddingRight: '40px',
-                    borderBottom: 'none'
-                  }}
-                >
-                  <option value="United States">United States</option>
-                  <option value="Canada">Canada</option>
-                  <option value="United Kingdom">United Kingdom</option>
-                  <option value="Australia">Australia</option>
-                  <option value="Germany">Germany</option>
-                  <option value="France">France</option>
-                  <option value="Spain">Spain</option>
-                  <option value="Italy">Italy</option>
-                  <option value="Japan">Japan</option>
-                  <option value="Brazil">Brazil</option>
-                </select>
-                <ChevronDown style={{
-                  position: 'absolute',
-                  right: '16px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  width: '16px',
-                  height: '16px',
-                  color: '#6b7280'
-                }} />
-              </div>
-
-              {/* Address */}
-              <input
-                type="text"
-                placeholder="Address"
-                value={formData.address}
-                onChange={(e) => handleInputChange('address', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  border: '1px solid #d1d5db',
-                  borderBottomLeftRadius: '6px',
-                  borderBottomRightRadius: '6px',
-                  borderTopLeftRadius: '0',
-                  borderTopRightRadius: '0',
-                  fontSize: '16px'
-                }}
-              />
-            </div>
-
-            <p style={{
-              fontSize: '12px',
-              color: '#6b7280',
-              marginBottom: '24px',
-              lineHeight: '1.4'
-            }}>
-              <span style={{ textDecoration: 'underline' }}>Same address (required)</span>
-            </p>
-
-            {/* Subscribe Button */}
-            <button
-              type="submit"
+            {/* Address */}
+            <input
+              type="text"
+              placeholder="Address"
+              value={formData.address}
+              onChange={(e) => handleInputChange('address', e.target.value)}
               style={{
                 width: '100%',
-                backgroundColor: '#1d4ed8',
-                color: 'white',
-                padding: '16px',
-                border: 'none',
-                borderRadius: '6px',
+                padding: '12px 16px',
+                border: '1px solid #d1d5db',
+                borderBottomLeftRadius: '6px',
+                borderBottomRightRadius: '6px',
+                borderTopLeftRadius: '0',
+                borderTopRightRadius: '0',
                 fontSize: '16px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                marginBottom: '16px',
-                transition: 'background-color 0.2s'
+                boxSizing: 'border-box'
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#1e40af';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#1d4ed8';
-              }}
-            >
-              Subscribe
-            </button>
+            />
+          </div>
 
-            {/* Footer Text */}
-            <div style={{
-              fontSize: '11px',
-              color: '#6b7280',
-              lineHeight: '1.4',
-              textAlign: 'center'
-            }}>
-              <p style={{ margin: '0 0 8px 0' }}>
-                Notwithstanding the logo displayed above, when paying with a co-branded eftpos debit card, your payment may be processed through either card network.
-              </p>
-              <p style={{ margin: '0' }}>
-                By subscribing, you authorize Summarist to charge you according to the terms until you cancel.
-              </p>
-            </div>
-          </form>
+          <p style={{
+            fontSize: '12px',
+            color: '#6b7280',
+            marginBottom: '24px',
+            lineHeight: '1.4'
+          }}>
+            <span style={{ textDecoration: 'underline' }}>Same address (required)</span>
+          </p>
+
+          {/* Subscribe Button */}
+          <button
+            type="submit"
+            style={{
+              width: '100%',
+              backgroundColor: '#1d4ed8',
+              color: 'white',
+              padding: '16px',
+              border: 'none',
+              borderRadius: '6px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              marginBottom: '16px',
+              transition: 'background-color 0.2s'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#1e40af';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#1d4ed8';
+            }}
+          >
+            Subscribe
+          </button>
+
+          {/* Footer Text */}
+          <div style={{
+            fontSize: '11px',
+            color: '#6b7280',
+            lineHeight: '1.4',
+            textAlign: 'center'
+          }}>
+            <p style={{ margin: '0 0 8px 0' }}>
+              Notwithstanding the logo displayed above, when paying with a co-branded eftpos debit card, your payment may be processed through either card network.
+            </p>
+            <p style={{ margin: '0' }}>
+              By subscribing, you authorize Summarist to charge you according to the terms until you cancel.
+            </p>
+          </div>
+        </form>
         </div>
       </div>
     </div>
