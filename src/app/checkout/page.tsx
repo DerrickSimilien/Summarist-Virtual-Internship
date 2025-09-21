@@ -16,8 +16,14 @@ const CheckoutPage = () => {
     cvc: '',
     cardholderName: '',
     country: 'United States',
-    address: ''
+    address: '',
+    addressLine2: '',
+    city: '',
+    zip: '',
+    state: ''
   });
+
+  const [showExpandedAddress, setShowExpandedAddress] = useState(false);
 
   const planDetails = {
     yearly: {
@@ -376,7 +382,7 @@ const CheckoutPage = () => {
             </label>
             
             {/* Country Dropdown */}
-            <div style={{ position: 'relative', marginBottom: '1px' }}>
+            <div style={{ position: 'relative', marginBottom: showExpandedAddress ? '1px' : '0' }}>
               <select
                 value={formData.country}
                 onChange={(e) => handleInputChange('country', e.target.value)}
@@ -386,13 +392,13 @@ const CheckoutPage = () => {
                   border: '1px solid #d1d5db',
                   borderTopLeftRadius: '6px',
                   borderTopRightRadius: '6px',
-                  borderBottomLeftRadius: '0',
-                  borderBottomRightRadius: '0',
+                  borderBottomLeftRadius: showExpandedAddress ? '0' : '6px',
+                  borderBottomRightRadius: showExpandedAddress ? '0' : '6px',
                   fontSize: '16px',
                   backgroundColor: 'white',
                   appearance: 'none',
                   paddingRight: '40px',
-                  borderBottom: 'none',
+                  borderBottom: showExpandedAddress ? 'none' : '1px solid #d1d5db',
                   boxSizing: 'border-box'
                 }}
               >
@@ -418,42 +424,169 @@ const CheckoutPage = () => {
               }} />
             </div>
 
-            {/* Address */}
-            <input
-              type="text"
-              placeholder="Address"
-              value={formData.address}
-              onChange={(e) => handleInputChange('address', e.target.value)}
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                border: '1px solid #d1d5db',
-                borderBottomLeftRadius: '6px',
-                borderBottomRightRadius: '6px',
-                borderTopLeftRadius: '0',
-                borderTopRightRadius: '0',
-                fontSize: '16px',
-                boxSizing: 'border-box'
-              }}
-            />
+            {/* Expanded Address Fields */}
+            {showExpandedAddress ? (
+              <>
+                {/* Address Line 1 */}
+                <input
+                  type="text"
+                  placeholder="Address line 1"
+                  value={formData.address}
+                  onChange={(e) => handleInputChange('address', e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '0',
+                    fontSize: '16px',
+                    boxSizing: 'border-box',
+                    borderBottom: 'none'
+                  }}
+                />
+                
+                {/* Address Line 2 */}
+                <input
+                  type="text"
+                  placeholder="Address line 2"
+                  value={formData.addressLine2}
+                  onChange={(e) => handleInputChange('addressLine2', e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '0',
+                    fontSize: '16px',
+                    boxSizing: 'border-box',
+                    borderBottom: 'none'
+                  }}
+                />
+                
+                {/* City and ZIP */}
+                <div style={{ display: 'flex' }}>
+                  <input
+                    type="text"
+                    placeholder="City"
+                    value={formData.city}
+                    onChange={(e) => handleInputChange('city', e.target.value)}
+                    style={{
+                      flex: '1',
+                      padding: '12px 16px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '0',
+                      fontSize: '16px',
+                      boxSizing: 'border-box',
+                      borderRight: 'none',
+                      borderBottom: 'none'
+                    }}
+                  />
+                  <input
+                    type="text"
+                    placeholder="ZIP"
+                    value={formData.zip}
+                    onChange={(e) => handleInputChange('zip', e.target.value)}
+                    style={{
+                      flex: '1',
+                      padding: '12px 8px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '0',
+                      fontSize: '16px',
+                      boxSizing: 'border-box',
+                      borderBottom: 'none'
+                    }}
+                  />
+                </div>
+                
+                {/* State */}
+                <div style={{ position: 'relative' }}>
+                  <select
+                    value={formData.state}
+                    onChange={(e) => handleInputChange('state', e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '1px solid #d1d5db',
+                      borderBottomLeftRadius: '6px',
+                      borderBottomRightRadius: '6px',
+                      borderTopLeftRadius: '0',
+                      borderTopRightRadius: '0',
+                      fontSize: '16px',
+                      backgroundColor: 'white',
+                      appearance: 'none',
+                      paddingRight: '40px',
+                      boxSizing: 'border-box'
+                    }}
+                  >
+                    <option value="">State</option>
+                    <option value="AL">Alabama</option>
+                    <option value="AK">Alaska</option>
+                    <option value="AZ">Arizona</option>
+                    <option value="AR">Arkansas</option>
+                    <option value="CA">California</option>
+                    <option value="CO">Colorado</option>
+                    <option value="CT">Connecticut</option>
+                    <option value="DE">Delaware</option>
+                    <option value="FL">Florida</option>
+                    <option value="GA">Georgia</option>
+                    {/* Add more states as needed */}
+                  </select>
+                  <ChevronDown style={{
+                    position: 'absolute',
+                    right: '16px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    width: '16px',
+                    height: '16px',
+                    color: '#6b7280'
+                  }} />
+                </div>
+              </>
+            ) : (
+              /* Simple Address Input */
+              <input
+                type="text"
+                placeholder="Address"
+                value={formData.address}
+                onChange={(e) => handleInputChange('address', e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '1px solid #d1d5db',
+                  borderBottomLeftRadius: '6px',
+                  borderBottomRightRadius: '6px',
+                  borderTopLeftRadius: '0',
+                  borderTopRightRadius: '0',
+                  fontSize: '16px',
+                  boxSizing: 'border-box'
+                }}
+              />
+            )}
           </div>
 
-          <p style={{
-            fontSize: '12px',
-            color: '#6b7280',
-            marginBottom: '24px',
-            lineHeight: '1.4'
-          }}>
-            <span style={{ textDecoration: 'underline' }}>Same address (required)</span>
-          </p>
+          <button
+            type="button"
+            onClick={() => setShowExpandedAddress(!showExpandedAddress)}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '12px',
+              color: '#6b7280',
+              marginBottom: '24px',
+              lineHeight: '1.4',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              padding: '0'
+            }}
+          >
+            {showExpandedAddress ? 'Use simple address' : 'Enter address manually'}
+          </button>
 
           {/* Subscribe Button */}
           <button
             type="submit"
             style={{
               width: '100%',
-              backgroundColor: '#1d4ed8',
-              color: 'white',
+              backgroundColor: 'rgb(0, 116, 212)',
+              color: 'rgba(255, 255, 255, 0.8)',
               padding: '16px',
               border: 'none',
               borderRadius: '6px',
@@ -464,10 +597,10 @@ const CheckoutPage = () => {
               transition: 'background-color 0.2s'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#1e40af';
+              e.currentTarget.style.backgroundColor = 'rgb(0, 106, 192)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#1d4ed8';
+              e.currentTarget.style.backgroundColor = 'rgb(0, 116, 212)';
             }}
           >
             Subscribe
@@ -475,17 +608,52 @@ const CheckoutPage = () => {
 
           {/* Footer Text */}
           <div style={{
-            fontSize: '11px',
-            color: '#6b7280',
+            fontSize: '13px',
+            color: '#1A1A1AB2',
             lineHeight: '1.4',
             textAlign: 'center'
           }}>
             <p style={{ margin: '0 0 8px 0' }}>
               Notwithstanding the logo displayed above, when paying with a co-branded eftpos debit card, your payment may be processed through either card network.
             </p>
-            <p style={{ margin: '0' }}>
+            <p style={{ margin: '0 0 16px 0' }}>
               By subscribing, you authorize Summarist to charge you according to the terms until you cancel.
             </p>
+            
+            {/* Powered by Stripe and Links */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '12px',
+              fontSize: '12px',
+              color: '#9CA3AF'
+            }}>
+              <span>
+                Powered by <span style={{ fontWeight: 'bold' }}>stripe</span>
+              </span>
+              
+              {/* Vertical divider */}
+              <div style={{
+                width: '1px',
+                height: '12px',
+                backgroundColor: '#E5E7EB'
+              }}></div>
+              
+              <a href="#" style={{
+                color: '#9CA3AF',
+                textDecoration: 'none'
+              }}>
+                Terms
+              </a>
+              
+              <a href="#" style={{
+                color: '#9CA3AF',
+                textDecoration: 'none'
+              }}>
+                Privacy
+              </a>
+            </div>
           </div>
         </form>
         </div>
