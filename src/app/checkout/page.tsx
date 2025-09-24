@@ -3,14 +3,19 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, ChevronDown } from 'lucide-react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../lib/firebase';
 
 const CheckoutPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const plan = searchParams.get('plan') || 'yearly';
   
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
   const [formData, setFormData] = useState({
-    email: 'santanaerick1000@gmail.com', // Pre-filled as shown in screenshot
+    email: '', // Will be set dynamically based on logged-in user
     cardNumber: '',
     expiryDate: '',
     cvc: '',
@@ -24,6 +29,38 @@ const CheckoutPage = () => {
   });
 
   const [showExpandedAddress, setShowExpandedAddress] = useState(false);
+
+  // Listen for authentication state changes and set email accordingly
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+      
+      if (currentUser) {
+        // Check if it's the guest account
+        if (currentUser.email === 'guest@gmail.com') {
+          setFormData(prev => ({
+            ...prev,
+            email: 'guest@guest.com'
+          }));
+        } else {
+          // Use the actual user's email
+          setFormData(prev => ({
+            ...prev,
+            email: currentUser.email || ''
+          }));
+        }
+      } else {
+        // No user logged in, clear email
+        setFormData(prev => ({
+          ...prev,
+          email: ''
+        }));
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const planDetails = {
     yearly: {
@@ -486,7 +523,7 @@ const CheckoutPage = () => {
                     onChange={(e) => handleInputChange('zip', e.target.value)}
                     style={{
                       flex: '1',
-                      padding: '12px 8px',
+                      padding: '12px 16px',
                       border: '1px solid #d1d5db',
                       borderRadius: '0',
                       fontSize: '16px',
