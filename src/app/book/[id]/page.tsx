@@ -109,8 +109,8 @@ const BookDetailPage = () => {
       return;
     }
     
-    // TODO: Implement read functionality for non-premium books
-    console.log('User is authenticated, proceed with read functionality for free book');
+    // Navigate to reading page for non-premium books
+    router.push(`/book/${id}/read`);
   };
 
   // Handle Listen button click
