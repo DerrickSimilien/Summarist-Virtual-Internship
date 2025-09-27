@@ -71,34 +71,36 @@ const BookReadingPage = () => {
   const formatSummary = (summary) => {
     if (!summary) return [];
     
-    // Split by periods followed by space and capital letter, or by double newlines
-    const sentences = summary.split(/(?<=\.)\s+(?=[A-Z])|(?<=\.)\n\n|\n\n/);
+    // Split by double newlines first, then by sentence patterns
+    let paragraphs = summary.split(/\n\n+/);
     
-    // Group sentences into paragraphs (roughly 3-4 sentences each)
-    const paragraphs = [];
-    let currentParagraph = '';
-    let sentenceCount = 0;
-    
-    for (let sentence of sentences) {
-      sentence = sentence.trim();
-      if (sentence) {
-        currentParagraph += (currentParagraph ? ' ' : '') + sentence;
-        sentenceCount++;
-        
-        if (sentenceCount >= 3 || sentence.length > 200) {
-          paragraphs.push(currentParagraph);
-          currentParagraph = '';
-          sentenceCount = 0;
+    // If no double newlines found, split by sentences
+    if (paragraphs.length === 1) {
+      const sentences = summary.split(/(?<=\.\s)(?=[A-Z])/);
+      paragraphs = [];
+      let currentParagraph = '';
+      let sentenceCount = 0;
+      
+      for (let sentence of sentences) {
+        sentence = sentence.trim();
+        if (sentence) {
+          currentParagraph += (currentParagraph ? ' ' : '') + sentence;
+          sentenceCount++;
+          
+          if (sentenceCount >= 4) {
+            paragraphs.push(currentParagraph);
+            currentParagraph = '';
+            sentenceCount = 0;
+          }
         }
+      }
+      
+      if (currentParagraph) {
+        paragraphs.push(currentParagraph);
       }
     }
     
-    // Add remaining content as final paragraph
-    if (currentParagraph) {
-      paragraphs.push(currentParagraph);
-    }
-    
-    return paragraphs.length > 0 ? paragraphs : [summary];
+    return paragraphs.filter(p => p.trim().length > 0);
   };
 
   const handlePlayPause = () => {
@@ -163,33 +165,44 @@ const BookReadingPage = () => {
   return (
     <SidebarLayout>
       <div className="flex justify-center" style={{ width: '100%', minHeight: '100vh' }}>
-        <div style={{ maxWidth: '800px', width: '100%', padding: '40px 20px' }}>
+        <div style={{ maxWidth: '800px', width: '100%', padding: '0 20px 40px 20px' }}>
           
           {/* Book Title */}
           <h1 
-            className="font-bold mb-8"
+            className="font-bold"
             style={{ 
               fontSize: '24px', 
               fontFamily: 'Roboto, sans-serif',
               color: '#032B41',
-              lineHeight: '1.4'
+              lineHeight: '1.4',
+              marginTop: '40px',
+              marginBottom: '16px'
             }}
           >
             {book.title}
           </h1>
+          
+          {/* Gray divider line under title */}
+          <div 
+            style={{ 
+              width: '100%', 
+              height: '1px', 
+              backgroundColor: '#e5e7eb', 
+              marginBottom: '32px' 
+            }}
+          ></div>
           
           {/* Book Summary */}
           <div className="mb-12">
             {summaryParagraphs.map((paragraph, index) => (
               <p 
                 key={index}
-                className="mb-6"
                 style={{ 
                   fontSize: '16px', 
                   fontFamily: 'Roboto, sans-serif',
                   color: '#032B41',
                   lineHeight: '1.8',
-                   marginBottom: '24px'
+                  marginBottom: '24px'
                 }}
               >
                 {paragraph}
