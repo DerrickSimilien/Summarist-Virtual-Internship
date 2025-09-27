@@ -188,7 +188,8 @@ const BookReadingPage = () => {
                   fontSize: '16px', 
                   fontFamily: 'Roboto, sans-serif',
                   color: '#032B41',
-                  lineHeight: '1.6'
+                  lineHeight: '1.8',
+                   marginBottom: '24px'
                 }}
               >
                 {paragraph}
