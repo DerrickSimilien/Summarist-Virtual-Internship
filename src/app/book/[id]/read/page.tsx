@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import SidebarLayout from '../../../components/SidebarLayout';
-import { Play, Pause } from 'lucide-react';
 
 const PLAYER_HEIGHT = 80; // match your player's height
 
@@ -150,6 +149,7 @@ const BookReadingPage = () => {
   );
 
   const currentFontPx = FONT_PRESETS[fontIndex]?.px ?? 16;
+  const progressPct = (currentTime / Math.max(duration, 1)) * 100;
 
   if (loading) {
     return (
@@ -239,62 +239,152 @@ const BookReadingPage = () => {
         }}
       >
         <div className="flex items-center h-full w-full">
-          {/* LEFT: Book info */}
-          <div className="flex items-center" style={{ gap: '16px', flex: '0 0 260px' }}>
+          {/* LEFT: Book info (grows, wraps full title/author) */}
+          <div
+            className="flex items-center"
+            style={{
+              gap: '16px',
+              flex: '1 1 auto',           // allow it to grow
+              minWidth: 0,                // enable text to wrap within flex item
+              paddingRight: '16px',
+            }}
+          >
             <img
               src={book.imageLink}
               alt={book.title}
               className="object-cover"
-              style={{ width: '48px', height: '48px', borderRadius: '4px' }}
+              style={{ width: '48px', height: '48px', borderRadius: '4px', flex: '0 0 auto' }}
             />
             <div style={{ overflow: 'hidden' }}>
-              <h4 className="font-medium text-white text-sm truncate" style={{ maxWidth: '180px' }}>
+              <div
+                className="text-white"
+                style={{
+                  fontWeight: 500,
+                  fontSize: '14px',
+                  lineHeight: 1.25,
+                  whiteSpace: 'normal',   // allow wrapping
+                  wordBreak: 'break-word',
+                }}
+              >
                 {book.title}
-              </h4>
-              <p className="text-gray-400 text-xs truncate" style={{ maxWidth: '180px' }}>
+              </div>
+              <div
+                className="text-gray-400"
+                style={{
+                  fontSize: '12px',
+                  marginTop: '2px',
+                  whiteSpace: 'normal',
+                }}
+              >
                 {book.author}
-              </p>
+              </div>
             </div>
           </div>
 
-          {/* CENTER: Controls */}
-          <div className="flex items-center justify-center" style={{ flex: '1', gap: '20px' }}>
-            {/* rewind 10s */}
+          {/* CENTER: Controls (fixed width zone so it doesn't shift) */}
+          <div
+            className="flex items-center justify-center"
+            style={{ flex: '0 0 240px', gap: '20px' }}
+          >
+            {/* Rewind 10s */}
             <button
-              className="text-white hover:text-gray-300 transition-colors flex items-center justify-center"
+              className="text-white hover:text-gray-300 transition-colors flex items-center justify-center relative"
               onClick={() => setCurrentTime(Math.max(0, currentTime - 10))}
-              style={{ width: '32px', height: '32px' }}
+              style={{ width: '40px', height: '40px' }}
               aria-label="Rewind 10 seconds"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                <path d="M3 3v5h5" />
-                <text x="12" y="16" textAnchor="middle" fontSize="8" fill="currentColor" fontWeight="bold">10</text>
-              </svg>
+              <div style={{ width: 28, height: 28, position: 'relative' }}>
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{ color: 'white', shapeRendering: 'geometricPrecision' as any }}
+                >
+                  <path d="M3 12a9 9 0 1 0 9-9 9.6 9.6 0 0 0-6.7 2.7L3 8" />
+                  <path d="M3 3v5h5" />
+                </svg>
+                <span
+                  style={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: 10,
+                    transform: 'translateX(-50%)',
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: '#ffffff',
+                    lineHeight: 1,
+                    WebkitFontSmoothing: 'antialiased',
+                    textShadow: '0 0 1px rgba(0,0,0,0.5)',
+                  }}
+                >
+                  10
+                </span>
+              </div>
             </button>
 
-            {/* play/pause */}
+            {/* Play/Pause — filled #032B41 glyph inside white circle */}
             <button
               onClick={handlePlayPause}
-              className="flex items-center justify-center bg-white text-black rounded-full hover:bg-gray-200 transition-colors"
-              style={{ width: '48px', height: '48px' }}
+              className="flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors"
+              style={{ width: '48px', height: '48px', backgroundColor: '#ffffff' }}
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
-              {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
+              {isPlaying ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="6" y="5" width="5" height="14" fill="#032B41" />
+                  <rect x="13" y="5" width="5" height="14" fill="#032B41" />
+                </svg>
+              ) : (
+                <svg width="38" height="38" viewBox="0 0 24 24" aria-hidden="true">
+                  <polygon points="8,5 19,12 8,19" fill="#032B41" />
+                </svg>
+              )}
             </button>
 
-            {/* forward 10s */}
+            {/* Forward 10s */}
             <button
-              className="text-white hover:text-gray-300 transition-colors flex items-center justify-center"
+              className="text-white hover:text-gray-300 transition-colors flex items-center justify-center relative"
               onClick={() => setCurrentTime(Math.min(duration, currentTime + 10))}
-              style={{ width: '32px', height: '32px' }}
+              style={{ width: '40px', height: '40px' }}
               aria-label="Forward 10 seconds"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
-                <path d="M21 3v5h-5" />
-                <text x="12" y="16" textAnchor="middle" fontSize="8" fill="currentColor" fontWeight="bold">10</text>
-              </svg>
+              <div style={{ width: 28, height: 28, position: 'relative' }}>
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{ color: 'white', shapeRendering: 'geometricPrecision' as any }}
+                >
+                  <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+                  <path d="M21 3v5h-5" />
+                </svg>
+                <span
+                  style={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: 10,
+                    transform: 'translateX(-50%)',
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: '#ffffff',
+                    lineHeight: 1,
+                    WebkitFontSmoothing: 'antialiased',
+                    textShadow: '0 0 1px rgba(0,0,0,0.5)',
+                  }}
+                >
+                  10
+                </span>
+              </div>
             </button>
           </div>
 
@@ -312,15 +402,32 @@ const BookReadingPage = () => {
               {formatTime(currentTime)}
             </span>
 
+            {/* Track with fill and a white thumb/knob */}
             <div
-              className="bg-gray-600 rounded-full cursor-pointer"
-              style={{ height: '4px', flex: 1, minWidth: '160px' }}
+              className="relative rounded-full cursor-pointer"
+              style={{ height: '4px', flex: 1, minWidth: '160px', backgroundColor: '#4b5563', overflow: 'visible' }}
               onClick={handleSeek}
               aria-label="Seek in audio"
             >
+              {/* fill */}
               <div
-                className="bg-white rounded-full h-full transition-all duration-200"
-                style={{ width: `${(currentTime / Math.max(duration, 1)) * 100}%` }}
+                className="absolute left-0 top-0 h-full rounded-full"
+                style={{ width: `${progressPct}%`, backgroundColor: '#ffffff' }}
+              />
+              {/* thumb/knob */}
+              <div
+                className="absolute"
+                style={{
+                  top: '50%',
+                  left: `calc(${progressPct}% - 6px)`, // center a 12px knob
+                  transform: 'translateY(-50%)',
+                  width: '12px',
+                  height: '12px',
+                  borderRadius: '9999px',
+                  backgroundColor: '#ffffff',
+                  boxShadow: '0 0 0 2px rgba(0,0,0,0.15)',
+                  pointerEvents: 'none',
+                }}
               />
             </div>
 
