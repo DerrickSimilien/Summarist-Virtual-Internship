@@ -23,7 +23,7 @@ const AUDIO_FALLBACK_BY_ID: Record<string, string> = {
 
   // Can't Hurt Me — David Goggins
   '2l0idxm1rwv':
-    "https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fcan't-hurt-me.mp3?alt=media&token=7de57406-60ca-49d6-9113-857507f48312",
+    "https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fcan't-hurt-me.mp3?alt=media&token=7de57406-60ca-49d6-9113-857507f48312",  
 };
 
 const FONT_PRESETS = [
