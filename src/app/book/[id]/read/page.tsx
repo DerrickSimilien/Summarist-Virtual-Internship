@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import SidebarLayout from '../../../components/SidebarLayout';
 
@@ -11,7 +11,19 @@ type Book = {
   author: string;
   imageLink: string;
   summary?: string;
-  duration?: string; // "MM:SS"
+  duration?: string;      // "MM:SS" fallback
+  audioUrl?: string;      // MP3/OGG URL (CORS-enabled)
+};
+
+/** Add known audio fallbacks by book id. Extend as needed. */
+const AUDIO_FALLBACK_BY_ID: Record<string, string> = {
+  // How to Win Friends and Influence People in the Digital Age
+  '5bxl50cz4bt':
+    'https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fhow-to-win-friends-and-influence-people.mp3?alt=media&token=60872755-13fc-43f4-8b75-bae3fcd73991',
+
+  // Can't Hurt Me — David Goggins
+  '2l0idxm1rwv':
+    "https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fcan't-hurt-me.mp3?alt=media&token=7de57406-60ca-49d6-9113-857507f48312",
 };
 
 const FONT_PRESETS = [
@@ -30,6 +42,9 @@ const BookReadingPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // audio + player state
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [canPlay, setCanPlay] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -47,6 +62,7 @@ const BookReadingPage = () => {
     }
   }, [fontIndex]);
 
+  // fetch book
   useEffect(() => {
     const fetchBookData = async () => {
       try {
@@ -58,10 +74,16 @@ const BookReadingPage = () => {
         const data: Book = await response.json();
         if (!data) throw new Error('Book not found');
 
-        setBook(data);
+        // Apply fallback audio if API doesn't send one
+        const withAudio: Book = {
+          ...data,
+          audioUrl: data.audioUrl || AUDIO_FALLBACK_BY_ID[bookId],
+        };
 
-        // duration
-        const raw = data.duration || '03:24';
+        setBook(withAudio);
+
+        // Fallback duration from API; later we overwrite with audio metadata
+        const raw = withAudio.duration || '03:24';
         const [mm, ss] = raw.split(':');
         const minutes = parseInt(mm || '0', 10);
         const seconds = parseInt(ss || '0', 10);
@@ -76,6 +98,54 @@ const BookReadingPage = () => {
 
     if (bookId) fetchBookData();
   }, [bookId]);
+
+  // wire audio element events when source changes
+  useEffect(() => {
+    // If no audioUrl, reset state and bail
+    if (!book?.audioUrl) {
+      const el = audioRef.current;
+      if (el) {
+        try {
+          el.pause();
+        } catch {}
+      }
+      setIsPlaying(false);
+      setCanPlay(false);
+      setCurrentTime(0);
+      return;
+    }
+
+    const el = audioRef.current;
+    if (!el) return;
+
+    const onLoadedMetadata = () => {
+      setCanPlay(true);
+      if (isFinite(el.duration)) setDuration(el.duration);
+    };
+    const onTimeUpdate = () => setCurrentTime(el.currentTime);
+    const onEnded = () => setIsPlaying(false);
+    const onPlay = () => setIsPlaying(true);
+    const onPause = () => setIsPlaying(false);
+
+    el.addEventListener('loadedmetadata', onLoadedMetadata);
+    el.addEventListener('timeupdate', onTimeUpdate);
+    el.addEventListener('ended', onEnded);
+    el.addEventListener('play', onPlay);
+    el.addEventListener('pause', onPause);
+
+    // Reset playhead whenever src changes
+    setCurrentTime(0);
+    setCanPlay(false);
+    setIsPlaying(false);
+
+    return () => {
+      el.removeEventListener('loadedmetadata', onLoadedMetadata);
+      el.removeEventListener('timeupdate', onTimeUpdate);
+      el.removeEventListener('ended', onEnded);
+      el.removeEventListener('play', onPlay);
+      el.removeEventListener('pause', onPause);
+    };
+  }, [book?.audioUrl]);
 
   const formatTime = (t: number) => {
     const m = Math.floor(t / 60).toString().padStart(2, '0');
@@ -109,12 +179,39 @@ const BookReadingPage = () => {
     return paras.filter((p) => p.trim().length > 0);
   }, [book?.summary]);
 
-  const handlePlayPause = () => setIsPlaying((p) => !p);
+  // ---- audio control helpers ----
+  const safeDuration = duration || audioRef.current?.duration || 0;
 
-  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    setCurrentTime((clickX / rect.width) * duration);
+  const playPause = async () => {
+    const el = audioRef.current;
+    if (!el || !book?.audioUrl || !canPlay) return;
+    if (el.paused) {
+      try {
+        await el.play();
+      } catch {
+        // user gesture might be required by browser
+      }
+    } else {
+      el.pause();
+    }
+  };
+
+  const seekTo = (t: number) => {
+    const el = audioRef.current;
+    if (!el || !book?.audioUrl) return;
+    const d = safeDuration || 0;
+    el.currentTime = Math.max(0, Math.min(t, d));
+    setCurrentTime(el.currentTime);
+  };
+
+  const rewind10 = () => seekTo(currentTime - 10);
+  const forward10 = () => seekTo(currentTime + 10);
+
+  const handleSeekClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const bar = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - bar.left;
+    const pct = clickX / bar.width;
+    seekTo((safeDuration || 0) * pct);
   };
 
   // Sidebar extras (the four Aa buttons under Search)
@@ -149,7 +246,7 @@ const BookReadingPage = () => {
   );
 
   const currentFontPx = FONT_PRESETS[fontIndex]?.px ?? 16;
-  const progressPct = (currentTime / Math.max(duration, 1)) * 100;
+  const progressPct = (safeDuration ? (currentTime / safeDuration) * 100 : 0);
 
   if (loading) {
     return (
@@ -188,6 +285,11 @@ const BookReadingPage = () => {
 
   return (
     <SidebarLayout bottomOffset={PLAYER_HEIGHT} sidebarExtrasBelowSearch={SidebarFontControls}>
+      {/* Hidden audio element that the UI controls — render ONLY when audioUrl exists */}
+      {book.audioUrl ? (
+        <audio ref={audioRef} src={book.audioUrl} preload="metadata" />
+      ) : null}
+
       <div className="flex justify-center" style={{ width: '100%', minHeight: '100vh' }}>
         <div style={{ maxWidth: '800px', width: '100%', padding: '0 20px 40px 20px' }}>
           {/* Title */}
@@ -239,15 +341,10 @@ const BookReadingPage = () => {
         }}
       >
         <div className="flex items-center h-full w-full">
-          {/* LEFT: Book info (grows, wraps full title/author) */}
+          {/* LEFT: Book info */}
           <div
             className="flex items-center"
-            style={{
-              gap: '16px',
-              flex: '1 1 auto',           // allow it to grow
-              minWidth: 0,                // enable text to wrap within flex item
-              paddingRight: '16px',
-            }}
+            style={{ gap: '16px', flex: '1 1 auto', minWidth: 0, paddingRight: '16px' }}
           >
             <img
               src={book.imageLink}
@@ -262,36 +359,26 @@ const BookReadingPage = () => {
                   fontWeight: 500,
                   fontSize: '14px',
                   lineHeight: 1.25,
-                  whiteSpace: 'normal',   // allow wrapping
+                  whiteSpace: 'normal',
                   wordBreak: 'break-word',
                 }}
               >
                 {book.title}
               </div>
-              <div
-                className="text-gray-400"
-                style={{
-                  fontSize: '12px',
-                  marginTop: '2px',
-                  whiteSpace: 'normal',
-                }}
-              >
+              <div className="text-gray-400" style={{ fontSize: '12px', marginTop: '2px', whiteSpace: 'normal' }}>
                 {book.author}
               </div>
             </div>
           </div>
 
-          {/* CENTER: Controls (fixed width zone so it doesn't shift) */}
-          <div
-            className="flex items-center justify-center"
-            style={{ flex: '0 0 240px', gap: '20px' }}
-          >
-            {/* Rewind 10s */}
+          {/* CENTER: Controls */}
+          <div className="flex items-center justify-center" style={{ flex: '0 0 240px', gap: '20px' }}>
             <button
               className="text-white hover:text-gray-300 transition-colors flex items-center justify-center relative"
-              onClick={() => setCurrentTime(Math.max(0, currentTime - 10))}
+              onClick={rewind10}
               style={{ width: '40px', height: '40px' }}
               aria-label="Rewind 10 seconds"
+              disabled={!book.audioUrl}
             >
               <div style={{ width: 28, height: 28, position: 'relative' }}>
                 <svg
@@ -303,7 +390,7 @@ const BookReadingPage = () => {
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  style={{ color: 'white', shapeRendering: 'geometricPrecision' as any }}
+                  style={{ color: 'white', shapeRendering: 'geometricPrecision' as any, opacity: book.audioUrl ? 1 : 0.5 }}
                 >
                   <path d="M3 12a9 9 0 1 0 9-9 9.6 9.6 0 0 0-6.7 2.7L3 8" />
                   <path d="M3 3v5h5" />
@@ -320,6 +407,7 @@ const BookReadingPage = () => {
                     lineHeight: 1,
                     WebkitFontSmoothing: 'antialiased',
                     textShadow: '0 0 1px rgba(0,0,0,0.5)',
+                    opacity: book.audioUrl ? 1 : 0.5,
                   }}
                 >
                   10
@@ -327,12 +415,18 @@ const BookReadingPage = () => {
               </div>
             </button>
 
-            {/* Play/Pause — filled #032B41 glyph inside white circle */}
             <button
-              onClick={handlePlayPause}
-              className="flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors"
-              style={{ width: '48px', height: '48px', backgroundColor: '#ffffff' }}
+              onClick={playPause}
+              className="flex items-center justify-center rounded-full transition-colors"
+              style={{
+                width: '48px',
+                height: '48px',
+                backgroundColor: '#ffffff',
+                opacity: book.audioUrl ? 1 : 0.6,
+                cursor: book.audioUrl ? 'pointer' : 'not-allowed',
+              }}
               aria-label={isPlaying ? 'Pause' : 'Play'}
+              disabled={!book.audioUrl || !canPlay}
             >
               {isPlaying ? (
                 <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
@@ -340,18 +434,18 @@ const BookReadingPage = () => {
                   <rect x="13" y="5" width="5" height="14" fill="#032B41" />
                 </svg>
               ) : (
-                <svg width="38" height="38" viewBox="0 0 24 24" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
                   <polygon points="8,5 19,12 8,19" fill="#032B41" />
                 </svg>
               )}
             </button>
 
-            {/* Forward 10s */}
             <button
               className="text-white hover:text-gray-300 transition-colors flex items-center justify-center relative"
-              onClick={() => setCurrentTime(Math.min(duration, currentTime + 10))}
+              onClick={forward10}
               style={{ width: '40px', height: '40px' }}
               aria-label="Forward 10 seconds"
+              disabled={!book.audioUrl}
             >
               <div style={{ width: 28, height: 28, position: 'relative' }}>
                 <svg
@@ -363,7 +457,7 @@ const BookReadingPage = () => {
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  style={{ color: 'white', shapeRendering: 'geometricPrecision' as any }}
+                  style={{ color: 'white', shapeRendering: 'geometricPrecision' as any, opacity: book.audioUrl ? 1 : 0.5 }}
                 >
                   <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
                   <path d="M21 3v5h-5" />
@@ -380,6 +474,7 @@ const BookReadingPage = () => {
                     lineHeight: 1,
                     WebkitFontSmoothing: 'antialiased',
                     textShadow: '0 0 1px rgba(0,0,0,0.5)',
+                    opacity: book.audioUrl ? 1 : 0.5,
                   }}
                 >
                   10
@@ -388,7 +483,7 @@ const BookReadingPage = () => {
             </button>
           </div>
 
-          {/* RIGHT: Time + progress (single row, right-aligned) */}
+          {/* RIGHT: Time + progress */}
           <div
             className="flex items-center"
             style={{
@@ -396,30 +491,32 @@ const BookReadingPage = () => {
               flex: '0 0 auto',
               width: 'min(520px, 45%)',
               justifyContent: 'flex-end',
+              opacity: book.audioUrl ? 1 : 0.6,
             }}
           >
             <span className="text-white text-xs font-mono" style={{ minWidth: '40px', textAlign: 'right' }}>
               {formatTime(currentTime)}
             </span>
 
-            {/* Track with fill and a white thumb/knob */}
             <div
-              className="relative rounded-full cursor-pointer"
-              style={{ height: '4px', flex: 1, minWidth: '160px', backgroundColor: '#4b5563', overflow: 'visible' }}
-              onClick={handleSeek}
+              className="relative rounded-full"
+              style={{
+                height: '4px',
+                flex: 1,
+                minWidth: '160px',
+                backgroundColor: '#4b5563',
+                overflow: 'visible',
+                cursor: book.audioUrl ? 'pointer' : 'not-allowed',
+              }}
+              onClick={book.audioUrl ? handleSeekClick : undefined}
               aria-label="Seek in audio"
             >
-              {/* fill */}
-              <div
-                className="absolute left-0 top-0 h-full rounded-full"
-                style={{ width: `${progressPct}%`, backgroundColor: '#ffffff' }}
-              />
-              {/* thumb/knob */}
+              <div className="absolute left-0 top-0 h-full rounded-full" style={{ width: `${progressPct}%`, backgroundColor: '#ffffff' }} />
               <div
                 className="absolute"
                 style={{
                   top: '50%',
-                  left: `calc(${progressPct}% - 6px)`, // center a 12px knob
+                  left: `calc(${progressPct}% - 6px)`,
                   transform: 'translateY(-50%)',
                   width: '12px',
                   height: '12px',
@@ -432,7 +529,7 @@ const BookReadingPage = () => {
             </div>
 
             <span className="text-white text-xs font-mono" style={{ minWidth: '40px', textAlign: 'left' }}>
-              {formatTime(duration)}
+              {formatTime(safeDuration)}
             </span>
           </div>
         </div>
