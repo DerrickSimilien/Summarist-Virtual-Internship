@@ -217,84 +217,102 @@ const BookReadingPage = () => {
       <div 
         className="fixed bottom-0 left-0 right-0 bg-white border-t"
         style={{ 
-          backgroundColor: '#1e3c4c',
+          backgroundColor: '#2d3f4e',
           height: '80px',
           zIndex: 50
         }}
       >
-        <div className="flex items-center justify-between h-full px-6">
+        <div className="flex items-center justify-between h-full" style={{ padding: '0 32px' }}>
           
-          {/* Book Info */}
-          <div className="flex items-center" style={{ gap: '12px', minWidth: '200px' }}>
+          {/* Left: Book Info */}
+          <div className="flex items-center" style={{ gap: '16px', flex: '0 0 250px' }}>
             <img 
               src={book.imageLink} 
               alt={book.title}
-              className="object-cover rounded"
-              style={{ width: '48px', height: '64px' }}
+              className="object-cover"
+              style={{ width: '48px', height: '48px', borderRadius: '4px' }}
             />
-            <div>
+            <div style={{ overflow: 'hidden' }}>
               <h4 
-                className="font-semibold text-white text-sm line-clamp-1"
-                style={{ maxWidth: '150px' }}
+                className="font-medium text-white text-sm truncate"
+                style={{ maxWidth: '180px' }}
               >
                 {book.title}
               </h4>
-              <p className="text-gray-300 text-xs">
+              <p className="text-gray-400 text-xs truncate" style={{ maxWidth: '180px' }}>
                 {book.author}
               </p>
             </div>
           </div>
           
-          {/* Controls */}
-          <div className="flex items-center" style={{ gap: '16px' }}>
-            <button 
-              className="text-white hover:text-gray-300 transition-colors"
-              onClick={() => setCurrentTime(Math.max(0, currentTime - 10))}
-            >
-              <SkipBack className="w-5 h-5" />
-            </button>
-            
-            <button 
-              onClick={handlePlayPause}
-              className="flex items-center justify-center bg-white text-black rounded-full hover:bg-gray-200 transition-colors"
-              style={{ width: '40px', height: '40px' }}
-            >
-              {isPlaying ? (
-                <Pause className="w-5 h-5" />
-              ) : (
-                <Play className="w-5 h-5 ml-0.5" />
-              )}
-            </button>
-            
-            <button 
-              className="text-white hover:text-gray-300 transition-colors"
-              onClick={() => setCurrentTime(Math.min(duration, currentTime + 10))}
-            >
-              <SkipForward className="w-5 h-5" />
-            </button>
-          </div>
-          
-          {/* Progress and Time */}
-          <div className="flex items-center" style={{ gap: '12px', minWidth: '200px' }}>
-            <span className="text-white text-sm font-mono">
-              {formatTime(currentTime)}
-            </span>
-            
-            <div 
-              className="flex-1 bg-gray-600 rounded-full cursor-pointer"
-              style={{ height: '4px' }}
-              onClick={handleSeek}
-            >
-              <div 
-                className="bg-white rounded-full h-full transition-all duration-200"
-                style={{ width: `${(currentTime / duration) * 100}%` }}
-              />
+          {/* Center: Playback Controls */}
+          <div className="flex flex-col items-center" style={{ flex: '1', maxWidth: '600px' }}>
+            <div className="flex items-center" style={{ gap: '20px', marginBottom: '8px' }}>
+              {/* 10 second rewind */}
+              <button 
+                className="text-white hover:text-gray-300 transition-colors flex items-center justify-center"
+                onClick={() => setCurrentTime(Math.max(0, currentTime - 10))}
+                style={{ width: '32px', height: '32px' }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                  <path d="M3 3v5h5"/>
+                  <text x="12" y="16" textAnchor="middle" fontSize="8" fill="currentColor" fontWeight="bold">10</text>
+                </svg>
+              </button>
+              
+              {/* Play/Pause button */}
+              <button 
+                onClick={handlePlayPause}
+                className="flex items-center justify-center bg-white text-black rounded-full hover:bg-gray-200 transition-colors"
+                style={{ width: '48px', height: '48px' }}
+              >
+                {isPlaying ? (
+                  <Pause className="w-6 h-6" fill="currentColor" />
+                ) : (
+                  <Play className="w-6 h-6 ml-1" fill="currentColor" />
+                )}
+              </button>
+              
+              {/* 10 second forward */}
+              <button 
+                className="text-white hover:text-gray-300 transition-colors flex items-center justify-center"
+                onClick={() => setCurrentTime(Math.min(duration, currentTime + 10))}
+                style={{ width: '32px', height: '32px' }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
+                  <path d="M21 3v5h-5"/>
+                  <text x="12" y="16" textAnchor="middle" fontSize="8" fill="currentColor" fontWeight="bold">10</text>
+                </svg>
+              </button>
             </div>
             
-            <span className="text-white text-sm font-mono">
-              {formatTime(duration)}
-            </span>
+            {/* Progress bar with time */}
+            <div className="flex items-center w-full" style={{ gap: '12px' }}>
+              <span className="text-white text-xs font-mono" style={{ minWidth: '40px', textAlign: 'right' }}>
+                {formatTime(currentTime)}
+              </span>
+              
+              <div 
+                className="flex-1 bg-gray-600 rounded-full cursor-pointer"
+                style={{ height: '4px' }}
+                onClick={handleSeek}
+              >
+                <div 
+                  className="bg-white rounded-full h-full transition-all duration-200"
+                  style={{ width: `${(currentTime / duration) * 100}%` }}
+                />
+              </div>
+              
+              <span className="text-white text-xs font-mono" style={{ minWidth: '40px' }}>
+                {formatTime(duration)}
+              </span>
+            </div>
           </div>
+          
+          {/* Right: Empty space for balance */}
+          <div style={{ flex: '0 0 250px' }}></div>
           
         </div>
       </div>
