@@ -15,15 +15,15 @@ type Book = {
   audioUrl?: string;      // MP3/OGG URL (CORS-enabled)
 };
 
-/** Add known audio fallbacks by book id. Extend as needed. */
+/** Known audio fallbacks by book id. */
 const AUDIO_FALLBACK_BY_ID: Record<string, string> = {
   // How to Win Friends and Influence People in the Digital Age
   '5bxl50cz4bt':
     'https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fhow-to-win-friends-and-influence-people.mp3?alt=media&token=60872755-13fc-43f4-8b75-bae3fcd73991',
 
-  // Can't Hurt Me — David Goggins
+  // Can't Hurt Me — David Goggins (raw URL may include a plain apostrophe)
   '2l0idxm1rwv':
-    "https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fcan't-hurt-me.mp3?alt=media&token=7de57406-60ca-49d6-9113-857507f48312",  
+    "https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fcan't-hurt-me.mp3?alt=media&token=7de57406-60ca-49d6-9113-857507f48312",
 };
 
 const FONT_PRESETS = [
@@ -32,6 +32,39 @@ const FONT_PRESETS = [
   { label: 'Aa', px: 22, box: 28 },
   { label: 'Aa', px: 26, box: 32 },
 ];
+
+/**
+ * Ensure the Firebase Storage REST URL has its object path (the part after `/o/`)
+ * encoded exactly once. This fixes cases where filenames contain characters like `'`.
+ *
+ * Example in:
+ *   .../o/books%2Faudios%2Fcan't-hurt-me.mp3?alt=media&token=...
+ * Steps:
+ *   - Extract the encoded object piece after `/o/`
+ *   - decodeURIComponent -> books/audios/can't-hurt-me.mp3
+ *   - encodeURIComponent -> books%2Faudios%2Fcan%27t-hurt-me.mp3
+ *   - stitch back together
+ */
+function sanitizeFirebaseObjectUrl(input?: string | null): string | null {
+  if (!input) return null;
+  try {
+    const u = new URL(input);
+    const path = u.pathname; // e.g. /v0/b/.../o/books%2Faudios%2Fcan't-hurt-me.mp3
+    const idx = path.indexOf('/o/');
+    if (idx === -1) return input; // not the expected pattern — return as-is
+
+    const prefix = path.slice(0, idx + 3); // includes '/o/'
+    const encodedObj = path.slice(idx + 3); // everything after '/o/'
+    // decode then re-encode exactly once
+    const decodedObj = decodeURIComponent(encodedObj);
+    const reEncodedObj = encodeURIComponent(decodedObj);
+
+    u.pathname = prefix + reEncodedObj;
+    return u.toString();
+  } catch {
+    return input; // if URL constructor fails, just return the original
+  }
+}
 
 const BookReadingPage = () => {
   const params = useParams() as { id: string };
@@ -48,6 +81,9 @@ const BookReadingPage = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+
+  // this is the actual src we assign to <audio> (sanitized)
+  const [audioSrc, setAudioSrc] = useState<string | null>(null);
 
   // font size index for summary (persist to localStorage)
   const [fontIndex, setFontIndex] = useState<number>(() => {
@@ -82,7 +118,10 @@ const BookReadingPage = () => {
 
         setBook(withAudio);
 
-        // Fallback duration from API; later we overwrite with audio metadata
+        // Sanitize the audio URL for Firebase
+        setAudioSrc(sanitizeFirebaseObjectUrl(withAudio.audioUrl));
+
+        // Fallback duration from API; later overwrite with audio metadata
         const raw = withAudio.duration || '03:24';
         const [mm, ss] = raw.split(':');
         const minutes = parseInt(mm || '0', 10);
@@ -101,22 +140,13 @@ const BookReadingPage = () => {
 
   // wire audio element events when source changes
   useEffect(() => {
-    // If no audioUrl, reset state and bail
-    if (!book?.audioUrl) {
-      const el = audioRef.current;
-      if (el) {
-        try {
-          el.pause();
-        } catch {}
-      }
-      setIsPlaying(false);
-      setCanPlay(false);
-      setCurrentTime(0);
-      return;
-    }
-
     const el = audioRef.current;
-    if (!el) return;
+
+    setIsPlaying(false);
+    setCanPlay(false);
+    setCurrentTime(0);
+
+    if (!el || !audioSrc) return;
 
     const onLoadedMetadata = () => {
       setCanPlay(true);
@@ -126,17 +156,18 @@ const BookReadingPage = () => {
     const onEnded = () => setIsPlaying(false);
     const onPlay = () => setIsPlaying(true);
     const onPause = () => setIsPlaying(false);
+    const onError = () => {
+      // If metadata can't load, ensure controls are disabled
+      setCanPlay(false);
+      setIsPlaying(false);
+    };
 
     el.addEventListener('loadedmetadata', onLoadedMetadata);
     el.addEventListener('timeupdate', onTimeUpdate);
     el.addEventListener('ended', onEnded);
     el.addEventListener('play', onPlay);
     el.addEventListener('pause', onPause);
-
-    // Reset playhead whenever src changes
-    setCurrentTime(0);
-    setCanPlay(false);
-    setIsPlaying(false);
+    el.addEventListener('error', onError);
 
     return () => {
       el.removeEventListener('loadedmetadata', onLoadedMetadata);
@@ -144,8 +175,9 @@ const BookReadingPage = () => {
       el.removeEventListener('ended', onEnded);
       el.removeEventListener('play', onPlay);
       el.removeEventListener('pause', onPause);
+      el.removeEventListener('error', onError);
     };
-  }, [book?.audioUrl]);
+  }, [audioSrc]);
 
   const formatTime = (t: number) => {
     const m = Math.floor(t / 60).toString().padStart(2, '0');
@@ -184,7 +216,7 @@ const BookReadingPage = () => {
 
   const playPause = async () => {
     const el = audioRef.current;
-    if (!el || !book?.audioUrl || !canPlay) return;
+    if (!el || !audioSrc || !canPlay) return;
     if (el.paused) {
       try {
         await el.play();
@@ -198,7 +230,7 @@ const BookReadingPage = () => {
 
   const seekTo = (t: number) => {
     const el = audioRef.current;
-    if (!el || !book?.audioUrl) return;
+    if (!el || !audioSrc) return;
     const d = safeDuration || 0;
     el.currentTime = Math.max(0, Math.min(t, d));
     setCurrentTime(el.currentTime);
@@ -246,7 +278,7 @@ const BookReadingPage = () => {
   );
 
   const currentFontPx = FONT_PRESETS[fontIndex]?.px ?? 16;
-  const progressPct = (safeDuration ? (currentTime / safeDuration) * 100 : 0);
+  const progressPct = safeDuration ? (currentTime / safeDuration) * 100 : 0;
 
   if (loading) {
     return (
@@ -285,14 +317,14 @@ const BookReadingPage = () => {
 
   return (
     <SidebarLayout bottomOffset={PLAYER_HEIGHT} sidebarExtrasBelowSearch={SidebarFontControls}>
-      {/* Hidden audio element that the UI controls — render ONLY when audioUrl exists */}
-      {book.audioUrl ? (
-        <audio ref={audioRef} src={book.audioUrl} preload="metadata" />
+      {/* Hidden audio element (only when we have a sanitized src) */}
+      {audioSrc ? (
+        <audio ref={audioRef} src={audioSrc} preload="metadata" />
       ) : null}
 
+      {/* Content */}
       <div className="flex justify-center" style={{ width: '100%', minHeight: '100vh' }}>
         <div style={{ maxWidth: '800px', width: '100%', padding: '0 20px 40px 20px' }}>
-          {/* Title */}
           <h1
             className="font-bold"
             style={{
@@ -306,11 +338,7 @@ const BookReadingPage = () => {
           >
             {book.title}
           </h1>
-
-          {/* Divider */}
           <div style={{ width: '100%', height: '1px', backgroundColor: '#e5e7eb', marginBottom: '32px' }} />
-
-          {/* Summary (font size controlled) */}
           <div className="mb-12">
             {summaryParagraphs.map((paragraph, index) => (
               <p
@@ -330,7 +358,7 @@ const BookReadingPage = () => {
         </div>
       </div>
 
-      {/* Audio Player - fixed bottom (original layout) */}
+      {/* Player */}
       <div
         className="fixed bottom-0 left-0 right-0 border-t"
         style={{
@@ -378,7 +406,7 @@ const BookReadingPage = () => {
               onClick={rewind10}
               style={{ width: '40px', height: '40px' }}
               aria-label="Rewind 10 seconds"
-              disabled={!book.audioUrl}
+              disabled={!audioSrc || !canPlay}
             >
               <div style={{ width: 28, height: 28, position: 'relative' }}>
                 <svg
@@ -390,7 +418,7 @@ const BookReadingPage = () => {
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  style={{ color: 'white', shapeRendering: 'geometricPrecision' as any, opacity: book.audioUrl ? 1 : 0.5 }}
+                  style={{ color: 'white', shapeRendering: 'geometricPrecision' as any, opacity: audioSrc && canPlay ? 1 : 0.5 }}
                 >
                   <path d="M3 12a9 9 0 1 0 9-9 9.6 9.6 0 0 0-6.7 2.7L3 8" />
                   <path d="M3 3v5h5" />
@@ -407,7 +435,7 @@ const BookReadingPage = () => {
                     lineHeight: 1,
                     WebkitFontSmoothing: 'antialiased',
                     textShadow: '0 0 1px rgba(0,0,0,0.5)',
-                    opacity: book.audioUrl ? 1 : 0.5,
+                    opacity: audioSrc && canPlay ? 1 : 0.5,
                   }}
                 >
                   10
@@ -422,11 +450,11 @@ const BookReadingPage = () => {
                 width: '48px',
                 height: '48px',
                 backgroundColor: '#ffffff',
-                opacity: book.audioUrl ? 1 : 0.6,
-                cursor: book.audioUrl ? 'pointer' : 'not-allowed',
+                opacity: audioSrc && canPlay ? 1 : 0.6,
+                cursor: audioSrc && canPlay ? 'pointer' : 'not-allowed',
               }}
               aria-label={isPlaying ? 'Pause' : 'Play'}
-              disabled={!book.audioUrl || !canPlay}
+              disabled={!audioSrc || !canPlay}
             >
               {isPlaying ? (
                 <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
@@ -445,7 +473,7 @@ const BookReadingPage = () => {
               onClick={forward10}
               style={{ width: '40px', height: '40px' }}
               aria-label="Forward 10 seconds"
-              disabled={!book.audioUrl}
+              disabled={!audioSrc || !canPlay}
             >
               <div style={{ width: 28, height: 28, position: 'relative' }}>
                 <svg
@@ -457,7 +485,7 @@ const BookReadingPage = () => {
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  style={{ color: 'white', shapeRendering: 'geometricPrecision' as any, opacity: book.audioUrl ? 1 : 0.5 }}
+                  style={{ color: 'white', shapeRendering: 'geometricPrecision' as any, opacity: audioSrc && canPlay ? 1 : 0.5 }}
                 >
                   <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
                   <path d="M21 3v5h-5" />
@@ -474,7 +502,7 @@ const BookReadingPage = () => {
                     lineHeight: 1,
                     WebkitFontSmoothing: 'antialiased',
                     textShadow: '0 0 1px rgba(0,0,0,0.5)',
-                    opacity: book.audioUrl ? 1 : 0.5,
+                    opacity: audioSrc && canPlay ? 1 : 0.5,
                   }}
                 >
                   10
@@ -491,7 +519,7 @@ const BookReadingPage = () => {
               flex: '0 0 auto',
               width: 'min(520px, 45%)',
               justifyContent: 'flex-end',
-              opacity: book.audioUrl ? 1 : 0.6,
+              opacity: audioSrc ? 1 : 0.6,
             }}
           >
             <span className="text-white text-xs font-mono" style={{ minWidth: '40px', textAlign: 'right' }}>
@@ -506,9 +534,9 @@ const BookReadingPage = () => {
                 minWidth: '160px',
                 backgroundColor: '#4b5563',
                 overflow: 'visible',
-                cursor: book.audioUrl ? 'pointer' : 'not-allowed',
+                cursor: audioSrc ? 'pointer' : 'not-allowed',
               }}
-              onClick={book.audioUrl ? handleSeekClick : undefined}
+              onClick={audioSrc ? handleSeekClick : undefined}
               aria-label="Seek in audio"
             >
               <div className="absolute left-0 top-0 h-full rounded-full" style={{ width: `${progressPct}%`, backgroundColor: '#ffffff' }} />
