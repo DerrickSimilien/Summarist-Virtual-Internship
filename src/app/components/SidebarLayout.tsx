@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Bookmark, Highlighter, Search, Settings, HelpCircle, LogIn, LogOut } from 'lucide-react';
+import { Home, Bookmark, Highlighter, Search, Settings, HelpCircle, LogIn, LogOut, Clock, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
@@ -7,9 +7,7 @@ import { auth } from '../../lib/firebase';
 
 interface SidebarLayoutProps {
   children: React.ReactNode;
-  /** Optional space reserved at the bottom for fixed UI (e.g., audio player) */
   bottomOffset?: number;
-  /** Optional extra content to render RIGHT BELOW Search in the sidebar (read page only) */
   sidebarExtrasBelowSearch?: React.ReactNode;
 }
 
@@ -25,11 +23,303 @@ const bottomNavigationItems = [
   { name: 'Help & Support', href: '/help', icon: HelpCircle },
 ];
 
+// Skeleton loader for search results
+const SearchResultSkeleton = () => (
+  <div className="flex items-center" style={{ padding: '12px 16px', gap: '12px' }}>
+    <div 
+      style={{ 
+        width: '64px', 
+        height: '64px', 
+        backgroundColor: '#e5e7eb',
+        borderRadius: '4px',
+        animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+      }}
+    ></div>
+    <div style={{ flex: 1 }}>
+      <div style={{ height: '16px', backgroundColor: '#e5e7eb', borderRadius: '4px', marginBottom: '6px', width: '80%' }}></div>
+      <div style={{ height: '14px', backgroundColor: '#e5e7eb', borderRadius: '4px', marginBottom: '6px', width: '60%' }}></div>
+      <div style={{ height: '12px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '40%' }}></div>
+    </div>
+  </div>
+);
+
+// Search component
+const SearchBarWithDropdown = () => {
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const searchRef = React.useRef(null);
+  const inputRef = React.useRef(null);
+
+  const getBookDuration = (bookTitle) => {
+    const durations = {
+      'How to Win Friends and Influence People': '03:24',
+      "Can't Hurt Me": '04:52',
+      'Mastery': '04:40',
+      'Atomic Habits': '03:24',
+      'How to Talk to Anyone': '03:22',
+      'Jim Collins': '03:01',
+      'Good to Great': '03:01',
+      'The Intelligent Investor': '02:48',
+      'The 4 Day Week': '02:20',
+      'The 7 Habits of Highly Effective People': '04:36',
+      'Zero to One': '03:24',
+      'Rich Dad Poor Dad': '05:38',
+      'The 10X Rule': '04:15',
+      'Deep Work': '04:02',
+      'The Second Machine Age': '03:36',
+      'The 5 Second Rule': '02:45',
+      'The 12 Week Year': '03:36',
+      'Getting Things Done': '02:24',
+      'The Power of Now': '03:12',
+      'Think and Grow Rich': '04:25',
+      'The Lean Startup': '03:23'
+    };
+    return durations[bookTitle] || '03:24';
+  };
+
+  useEffect(() => {
+    if (searchQuery.trim().length === 0) {
+      setShowDropdown(false);
+      setSearchResults([]);
+      return;
+    }
+
+    setShowDropdown(true);
+    setIsSearching(true);
+
+    const searchBooks = async () => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Fetch from all three endpoints
+        const [recommendedRes, suggestedRes, selectedRes] = await Promise.all([
+          fetch('https://us-central1-summaristt.cloudfunctions.net/getBooks?status=recommended'),
+          fetch('https://us-central1-summaristt.cloudfunctions.net/getBooks?status=suggested'),
+          fetch('https://us-central1-summaristt.cloudfunctions.net/getBooks?status=selected')
+        ]);
+
+        const recommended = await recommendedRes.json();
+        const suggested = await suggestedRes.json();
+        const selected = await selectedRes.json();
+
+        // Combine all books and remove duplicates
+        const allBooks = [...(recommended || []), ...(suggested || []), ...(selected || [])];
+        const uniqueBooks = allBooks.filter((book, index, self) => 
+          index === self.findIndex(b => b.id === book.id)
+        );
+
+        // Filter based on search query
+        const filtered = uniqueBooks.filter(book => 
+          book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          book.author.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
+        setSearchResults(filtered.slice(0, 5));
+      } catch (err) {
+        console.error('Search error:', err);
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    const debounceTimer = setTimeout(searchBooks, 300);
+    return () => clearTimeout(debounceTimer);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleBookClick = (bookId) => {
+    router.push(`/book/${bookId}`);
+    setSearchQuery('');
+    setShowDropdown(false);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setShowDropdown(false);
+    inputRef.current?.focus();
+  };
+
+  return (
+    <div ref={searchRef} style={{ position: 'relative', width: '360px' }}>
+      <div 
+        style={{ 
+          position: 'relative',
+          display: 'flex',
+          alignItems: 'center'
+        }}
+      >
+        <input
+          ref={inputRef}
+          type="text"
+          placeholder="Search for books"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onFocus={() => searchQuery && setShowDropdown(true)}
+          className="outline-none transition-all duration-200"
+          style={{
+            paddingLeft: '20px',
+            paddingRight: searchQuery ? '80px' : '50px',
+            paddingTop: '14px',
+            paddingBottom: '14px',
+            width: '100%',
+            backgroundColor: showDropdown ? '#ffffff' : '#f1f6f4',
+            border: showDropdown ? '2px solid #2bd97c' : '2px solid #e4e7eb',
+            borderRadius: '8px',
+            fontSize: '16px',
+            color: '#032b41',
+          }}
+        />
+        <div
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center"
+          style={{ height: '20px' }}
+        >
+          {searchQuery && (
+            <button
+              onClick={clearSearch}
+              style={{
+                padding: '4px',
+                marginRight: '8px',
+                backgroundColor: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <X style={{ height: '16px', width: '16px', color: '#6b757b' }} />
+            </button>
+          )}
+          <div style={{ width: '1px', height: '44px', backgroundColor: '#d1d5db', marginRight: '12px' }} />
+          <Search style={{ height: '20px', width: '20px', color: '#6b757b' }} />
+        </div>
+      </div>
+
+      {showDropdown && (
+        <div 
+          style={{
+            position: 'absolute',
+            top: 'calc(100% + 8px)',
+            left: 0,
+            right: 0,
+            backgroundColor: '#ffffff',
+            borderRadius: '8px',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            maxHeight: '400px',
+            overflowY: 'auto',
+            zIndex: 2000
+          }}
+        >
+          {isSearching ? (
+            <>
+              {[...Array(3)].map((_, i) => (
+                <SearchResultSkeleton key={i} />
+              ))}
+            </>
+          ) : searchResults.length > 0 ? (
+            searchResults.map((book) => (
+              <div
+                key={book.id}
+                onClick={() => handleBookClick(book.id)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '12px 16px',
+                  gap: '12px',
+                  cursor: 'pointer',
+                  borderBottom: '1px solid #f3f4f6',
+                  transition: 'background-color 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f9fafb';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
+              >
+                <img
+                  src={book.imageLink}
+                  alt={book.title}
+                  style={{
+                    width: '64px',
+                    height: '64px',
+                    objectFit: 'cover',
+                    borderRadius: '4px'
+                  }}
+                />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <h4
+                    style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#032B41',
+                      marginBottom: '4px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    {book.title}
+                  </h4>
+                  <p
+                    style={{
+                      fontSize: '13px',
+                      color: '#6b7280',
+                      marginBottom: '4px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    {book.author}
+                  </p>
+                  <div className="flex items-center" style={{ gap: '4px' }}>
+                    <Clock style={{ width: '12px', height: '12px', color: '#6b7280' }} />
+                    <span style={{ fontSize: '12px', color: '#6b7280' }}>
+                      {getBookDuration(book.title)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div
+              style={{
+                padding: '24px 16px',
+                textAlign: 'center',
+                color: '#6b7280',
+                fontSize: '14px'
+              }}
+            >
+              No books found for "{searchQuery}"
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 0, sidebarExtrasBelowSearch }) => {
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -38,6 +328,23 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
     });
     return () => unsubscribe();
   }, []);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
 
   const handleLogout = async () => {
     try {
@@ -50,15 +357,31 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
 
   return (
     <div className="flex min-h-screen" style={{ fontFamily: 'Roboto, sans-serif' }}>
-      {/* Sidebar (fixed). Ends above the player when bottomOffset > 0 */}
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          onClick={() => setIsMobileMenuOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 1999,
+            display: 'none'
+          }}
+          className="mobile-overlay"
+        />
+      )}
+
+      {/* Sidebar */}
       <div
-        className="fixed left-0 top-0 flex flex-col border-r"
+        className={`fixed left-0 top-0 flex flex-col border-r ${isMobileMenuOpen ? 'mobile-menu-open' : ''}`}
         style={{
           width: '240px',
           backgroundColor: '#f7f8fc',
           borderColor: '#e4e5e7',
-          zIndex: 1000,
+          zIndex: 2000,
           bottom: bottomOffset > 0 ? bottomOffset : 0,
+          transition: 'transform 0.3s ease-in-out'
         }}
       >
         {/* Logo */}
@@ -71,12 +394,10 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
           </Link>
         </div>
 
-        {/* Nav (scrollable) */}
         <nav
           className="flex-1 flex flex-col overflow-auto"
           style={{ paddingTop: '40px', paddingBottom: bottomOffset > 0 ? 16 : 40 }}
         >
-          {/* Main items */}
           <ul style={{ paddingLeft: '32px', paddingRight: '32px' }}>
             {mainNavigationItems.map((item) => {
               const Icon = item.icon;
@@ -120,17 +441,14 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
             })}
           </ul>
 
-          {/* Slot: extras below Search (read page only) */}
           {sidebarExtrasBelowSearch && (
             <div style={{ paddingLeft: '32px', paddingRight: '32px', marginTop: '4px', marginBottom: '24px' }}>
               {sidebarExtrasBelowSearch}
             </div>
           )}
 
-          {/* Push bottom items down */}
           <div className="flex-1" />
 
-          {/* Bottom items */}
           <ul style={{ paddingLeft: '32px', paddingRight: '32px' }}>
             {bottomNavigationItems.map((item) => {
               const Icon = item.icon;
@@ -172,7 +490,6 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
               );
             })}
 
-            {/* Auth */}
             <li key="auth">
               {!loading &&
                 (user ? (
@@ -235,7 +552,6 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
         </nav>
       </div>
 
-      {/* Main content area */}
       <div className="flex-1 flex flex-col" style={{ marginLeft: '240px' }}>
         <header
           className="border-b"
@@ -249,50 +565,105 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
           }}
         >
           <div style={{ padding: '32px 40px', height: '100%' }}>
-            <div className="flex items-center justify-end h-full">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search for books"
-                  className="outline-none focus:ring-2 focus:ring-offset-0 transition-all duration-200"
-                  style={{
-                    paddingLeft: '20px',
-                    paddingRight: '50px',
-                    paddingTop: '14px',
-                    paddingBottom: '14px',
-                    width: '360px',
-                    backgroundColor: '#f1f6f4',
-                    border: '2px solid #e4e7eb',
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    color: '#032b41',
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#2bd97c';
-                    e.target.style.backgroundColor = '#ffffff';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = '#e4e7eb';
-                    e.target.style.backgroundColor = '#f1f6f4';
-                  }}
-                />
-                <div
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center"
-                  style={{ height: '20px' }}
-                >
-                  <div style={{ width: '1px', height: '44px', backgroundColor: '#d1d5db', marginRight: '12px' }} />
-                  <Search className="pointer-events-none" style={{ height: '20px', width: '20px', color: '#6b757b' }} />
-                </div>
-              </div>
+            <div className="flex items-center justify-end h-full" style={{ gap: '16px' }}>
+              {/* Mobile Hamburger Menu */}
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="hamburger-menu"
+                style={{
+                  display: 'none',
+                  flexDirection: 'column',
+                  gap: '4px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '8px'
+                }}
+                aria-label="Toggle menu"
+              >
+                <span style={{ width: '24px', height: '3px', backgroundColor: '#032B41', borderRadius: '2px' }}></span>
+                <span style={{ width: '24px', height: '3px', backgroundColor: '#032B41', borderRadius: '2px' }}></span>
+                <span style={{ width: '24px', height: '3px', backgroundColor: '#032B41', borderRadius: '2px' }}></span>
+              </button>
+
+              <SearchBarWithDropdown />
             </div>
           </div>
         </header>
 
-        {/* Content with bottom padding = player height (if any) */}
         <main className="flex-1" style={{ padding: '40px', backgroundColor: 'white', paddingBottom: bottomOffset }}>
           {children}
         </main>
       </div>
+
+      <style jsx>{`
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 600px) {
+          .hamburger-menu {
+            display: flex !important;
+          }
+
+          /* Hide sidebar by default on mobile */
+          .fixed.left-0.top-0.flex.flex-col.border-r {
+            transform: translateX(-100%);
+          }
+
+          /* Show sidebar when menu is open */
+          .mobile-menu-open {
+            transform: translateX(0) !important;
+          }
+
+          /* Show overlay on mobile */
+          .mobile-overlay {
+            display: block !important;
+          }
+
+          /* Adjust header padding on mobile */
+          header > div {
+            padding: 16px 20px !important;
+          }
+
+          /* Better spacing for header items on mobile */
+          .flex.items-center.justify-end.h-full {
+            gap: 12px !important;
+          }
+
+          /* Adjust main content margin */
+          .flex-1.flex.flex-col {
+            margin-left: 0 !important;
+          }
+
+          /* Adjust main content padding on mobile */
+          main {
+            padding: 20px 16px !important;
+          }
+
+          /* Adjust search bar width on mobile */
+          .search-input {
+            width: 100% !important;
+            max-width: 180px;
+          }
+
+          /* Constrain content width on mobile */
+          .flex.justify-center {
+            padding: 0 !important;
+          }
+
+          .flex.justify-center > div {
+            max-width: 100% !important;
+            padding: 0 !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };

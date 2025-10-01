@@ -3,10 +3,72 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import SidebarLayout from '../components/SidebarLayout';
-import BookCard from '../components/BookCard';
-import { Play, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Play, Clock } from 'lucide-react';
 
-// Smaller BookCard component to match original design
+// Skeleton loader for the selected book card
+const SelectedBookSkeleton = () => (
+  <div 
+    className="rounded-lg flex items-start"
+    style={{ 
+      backgroundColor: '#e5e7eb',
+      maxWidth: '640px', 
+      minHeight: '144px',
+      padding: '32px 24px 24px 24px',
+      animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+    }}
+  >
+    <div className="flex-1" style={{ paddingRight: '20px', maxWidth: '288px' }}>
+      <div style={{ height: '16px', backgroundColor: '#d1d5db', borderRadius: '4px', marginBottom: '8px', width: '100%' }}></div>
+      <div style={{ height: '16px', backgroundColor: '#d1d5db', borderRadius: '4px', marginBottom: '8px', width: '90%' }}></div>
+      <div style={{ height: '16px', backgroundColor: '#d1d5db', borderRadius: '4px', width: '80%' }}></div>
+    </div>
+    
+    <div style={{ width: '1px', height: '112px', backgroundColor: '#d1d5db', margin: '0 20px' }}></div>
+    
+    <div className="flex items-center" style={{ gap: '12px' }}>
+      <div style={{ width: '88px', height: '128px', backgroundColor: '#d1d5db', borderRadius: '8px' }}></div>
+      <div className="flex flex-col">
+        <div style={{ height: '20px', width: '120px', backgroundColor: '#d1d5db', borderRadius: '4px', marginBottom: '8px' }}></div>
+        <div style={{ height: '14px', width: '100px', backgroundColor: '#d1d5db', borderRadius: '4px', marginBottom: '12px' }}></div>
+        <div className="flex items-center" style={{ gap: '8px' }}>
+          <div style={{ width: '36px', height: '36px', backgroundColor: '#d1d5db', borderRadius: '50%' }}></div>
+          <div style={{ height: '14px', width: '80px', backgroundColor: '#d1d5db', borderRadius: '4px' }}></div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// Skeleton loader for book cards
+const BookCardSkeleton = () => (
+  <div 
+    className="flex-shrink-0" 
+    style={{ width: '140px', paddingTop: '40px' }}
+  >
+    <div style={{ marginBottom: '8px' }}>
+      <div 
+        style={{ 
+          width: '100%', 
+          height: '180px', 
+          backgroundColor: '#e5e7eb',
+          borderRadius: '8px',
+          animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+        }}
+      ></div>
+    </div>
+    
+    <div style={{ paddingTop: '2px' }}>
+      <div style={{ height: '16px', backgroundColor: '#e5e7eb', borderRadius: '4px', marginBottom: '6px', width: '100%' }}></div>
+      <div style={{ height: '14px', backgroundColor: '#e5e7eb', borderRadius: '4px', marginBottom: '6px', width: '80%' }}></div>
+      <div className="flex items-center justify-between" style={{ marginTop: '6px' }}>
+        <div style={{ height: '12px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '40%' }}></div>
+        <div style={{ height: '12px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '30%' }}></div>
+      </div>
+    </div>
+  </div>
+);
+
+// Smaller BookCard component
 const RecommendedBookCard = ({ book }) => {
   const router = useRouter();
 
@@ -14,10 +76,8 @@ const RecommendedBookCard = ({ book }) => {
     router.push(`/book/${book.id}`);
   };
 
-  // Hardcoded durations matching the original site
   const getBookDuration = (bookTitle) => {
     const durations = {
-      // Recommended Books
       'How to Win Friends and Influence People': '03:24',
       "Can't Hurt Me": '04:52', 
       'Mastery': '04:40',
@@ -27,8 +87,6 @@ const RecommendedBookCard = ({ book }) => {
       'Good to Great': '03:01',
       'The Intelligent Investor': '02:48',
       'The 4 Day Week': '02:20',
-      
-      // Suggested Books  
       'The 7 Habits of Highly Effective People': '04:36',
       'Rich Dad Poor Dad': '05:38',
       'The Power of Now': '03:12',
@@ -83,32 +141,22 @@ const RecommendedBookCard = ({ book }) => {
         >
           {book.title}
         </h3>
-        <p 
-          style={{ color: '#6b7280', marginBottom: '2px', fontSize: '14px' }}
-        >
+        <p style={{ color: '#6b7280', marginBottom: '2px', fontSize: '14px' }}>
           {book.author}
         </p>
         
-        {/* Subtitle */}
         {book.subTitle && (
-          <p 
-            style={{ color: '#394547', marginBottom: '6px', fontSize: '14px' }}
-          >
+          <p style={{ color: '#394547', marginBottom: '6px', fontSize: '14px' }}>
             {book.subTitle}
           </p>
         )}
         
-        {/* Duration and Rating row */}
         <div className="flex items-center justify-between text-small" style={{ marginTop: '6px' }}>
-          {/* Duration - Using hardcoded durations from original site */}
           <div className="flex items-center" style={{ gap: '3px', color: '#6b7280' }}>
             <Clock className="w-3 h-3" />
-            <span>
-              {getBookDuration(book.title)}
-            </span>
+            <span>{getBookDuration(book.title)}</span>
           </div>
           
-          {/* Rating */}
           <div className="flex items-center" style={{ gap: '3px', color: '#6b7280' }}>
             <span>☆</span>
             <span>{book.averageRating || '4.0'}</span>
@@ -130,7 +178,6 @@ const ForYouPage = () => {
   const [suggestedLoading, setSuggestedLoading] = useState(true);
   const [suggestedError, setSuggestedError] = useState(null);
 
-  // Fetch selected book from API
   useEffect(() => {
     const fetchSelectedBook = async () => {
       try {
@@ -142,13 +189,16 @@ const ForYouPage = () => {
         }
         
         const data = await response.json();
-        // The API returns an array, so take the first book
+        
+        // Add 2 second delay before showing content
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
         if (data && data.length > 0) {
           setSelectedBook(data[0]);
         }
       } catch (err) {
         console.error('Error fetching selected book:', err);
-        // Fallback to the original hardcoded book if API fails
+        await new Promise(resolve => setTimeout(resolve, 2000));
         setSelectedBook({
           id: '1',
           title: 'The Lean Startup',
@@ -167,14 +217,12 @@ const ForYouPage = () => {
     fetchSelectedBook();
   }, []);
 
-  // Handle selected book click
   const handleSelectedBookClick = () => {
     if (selectedBook) {
       router.push(`/book/${selectedBook.id}`);
     }
   };
 
-  // Fetch recommended books from API
   useEffect(() => {
     const fetchRecommendedBooks = async () => {
       try {
@@ -186,11 +234,15 @@ const ForYouPage = () => {
         }
         
         const data = await response.json();
+        
+        // Add 2 second delay before showing content
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
         setRecommendedBooks(data || []);
       } catch (err) {
         console.error('Error fetching recommended books:', err);
+        await new Promise(resolve => setTimeout(resolve, 2000));
         setError(err.message);
-        // No fallback - use empty array to show error instead
         setRecommendedBooks([]);
       } finally {
         setLoading(false);
@@ -200,7 +252,6 @@ const ForYouPage = () => {
     fetchRecommendedBooks();
   }, []);
 
-  // Fetch suggested books from API
   useEffect(() => {
     const fetchSuggestedBooks = async () => {
       try {
@@ -212,11 +263,15 @@ const ForYouPage = () => {
         }
         
         const data = await response.json();
+        
+        // Add 2 second delay before showing content
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
         setSuggestedBooks(data || []);
       } catch (err) {
         console.error('Error fetching suggested books:', err);
+        await new Promise(resolve => setTimeout(resolve, 2000));
         setSuggestedError(err.message);
-        // No fallback - use empty array to show error instead
         setSuggestedBooks([]);
       } finally {
         setSuggestedLoading(false);
@@ -228,11 +283,9 @@ const ForYouPage = () => {
 
   return (
     <SidebarLayout>
-      {/* Main content container - centered and constrained width */}
       <div className="flex justify-center" style={{ width: '100%' }}>
         <div style={{ maxWidth: '800px', width: '100%' }}>
         
-        {/* Selected just for you section - centered */}
         <section style={{ marginBottom: '32px' }}>
           <h2 
             className="text-2xl font-bold" 
@@ -242,11 +295,7 @@ const ForYouPage = () => {
           </h2>
           
           {selectedLoading ? (
-            <div className="flex items-center justify-center" style={{ height: '144px' }}>
-              <div className="text-lg" style={{ color: '#6b7280' }}>
-                Loading selected book...
-              </div>
-            </div>
+            <SelectedBookSkeleton />
           ) : selectedBook ? (
             <div 
               className="rounded-lg flex items-start cursor-pointer transition-transform hover:scale-[1.02]"
@@ -258,7 +307,6 @@ const ForYouPage = () => {
               }}
               onClick={handleSelectedBookClick}
             >
-              {/* Left side content - subtitle */}
               <div className="flex-1" style={{ paddingRight: '20px', maxWidth: '288px' }}>
                 <div 
                   className="leading-relaxed"
@@ -268,7 +316,6 @@ const ForYouPage = () => {
                 </div>
               </div>
               
-              {/* Vertical divider line */}
               <div 
                 style={{ 
                   width: '1px', 
@@ -278,9 +325,7 @@ const ForYouPage = () => {
                 }}
               ></div>
               
-              {/* Right side content */}
               <div className="flex items-center" style={{ gap: '12px' }}>
-                {/* Book cover */}
                 <img 
                   src={selectedBook.imageLink} 
                   alt={selectedBook.title}
@@ -288,7 +333,6 @@ const ForYouPage = () => {
                   style={{ width: '88px', height: '128px' }}
                 />
                 
-                {/* Book info and controls */}
                 <div className="flex flex-col">
                   <h3 
                     className="text-xl font-bold"
@@ -319,7 +363,7 @@ const ForYouPage = () => {
                         e.currentTarget.style.backgroundColor = '#000';
                       }}
                       onClick={(e) => {
-                        e.stopPropagation(); // Prevent the card click when play button is clicked
+                        e.stopPropagation();
                       }}
                     >
                       <Play className="w-4 h-4 fill-current" />
@@ -343,7 +387,6 @@ const ForYouPage = () => {
           )}
         </section>
 
-        {/* Recommended For You section */}
         <section style={{ marginBottom: '32px' }}>
           <div style={{ marginBottom: '24px' }}>
             <h2 
@@ -360,10 +403,10 @@ const ForYouPage = () => {
           </div>
           
           {loading ? (
-            <div className="flex items-center justify-center" style={{ height: '256px' }}>
-              <div className="text-lg" style={{ color: '#6b7280' }}>
-                Loading recommended books...
-              </div>
+            <div className="flex overflow-x-auto" style={{ gap: '26px', paddingBottom: '16px' }}>
+              {[...Array(5)].map((_, i) => (
+                <BookCardSkeleton key={i} />
+              ))}
             </div>
           ) : error ? (
             <div className="flex items-center justify-center" style={{ height: '256px' }}>
@@ -374,13 +417,10 @@ const ForYouPage = () => {
           ) : (
             <div className="relative">
               <div 
-                id="recommended-scroll"
                 className="flex overflow-x-auto scrollbar-hide"
                 style={{ 
                   gap: '26px',
                   paddingBottom: '16px',
-                  scrollbarWidth: 'none', 
-                  msOverflowStyle: 'none',
                   paddingRight: '20px'
                 }}
               >
@@ -392,7 +432,6 @@ const ForYouPage = () => {
           )}
         </section>
 
-        {/* Suggested Books section */}
         <section>
           <div style={{ marginBottom: '24px' }}>
             <h2 
@@ -409,10 +448,10 @@ const ForYouPage = () => {
           </div>
           
           {suggestedLoading ? (
-            <div className="flex items-center justify-center" style={{ height: '256px' }}>
-              <div className="text-lg" style={{ color: '#6b7280' }}>
-                Loading suggested books...
-              </div>
+            <div className="flex overflow-x-auto" style={{ gap: '28px', paddingBottom: '16px' }}>
+              {[...Array(5)].map((_, i) => (
+                <BookCardSkeleton key={i} />
+              ))}
             </div>
           ) : suggestedError ? (
             <div className="flex items-center justify-center" style={{ height: '256px' }}>
@@ -423,13 +462,10 @@ const ForYouPage = () => {
           ) : (
             <div className="relative">
               <div 
-                id="suggested-scroll"
                 className="flex overflow-x-auto scrollbar-hide"
                 style={{ 
                   gap: '28px',
                   paddingBottom: '16px',
-                  scrollbarWidth: 'none', 
-                  msOverflowStyle: 'none',
                   paddingRight: '20px'
                 }}
               >
@@ -444,6 +480,14 @@ const ForYouPage = () => {
       </div>
       
       <style jsx>{`
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
         .scrollbar-hide {
           -ms-overflow-style: none;
           scrollbar-width: none;
@@ -454,12 +498,6 @@ const ForYouPage = () => {
         .line-clamp-2 {
           display: -webkit-box;
           -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-        .line-clamp-1 {
-          display: -webkit-box;
-          -webkit-line-clamp: 1;
           -webkit-box-orient: vertical;
           overflow: hidden;
         }

@@ -8,6 +8,34 @@ import SidebarLayout from '../components/SidebarLayout';
 import LoginModal from '../components/LoginModal';
 import { Star, Clock } from 'lucide-react';
 
+// Skeleton loader for library book cards
+const LibraryBookSkeleton = () => (
+  <div>
+    <div 
+      style={{ 
+        width: '100%', 
+        aspectRatio: '3/4',
+        backgroundColor: '#e5e7eb',
+        borderRadius: '8px',
+        marginBottom: '12px',
+        animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+      }}
+    ></div>
+    
+    <div style={{ marginBottom: '4px' }}>
+      <div style={{ height: '14px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '100%', marginBottom: '4px' }}></div>
+      <div style={{ height: '14px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '80%', marginBottom: '4px' }}></div>
+    </div>
+    
+    <div style={{ height: '12px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '60%', marginBottom: '8px' }}></div>
+    
+    <div className="flex items-center justify-between">
+      <div style={{ height: '12px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '35%' }}></div>
+      <div style={{ height: '12px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '25%' }}></div>
+    </div>
+  </div>
+);
+
 const MyLibraryPage = () => {
   const router = useRouter();
   const [user, setUser] = useState(null);
@@ -22,25 +50,35 @@ const MyLibraryPage = () => {
       if (!user) {
         setIsLoginModalOpen(true);
       }
-      setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-  // Load saved books from localStorage
+  // Load saved books from localStorage with artificial delay
   useEffect(() => {
-    if (user) {
-      const books = JSON.parse(localStorage.getItem('savedBooks') || '[]');
-      setSavedBooks(books);
-    }
+    const loadSavedBooks = async () => {
+      if (user) {
+        setLoading(true);
+        
+        // Simulate loading delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        const books = JSON.parse(localStorage.getItem('savedBooks') || '[]');
+        setSavedBooks(books);
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
+    };
+
+    loadSavedBooks();
   }, [user]);
 
   // Hardcoded durations matching the original site
   const getBookDuration = (bookTitle) => {
     const durations = {
       'How to Win Friends and Influence People': '03:24',
-      "Can't Hurt Me": '04:52',
       "Can't Hurt Me": '04:52',
       'Mastery': '04:40',
       'Atomic Habits': '03:24',
@@ -78,18 +116,6 @@ const MyLibraryPage = () => {
     setIsLoginModalOpen(false);
   };
 
-  if (loading) {
-    return (
-      <SidebarLayout>
-        <div className="flex justify-center items-center" style={{ height: '500px' }}>
-          <div className="text-lg" style={{ color: '#6b7280' }}>
-            Loading...
-          </div>
-        </div>
-      </SidebarLayout>
-    );
-  }
-
   return (
     <>
       <SidebarLayout>
@@ -109,119 +135,142 @@ const MyLibraryPage = () => {
                 Saved Books
               </h2>
               
-              <p 
-                style={{ 
-                  color: '#6b7280', 
-                  fontSize: '14px',
-                  marginBottom: '24px'
-                }}
-              >
-                {savedBooks.length} item{savedBooks.length !== 1 ? 's' : ''}
-              </p>
+              {loading ? (
+                <>
+                  <div 
+                    style={{ 
+                      height: '14px',
+                      width: '60px',
+                      backgroundColor: '#e5e7eb',
+                      borderRadius: '4px',
+                      marginBottom: '24px',
+                      animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    }}
+                  ></div>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5" style={{ gap: '24px' }}>
+                    {[...Array(5)].map((_, i) => (
+                      <LibraryBookSkeleton key={i} />
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p 
+                    style={{ 
+                      color: '#6b7280', 
+                      fontSize: '14px',
+                      marginBottom: '24px'
+                    }}
+                  >
+                    {savedBooks.length} item{savedBooks.length !== 1 ? 's' : ''}
+                  </p>
 
-              {savedBooks.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5" style={{ gap: '24px' }}>
-                  {savedBooks.map((book, index) => (
-                    <div 
-                      key={book.id || index}
-                      className="cursor-pointer transition-transform hover:scale-105"
-                      onClick={() => handleBookClick(book.id)}
-                    >
-                      {/* Book Cover Container */}
-                      <div className="relative" style={{ marginBottom: '12px' }}>
-                        <img 
-                          src={book.imageLink} 
-                          alt={book.title}
-                          className="w-full rounded-lg shadow-lg"
-                          style={{ 
-                            aspectRatio: '3/4',
-                            objectFit: 'cover'
-                          }}
-                        />
-                        
-                        {/* Premium Badge */}
-                        {book.subscriptionRequired && (
-                          <div 
-                            className="absolute top-2 left-2 text-white text-xs font-bold rounded"
-                            style={{ 
-                              backgroundColor: '#032B41',
-                              padding: '4px 8px'
-                            }}
-                          >
-                            Premium
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Book Info */}
-                      <div>
-                        <h3 
-                          className="font-bold line-clamp-2"
-                          style={{ 
-                            color: '#032B41',
-                            fontSize: '14px',
-                            marginBottom: '4px',
-                            lineHeight: '1.3'
-                          }}
+                  {savedBooks.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5" style={{ gap: '24px' }}>
+                      {savedBooks.map((book, index) => (
+                        <div 
+                          key={book.id || index}
+                          className="cursor-pointer transition-transform hover:scale-105"
+                          onClick={() => handleBookClick(book.id)}
                         >
-                          {book.title}
-                        </h3>
-                        
-                        <p 
-                          className="line-clamp-1"
-                          style={{ 
-                            color: '#6b7280',
-                            fontSize: '12px',
-                            marginBottom: '4px'
-                          }}
-                        >
-                          {book.author}
-                        </p>
-
-                        {book.subTitle && (
-                          <p 
-                            className="line-clamp-2"
-                            style={{ 
-                              color: '#6b7280',
-                              fontSize: '12px',
-                              marginBottom: '8px',
-                              lineHeight: '1.2'
-                            }}
-                          >
-                            {book.subTitle}
-                          </p>
-                        )}
-
-                        {/* Rating and Duration */}
-                        <div className="flex items-center justify-between" style={{ fontSize: '12px' }}>
-                          <div className="flex items-center" style={{ gap: '4px' }}>
-                            <Clock className="w-3 h-3" style={{ color: '#6b7280' }} />
-                            <span style={{ color: '#6b7280' }}>
-                              {getBookDuration(book.title)}
-                            </span>
+                          {/* Book Cover Container */}
+                          <div className="relative" style={{ marginBottom: '12px' }}>
+                            <img 
+                              src={book.imageLink} 
+                              alt={book.title}
+                              className="w-full rounded-lg shadow-lg"
+                              style={{ 
+                                aspectRatio: '3/4',
+                                objectFit: 'cover'
+                              }}
+                            />
+                            
+                            {/* Premium Badge */}
+                            {book.subscriptionRequired && (
+                              <div 
+                                className="absolute top-2 left-2 text-white text-xs font-bold rounded"
+                                style={{ 
+                                  backgroundColor: '#032B41',
+                                  padding: '4px 8px'
+                                }}
+                              >
+                                Premium
+                              </div>
+                            )}
                           </div>
-                          
-                          <div className="flex items-center" style={{ gap: '2px' }}>
-                            <Star className="w-3 h-3" style={{ color: '#fbbf24', fill: '#fbbf24' }} />
-                            <span style={{ color: '#6b7280' }}>
-                              {formatRating(book.averageRating)}
-                            </span>
+
+                          {/* Book Info */}
+                          <div>
+                            <h3 
+                              className="font-bold line-clamp-2"
+                              style={{ 
+                                color: '#032B41',
+                                fontSize: '14px',
+                                marginBottom: '4px',
+                                lineHeight: '1.3'
+                              }}
+                            >
+                              {book.title}
+                            </h3>
+                            
+                            <p 
+                              className="line-clamp-1"
+                              style={{ 
+                                color: '#6b7280',
+                                fontSize: '12px',
+                                marginBottom: '4px'
+                              }}
+                            >
+                              {book.author}
+                            </p>
+
+                            {book.subTitle && (
+                              <p 
+                                className="line-clamp-2"
+                                style={{ 
+                                  color: '#6b7280',
+                                  fontSize: '12px',
+                                  marginBottom: '8px',
+                                  lineHeight: '1.2'
+                                }}
+                              >
+                                {book.subTitle}
+                              </p>
+                            )}
+
+                            {/* Rating and Duration */}
+                            <div className="flex items-center justify-between" style={{ fontSize: '12px' }}>
+                              <div className="flex items-center" style={{ gap: '4px' }}>
+                                <Clock className="w-3 h-3" style={{ color: '#6b7280' }} />
+                                <span style={{ color: '#6b7280' }}>
+                                  {getBookDuration(book.title)}
+                                </span>
+                              </div>
+                              
+                              <div className="flex items-center" style={{ gap: '2px' }}>
+                                <Star className="w-3 h-3" style={{ color: '#fbbf24', fill: '#fbbf24' }} />
+                                <span style={{ color: '#6b7280' }}>
+                                  {formatRating(book.averageRating)}
+                                </span>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div 
-                  className="text-center"
-                  style={{ 
-                    padding: '48px 0',
-                    color: '#6b7280'
-                  }}
-                >
-                  No saved books yet. Start building your library!
-                </div>
+                  ) : (
+                    <div 
+                      className="text-center"
+                      style={{ 
+                        padding: '48px 0',
+                        color: '#6b7280'
+                      }}
+                    >
+                      No saved books yet. Start building your library!
+                    </div>
+                  )}
+                </>
               )}
             </div>
 
@@ -307,6 +356,29 @@ const MyLibraryPage = () => {
           </div>
         </div>
       )}
+
+      <style jsx>{`
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+        .line-clamp-1 {
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        .line-clamp-2 {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      `}</style>
     </>
   );
 };
