@@ -298,7 +298,7 @@ const ForYouPage = () => {
             <SelectedBookSkeleton />
           ) : selectedBook ? (
             <div 
-              className="rounded-lg flex items-start cursor-pointer transition-transform hover:scale-[1.02]"
+              className="rounded-lg flex lg:flex-row justify-center flex-col items-start cursor-pointer transition-transform hover:scale-[1.02]"
               style={{ 
                 backgroundColor: '#FBEFD6', 
                 maxWidth: '640px', 

@@ -745,6 +745,17 @@ button:disabled {
 
 /* The problematic CSS has been removed and the media query has been updated */
 
+@media (max-width: 600px) {
+  #landing {
+    margin-top: 40px;
+  }
+
+  .landing__wrapper {
+    transform: translateY(0) translateX(0) !important;
+  }
+}
+
+
 @media (max-width: 768px) {
   .landing__content {
     display: flex;
@@ -862,6 +873,25 @@ button:disabled {
 
    .footer__block {
     padding: 0;
+  }
+
+   #landing {
+    margin-top: 60px; /* Add breathing room from navbar */
+  }
+
+  .landing__wrapper {
+    transform: translateY(0) translateX(0) !important; /* Remove all transforms */
+    justify-content: center; /* Center the content */
+  }
+
+  .landing__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 540px;
+    margin: 0 auto; /* Center horizontally */
+    transform: translateX(-90px);
   }
 
 }
