@@ -252,7 +252,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="container max-w-7xl mx-auto sm:translate-x-36 -translate-y-36">
+      <section id="features" className="container max-w-7xl mx-auto xl:translate-x-36 -translate-y-36">
         <h2 className="section__title text-3xl font-semibold mb-12 text-center sm:text-left">
           Understand books in few minutes
         </h2>
@@ -289,7 +289,7 @@ export default function Home() {
       </section>
 
       {/* Reviews Section */}
-      <section id="reviews" className="container max-w-7xl mx-auto sm:translate-x-36 -translate-y-42">
+      <section id="reviews" className="container max-w-7xl mx-auto xl:translate-x-36 -translate-y-42">
         <h2 className="section__title text-3xl font-semibold mb-12 text-center">What our members say</h2>
         <div className="reviews__wrapper">
           {[
@@ -357,7 +357,7 @@ export default function Home() {
       </section>
 
       {/* Numbers Section */}
-      <section id="numbers" className="container max-w-7xl mx-auto sm:translate-x-36 -translate-y-35">
+      <section id="numbers" className="container max-w-7xl mx-auto xl:translate-x-36 -translate-y-35">
         <h2 className="section__title text-3xl font-semibold mb-12 text-center">Start growing with Summarist now</h2>
         <div className="numbers__wrapper flex flex-col sm:flex-row justify-around gap-12 text-center">
           <div className="numbers max-w-xs">
