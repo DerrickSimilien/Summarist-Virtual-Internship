@@ -794,6 +794,7 @@ button:disabled {
     grid-template-columns: 1fr; /* Stack columns vertically on mobile */
     gap: 32px;
     margin-bottom: 32px;
+    /* padding: 0 24px; */
   }
 
   .statistics__content {
@@ -905,6 +906,11 @@ button:disabled {
     max-width: 540px;
     margin: 0 auto; /* Center horizontally */
     transform: translateX(-90px);
+  }
+
+   #features {
+    transform: translateX(0) !important;
+     padding: 0 24px;
   }
 
 }
