@@ -931,6 +931,15 @@ button:disabled {
     padding-left: 30px;
   }
 
+  #numbers {
+    transform: translateX(0) !important;
+  }
+
+    .numbers__wrapper {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
   
 }
 
