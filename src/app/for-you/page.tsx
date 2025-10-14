@@ -5,10 +5,9 @@ import { useRouter } from 'next/navigation';
 import SidebarLayout from '../components/SidebarLayout';
 import { Play, Clock } from 'lucide-react';
 
-// Skeleton loader for the selected book card
 const SelectedBookSkeleton = () => (
   <div 
-    className="rounded-lg flex items-start"
+    className="rounded-lg flex items-start selected-book-skeleton"
     style={{ 
       backgroundColor: '#e5e7eb',
       maxWidth: '640px', 
@@ -23,7 +22,7 @@ const SelectedBookSkeleton = () => (
       <div style={{ height: '16px', backgroundColor: '#d1d5db', borderRadius: '4px', width: '80%' }}></div>
     </div>
     
-    <div style={{ width: '1px', height: '112px', backgroundColor: '#d1d5db', margin: '0 20px' }}></div>
+    <div className="book-divider" style={{ width: '1px', height: '112px', backgroundColor: '#d1d5db', margin: '0 20px' }}></div>
     
     <div className="flex items-center" style={{ gap: '12px' }}>
       <div style={{ width: '88px', height: '128px', backgroundColor: '#d1d5db', borderRadius: '8px' }}></div>
@@ -39,7 +38,6 @@ const SelectedBookSkeleton = () => (
   </div>
 );
 
-// Skeleton loader for book cards
 const BookCardSkeleton = () => (
   <div 
     className="flex-shrink-0" 
@@ -68,7 +66,6 @@ const BookCardSkeleton = () => (
   </div>
 );
 
-// Smaller BookCard component
 const RecommendedBookCard = ({ book }) => {
   const router = useRouter();
 
@@ -190,7 +187,6 @@ const ForYouPage = () => {
         
         const data = await response.json();
         
-        // Add 2 second delay before showing content
         await new Promise(resolve => setTimeout(resolve, 2000));
         
         if (data && data.length > 0) {
@@ -235,7 +231,6 @@ const ForYouPage = () => {
         
         const data = await response.json();
         
-        // Add 2 second delay before showing content
         await new Promise(resolve => setTimeout(resolve, 2000));
         
         setRecommendedBooks(data || []);
@@ -264,7 +259,6 @@ const ForYouPage = () => {
         
         const data = await response.json();
         
-        // Add 2 second delay before showing content
         await new Promise(resolve => setTimeout(resolve, 2000));
         
         setSuggestedBooks(data || []);
@@ -298,7 +292,7 @@ const ForYouPage = () => {
             <SelectedBookSkeleton />
           ) : selectedBook ? (
             <div 
-              className="rounded-lg flex lg:flex-row justify-center flex-col items-start cursor-pointer transition-transform hover:scale-[1.02]"
+              className="selected-book-card rounded-lg flex lg:flex-row justify-center flex-col items-start cursor-pointer transition-transform hover:scale-[1.02]"
               style={{ 
                 backgroundColor: '#FBEFD6', 
                 maxWidth: '640px', 
@@ -307,7 +301,7 @@ const ForYouPage = () => {
               }}
               onClick={handleSelectedBookClick}
             >
-              <div className="flex-1" style={{ paddingRight: '20px', maxWidth: '288px' }}>
+              <div className="book-description flex-1" style={{ paddingRight: '20px', maxWidth: '288px' }}>
                 <div 
                   className="leading-relaxed"
                   style={{ fontSize: '16px', color: '#374151' }}
@@ -317,6 +311,7 @@ const ForYouPage = () => {
               </div>
               
               <div 
+                className="book-divider"
                 style={{ 
                   width: '1px', 
                   height: '112px', 
@@ -325,7 +320,7 @@ const ForYouPage = () => {
                 }}
               ></div>
               
-              <div className="flex items-center" style={{ gap: '12px' }}>
+              <div className="book-info flex items-center" style={{ gap: '12px' }}>
                 <img 
                   src={selectedBook.imageLink} 
                   alt={selectedBook.title}
@@ -500,6 +495,34 @@ const ForYouPage = () => {
           -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
           overflow: hidden;
+        }
+
+        @media (max-width: 600px) {
+          .selected-book-card {
+            flex-direction: column !important;
+            padding: 20px 16px !important;
+            max-width: 100% !important;
+          }
+
+          .book-description {
+            max-width: 100% !important;
+            padding-right: 0 !important;
+            margin-bottom: 16px;
+          }
+
+          .book-divider {
+            display: none !important;
+          }
+
+          .book-info {
+            width: 100%;
+            justify-content: flex-start;
+          }
+
+          .selected-book-skeleton {
+            flex-direction: column !important;
+            padding: 20px 16px !important;
+          }
         }
       `}</style>
     </SidebarLayout>

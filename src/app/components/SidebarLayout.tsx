@@ -94,7 +94,6 @@ const SearchBarWithDropdown = () => {
       try {
         await new Promise(resolve => setTimeout(resolve, 500));
 
-        // Fetch from all three endpoints
         const [recommendedRes, suggestedRes, selectedRes] = await Promise.all([
           fetch('https://us-central1-summaristt.cloudfunctions.net/getBooks?status=recommended'),
           fetch('https://us-central1-summaristt.cloudfunctions.net/getBooks?status=suggested'),
@@ -105,13 +104,11 @@ const SearchBarWithDropdown = () => {
         const suggested = await suggestedRes.json();
         const selected = await selectedRes.json();
 
-        // Combine all books and remove duplicates
         const allBooks = [...(recommended || []), ...(suggested || []), ...(selected || [])];
         const uniqueBooks = allBooks.filter((book, index, self) => 
           index === self.findIndex(b => b.id === book.id)
         );
 
-        // Filter based on search query
         const filtered = uniqueBooks.filter(book => 
           book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           book.author.toLowerCase().includes(searchQuery.toLowerCase())
@@ -154,7 +151,7 @@ const SearchBarWithDropdown = () => {
   };
 
   return (
-    <div ref={searchRef} style={{ position: 'relative', width: '360px' }}>
+    <div ref={searchRef} className="search-bar-container">
       <div 
         style={{ 
           position: 'relative',
@@ -329,12 +326,10 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
     return () => unsubscribe();
   }, []);
 
-  // Close mobile menu when route changes
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -357,7 +352,6 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
 
   return (
     <div className="flex min-h-screen" style={{ fontFamily: 'Roboto, sans-serif' }}>
-      {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div
           onClick={() => setIsMobileMenuOpen(false)}
@@ -372,7 +366,6 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
         />
       )}
 
-      {/* Sidebar */}
       <div
         className={`fixed left-0 top-0 flex flex-col border-r ${isMobileMenuOpen ? 'mobile-menu-open' : ''}`}
         style={{
@@ -384,7 +377,6 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
           transition: 'transform 0.3s ease-in-out'
         }}
       >
-        {/* Logo */}
         <div
           className="flex items-center border-b"
           style={{ padding: '32px 32px', borderColor: '#e4e5e7', height: '96px' }}
@@ -565,8 +557,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
           }}
         >
           <div style={{ padding: '32px 40px', height: '100%' }}>
-            <div className="flex items-center justify-end h-full" style={{ gap: '16px' }}>
-              {/* Mobile Hamburger Menu */}
+            <div className="flex items-center justify-end h-full header-content" style={{ gap: '16px' }}>
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="hamburger-menu"
@@ -606,61 +597,43 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
           }
         }
 
-        /* Mobile Responsive Styles */
         @media (max-width: 600px) {
           .hamburger-menu {
             display: flex !important;
+            order: -1;
           }
 
-          /* Hide sidebar by default on mobile */
+          .header-content {
+            justify-content: space-between !important;
+          }
+
+          .search-bar-container {
+            width: 180px !important;
+            flex-shrink: 1;
+          }
+
           .fixed.left-0.top-0.flex.flex-col.border-r {
             transform: translateX(-100%);
           }
 
-          /* Show sidebar when menu is open */
           .mobile-menu-open {
             transform: translateX(0) !important;
           }
 
-          /* Show overlay on mobile */
           .mobile-overlay {
             display: block !important;
           }
 
-          /* Adjust header padding on mobile */
           header > div {
             padding: 16px 20px !important;
           }
 
-          /* Better spacing for header items on mobile */
-          .flex.items-center.justify-end.h-full {
-            gap: 12px !important;
-          }
-
-          /* Adjust main content margin */
           .flex-1.flex.flex-col {
             margin-left: 0 !important;
           }
 
-          /* Adjust main content padding on mobile */
           main {
             padding: 20px 16px !important;
-          }
-
-          /* Adjust search bar width on mobile */
-          .search-input {
-            width: 100% !important;
-            max-width: 180px;
-          }
-
-          /* Constrain content width on mobile */
-          .flex.justify-center {
-            padding: 0 !important;
-          }
-
-          .flex.justify-center > div {
-            max-width: 100% !important;
-            padding: 0 !important;
           }
         }
       `}</style>

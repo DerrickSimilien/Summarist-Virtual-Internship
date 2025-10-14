@@ -19,7 +19,6 @@ const BookDetailPage = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isBookSaved, setIsBookSaved] = useState(false);
 
-  // Listen for authentication state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
@@ -43,7 +42,6 @@ const BookDetailPage = () => {
         const data = await response.json();
         setBook(data);
 
-        // Check if book is already saved in localStorage
         const savedBooks = JSON.parse(localStorage.getItem('savedBooks') || '[]');
         const isBookAlreadySaved = savedBooks.some(savedBook => savedBook.id === id);
         setIsBookSaved(isBookAlreadySaved);
@@ -58,13 +56,10 @@ const BookDetailPage = () => {
     fetchBookDetails();
   }, [id]);
 
-  // Hardcoded durations matching the original site (same as ForYouPage)
   const getBookDuration = (bookTitle) => {
     const durations = {
-      // Recommended Books
       'How to Win Friends and Influence People': '03:24',
       "Can't Hurt Me": '04:52',
-      "Can't Hurt Me": '04:52', // curly apostrophe version
       'Mastery': '04:40',
       'Atomic Habits': '03:24',
       'How to Talk to Anyone': '03:22',
@@ -72,8 +67,6 @@ const BookDetailPage = () => {
       'Good to Great': '03:01',
       'The Intelligent Investor': '02:48',
       'The 4 Day Week': '02:20',
-      
-      // Suggested Books
       'The 7 Habits of Highly Effective People': '04:36',
       'Zero to One': '03:24',
       'Rich Dad Poor Dad': '05:38',
@@ -85,8 +78,6 @@ const BookDetailPage = () => {
       'The 12 Week Year': '03:36',
       'Getting Things Done': '02:24',
       'The Second Machine Age': '03:36',
-      
-      // Additional books that might appear
       'The Lean Startup': '03:23'
     };
     return durations[bookTitle] || '03:24';
@@ -96,47 +87,38 @@ const BookDetailPage = () => {
     return rating ? rating.toFixed(1) : '0.0';
   };
 
-  // Handle Read button click
   const handleReadClick = () => {
     if (!user) {
       setIsLoginModalOpen(true);
       return;
     }
     
-    // If book is premium, redirect to choose-plan page
     if (book?.subscriptionRequired) {
       router.push('/choose-plan');
       return;
     }
     
-    // Navigate to reading page for non-premium books
     router.push(`/book/${id}/read`);
   };
 
-  // Handle Listen button click
   const handleListenClick = () => {
     if (!user) {
       setIsLoginModalOpen(true);
       return;
     }
     
-    // If book is premium, redirect to choose-plan page
     if (book?.subscriptionRequired) {
       router.push('/choose-plan');
       return;
     }
     
-    // Navigate to reading page for non-premium books (same as Read button)
     router.push(`/book/${id}/read`);
   };
 
-  // Handle successful login
   const handleLogin = (userData) => {
     console.log('User logged in:', userData);
-    // The auth state listener will automatically update the user state
   };
 
-  // Handle save/unsave book
   const handleSaveBook = () => {
     if (!user) {
       setIsLoginModalOpen(true);
@@ -146,12 +128,10 @@ const BookDetailPage = () => {
     const savedBooks = JSON.parse(localStorage.getItem('savedBooks') || '[]');
     
     if (isBookSaved) {
-      // Remove book from saved books
       const updatedSavedBooks = savedBooks.filter(savedBook => savedBook.id !== id);
       localStorage.setItem('savedBooks', JSON.stringify(updatedSavedBooks));
       setIsBookSaved(false);
     } else {
-      // Add book to saved books
       const bookToSave = {
         ...book,
         id: id,
@@ -190,13 +170,12 @@ const BookDetailPage = () => {
   return (
     <>
       <SidebarLayout>
-        <div className="flex justify-center" style={{ width: '100%', padding: '0 24px' }}>
+        <div className="flex justify-center book-detail-container" style={{ width: '100%', padding: '0 24px' }}>
           <div style={{ maxWidth: '1000px', width: '100%' }}>
-            {/* Main content container */}
-            <div className="flex" style={{ gap: '48px', marginTop: '32px' }}>
+            <div className="book-detail-content flex" style={{ gap: '48px', marginTop: '32px' }}>
               
               {/* Left side - Book details */}
-              <div className="flex-1" style={{ maxWidth: '600px' }}>
+              <div className="book-info-section flex-1" style={{ maxWidth: '600px' }}>
                 
                 {/* Book title and author */}
                 <div style={{ marginBottom: '24px' }}>
@@ -233,7 +212,6 @@ const BookDetailPage = () => {
                     </p>
                   )}
                   
-                  {/* Gray divider line after subtitle */}
                   <div 
                     style={{ 
                       width: '100%', 
@@ -246,7 +224,6 @@ const BookDetailPage = () => {
 
                 {/* Rating, duration, and key ideas in 2x2 grid */}
                 <div className="grid grid-cols-2 gap-4" style={{ marginBottom: '24px', maxWidth: '400px' }}>
-                  {/* Rating */}
                   <div className="flex items-center" style={{ gap: '4px' }}>
                     <Star className="w-5 h-5" style={{ color: '#032B41', fill: 'none', stroke: '#032B41' }} />
                     <span className="font-medium" style={{ color: '#032B41' }}>
@@ -254,7 +231,6 @@ const BookDetailPage = () => {
                     </span>
                   </div>
 
-                  {/* Duration - Now using hardcoded durations */}
                   <div className="flex items-center" style={{ gap: '4px' }}>
                     <Clock className="w-5 h-5" style={{ color: '#032B41' }} />
                     <span style={{ color: '#032B41' }}>
@@ -262,7 +238,6 @@ const BookDetailPage = () => {
                     </span>
                   </div>
 
-                  {/* Audio & Text */}
                   <div className="flex items-center" style={{ gap: '8px' }}>
                     <BookOpen className="w-4 h-4" style={{ color: '#032B41' }} />
                     <Headphones className="w-4 h-4" style={{ color: '#032B41' }} />
@@ -271,7 +246,6 @@ const BookDetailPage = () => {
                     </span>
                   </div>
 
-                  {/* Key Ideas */}
                   <div className="flex items-center" style={{ gap: '4px' }}>
                     <Lightbulb className="w-5 h-5" style={{ color: '#032B41', fill: 'none', stroke: '#032B41' }} />
                     <span style={{ color: '#032B41' }}>
@@ -280,7 +254,6 @@ const BookDetailPage = () => {
                   </div>
                 </div>
 
-                {/* Gray divider line after 2x2 grid */}
                 <div 
                   style={{ 
                     width: '100%', 
@@ -372,7 +345,6 @@ const BookDetailPage = () => {
                     What's it about?
                   </h3>
 
-                  {/* Tags */}
                   {book.tags && book.tags.length > 0 && (
                     <div className="flex flex-wrap" style={{ gap: '12px', marginBottom: '16px' }}>
                       {book.tags.map((tag, index) => (
@@ -392,7 +364,6 @@ const BookDetailPage = () => {
                     </div>
                   )}
 
-                  {/* Book description */}
                   <p 
                     className="leading-relaxed"
                     style={{ 
@@ -432,7 +403,7 @@ const BookDetailPage = () => {
               </div>
 
               {/* Right side - Book cover */}
-              <div className="flex-shrink-0">
+              <div className="book-cover-section flex-shrink-0">
                 <img 
                   src={book.imageLink} 
                   alt={book.title}
@@ -443,9 +414,78 @@ const BookDetailPage = () => {
             </div>
           </div>
         </div>
+
+        <style jsx>{`
+          @media (max-width: 768px) {
+            .book-detail-container {
+              padding: 0 20px !important;
+            }
+
+            .book-detail-content {
+              flex-direction: column-reverse !important;
+              gap: 24px !important;
+              margin-top: 20px !important;
+            }
+
+            .book-cover-section {
+              width: 100%;
+              display: flex;
+              justify-content: center;
+              margin-bottom: 16px;
+            }
+
+            .book-cover-section img {
+              width: 240px !important;
+              height: 320px !important;
+            }
+
+            .book-info-section {
+              max-width: 100% !important;
+            }
+
+            .book-info-section h1 {
+              font-size: 22px !important;
+            }
+          }
+
+          @media (max-width: 600px) {
+            .book-detail-container {
+              padding: 0 16px !important;
+            }
+
+            .book-detail-content {
+              flex-direction: column-reverse !important;
+              gap: 24px !important;
+              margin-top: 16px !important;
+            }
+
+            .book-cover-section {
+              width: 100%;
+              display: flex;
+              justify-content: center;
+              margin-bottom: 16px;
+            }
+
+            .book-cover-section img {
+              width: 200px !important;
+              height: 267px !important;
+            }
+
+            .book-info-section {
+              max-width: 100% !important;
+            }
+
+            .book-info-section h1 {
+              font-size: 20px !important;
+            }
+
+            .book-info-section h2 {
+              font-size: 14px !important;
+            }
+          }
+        `}</style>
       </SidebarLayout>
 
-      {/* Login Modal - Moved outside SidebarLayout for proper full-screen overlay */}
       {isLoginModalOpen && (
         <div 
           className="fixed inset-0 flex items-center justify-center"
