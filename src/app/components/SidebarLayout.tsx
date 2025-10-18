@@ -26,10 +26,10 @@ const bottomNavigationItems = [
 // Skeleton loader for search results
 const SearchResultSkeleton = () => (
   <div className="flex items-center" style={{ padding: '12px 16px', gap: '12px' }}>
-    <div 
-      style={{ 
-        width: '64px', 
-        height: '64px', 
+    <div
+      style={{
+        width: '64px',
+        height: '64px',
         backgroundColor: '#e5e7eb',
         borderRadius: '4px',
         animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
@@ -47,14 +47,14 @@ const SearchResultSkeleton = () => (
 const SearchBarWithDropdown = () => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const searchRef = React.useRef(null);
-  const inputRef = React.useRef(null);
+  const searchRef = React.useRef<HTMLDivElement | null>(null);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
 
-  const getBookDuration = (bookTitle) => {
-    const durations = {
+  const getBookDuration = (bookTitle: string) => {
+    const durations: Record<string, string> = {
       'How to Win Friends and Influence People': '03:24',
       "Can't Hurt Me": '04:52',
       'Mastery': '04:40',
@@ -105,11 +105,11 @@ const SearchBarWithDropdown = () => {
         const selected = await selectedRes.json();
 
         const allBooks = [...(recommended || []), ...(suggested || []), ...(selected || [])];
-        const uniqueBooks = allBooks.filter((book, index, self) => 
+        const uniqueBooks = allBooks.filter((book: any, index: number, self: any[]) =>
           index === self.findIndex(b => b.id === book.id)
         );
 
-        const filtered = uniqueBooks.filter(book => 
+        const filtered = uniqueBooks.filter((book: any) =>
           book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           book.author.toLowerCase().includes(searchQuery.toLowerCase())
         );
@@ -128,8 +128,8 @@ const SearchBarWithDropdown = () => {
   }, [searchQuery]);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
       }
     };
@@ -138,7 +138,7 @@ const SearchBarWithDropdown = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleBookClick = (bookId) => {
+  const handleBookClick = (bookId: string) => {
     router.push(`/book/${bookId}`);
     setSearchQuery('');
     setShowDropdown(false);
@@ -152,8 +152,8 @@ const SearchBarWithDropdown = () => {
 
   return (
     <div ref={searchRef} className="search-bar-container">
-      <div 
-        style={{ 
+      <div
+        style={{
           position: 'relative',
           display: 'flex',
           alignItems: 'center'
@@ -207,7 +207,7 @@ const SearchBarWithDropdown = () => {
       </div>
 
       {showDropdown && (
-        <div 
+        <div
           style={{
             position: 'absolute',
             top: 'calc(100% + 8px)',
@@ -228,7 +228,7 @@ const SearchBarWithDropdown = () => {
               ))}
             </>
           ) : searchResults.length > 0 ? (
-            searchResults.map((book) => (
+            searchResults.map((book: any) => (
               <div
                 key={book.id}
                 onClick={() => handleBookClick(book.id)}
@@ -331,11 +331,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
   }, [pathname]);
 
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : 'unset';
     return () => {
       document.body.style.overflow = 'unset';
     };
@@ -352,6 +348,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
 
   return (
     <div className="flex min-h-screen" style={{ fontFamily: 'Roboto, sans-serif' }}>
+      {/* Overlay for mobile/tablet */}
       {isMobileMenuOpen && (
         <div
           onClick={() => setIsMobileMenuOpen(false)}
@@ -366,6 +363,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
         />
       )}
 
+      {/* Sidebar */}
       <div
         className={`fixed left-0 top-0 flex flex-col border-r ${isMobileMenuOpen ? 'mobile-menu-open' : ''}`}
         style={{
@@ -544,7 +542,8 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
         </nav>
       </div>
 
-      <div className="flex-1 flex flex-col" style={{ marginLeft: '240px' }}>
+      {/* Main area */}
+      <div className="flex-1 flex flex-col main-wrap" style={{ marginLeft: '240px' }}>
         <header
           className="border-b"
           style={{
@@ -558,6 +557,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
         >
           <div style={{ padding: '32px 40px', height: '100%' }}>
             <div className="flex items-center justify-end h-full header-content" style={{ gap: '16px' }}>
+              {/* Burger appears on tablet/mobile */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="hamburger-menu"
@@ -589,18 +589,16 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
 
       <style jsx>{`
         @keyframes pulse {
-          0%, 100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.5;
-          }
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
         }
 
-        @media (max-width: 600px) {
+        /* ====== Tablet/Mobile (≤768px) ====== */
+        @media (max-width: 768px) {
           .hamburger-menu {
             display: flex !important;
             order: -1;
+            flex-shrink: 0;
           }
 
           .header-content {
@@ -608,18 +606,34 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
           }
 
           .search-bar-container {
-            width: 180px !important;
+            width: 100% !important;
+            max-width: calc(100vw - 120px) !important;
             flex-shrink: 1;
+            min-width: 0;
           }
 
+          .search-bar-container input {
+            font-size: 14px !important;
+            padding: 10px 40px 10px 12px !important;
+          }
+
+          .search-bar-container .absolute.right-4 {
+            right: 8px !important;
+          }
+
+          /* Hide sidebar off-canvas by default on tablet/mobile */
           .fixed.left-0.top-0.flex.flex-col.border-r {
             transform: translateX(-100%);
+            width: 80vw !important; /* drawer width similar to original */
+            max-width: 320px !important;
           }
 
+          /* When open, slide it in */
           .mobile-menu-open {
             transform: translateX(0) !important;
           }
 
+          /* Show the overlay on tablet/mobile */
           .mobile-overlay {
             display: block !important;
           }
@@ -628,12 +642,25 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
             padding: 16px 20px !important;
           }
 
-          .flex-1.flex.flex-col {
+          .header-content {
+            gap: 12px !important;
+          }
+
+          /* Remove desktop left margin when sidebar is off-canvas */
+          .main-wrap {
             margin-left: 0 !important;
           }
 
           main {
             padding: 20px 16px !important;
+          }
+        }
+
+        /* ====== Desktop (>768px) keeps pinned sidebar ====== */
+        @media (min-width: 769px) {
+          .fixed.left-0.top-0.flex.flex-col.border-r {
+            transform: translateX(0);
+            width: 240px !important;
           }
         }
       `}</style>
