@@ -935,7 +935,26 @@ button:disabled {
      padding: 0 24px;
   }
 
-  
+   /* Off-canvas drawer on tablet/mobile */
+  .sl-sidebar {
+    transform: translateX(-100%) !important;
+    transition: transform .3s ease-in-out;
+    width: 80vw !important;
+    max-width: 320px !important;
+  }
+  .sl-sidebar.open {
+    transform: translateX(0) !important;
+  }
+
+  /* Overlay visible on tablet/mobile */
+  .sl-overlay {
+    display: block !important;
+  }
+
+  /* Main area shouldn’t reserve desktop sidebar space */
+  .sl-main {
+    margin-left: 0 !important;
+  }
 
 }
 
@@ -982,5 +1001,13 @@ button:disabled {
 @media (max-width: 576px) {
   .nav__list--mobile {
     display: none;
+  }
+}
+
+@media (min-width: 769px) {
+  /* Pinned desktop sidebar */
+  .sl-sidebar {
+    transform: translateX(0) !important;
+    width: 240px !important;
   }
 }

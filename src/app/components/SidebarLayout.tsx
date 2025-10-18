@@ -352,20 +352,20 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
       {isMobileMenuOpen && (
         <div
           onClick={() => setIsMobileMenuOpen(false)}
+          className="sl-overlay"
           style={{
             position: 'fixed',
             inset: 0,
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             zIndex: 1999,
-            display: 'none'
+            display: 'none' // shown via CSS at ≤768px
           }}
-          className="mobile-overlay"
         />
       )}
 
       {/* Sidebar */}
       <div
-        className={`fixed left-0 top-0 flex flex-col border-r ${isMobileMenuOpen ? 'mobile-menu-open' : ''}`}
+        className={`sl-sidebar fixed left-0 top-0 flex flex-col border-r ${isMobileMenuOpen ? 'open' : ''}`}
         style={{
           width: '240px',
           backgroundColor: '#f7f8fc',
@@ -543,7 +543,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
       </div>
 
       {/* Main area */}
-      <div className="flex-1 flex flex-col main-wrap" style={{ marginLeft: '240px' }}>
+      <div className="sl-main flex-1 flex flex-col" style={{ marginLeft: '240px' }}>
         <header
           className="border-b"
           style={{
@@ -556,13 +556,15 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
           }}
         >
           <div style={{ padding: '32px 40px', height: '100%' }}>
-            <div className="flex items-center justify-end h-full header-content" style={{ gap: '16px' }}>
-              {/* Burger appears on tablet/mobile */}
+            <div className="flex items-center justify-end h-full header-content" style={{ gap: '16px', position: 'relative' }}>
+              {/* Search first, burger second — burger will sit to the RIGHT at tablet */}
+              <SearchBarWithDropdown />
+
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="hamburger-menu"
+                className="sl-hamburger"
                 style={{
-                  display: 'none',
+                  display: 'none', // shown via CSS at ≤768px
                   flexDirection: 'column',
                   gap: '4px',
                   background: 'none',
@@ -571,13 +573,13 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
                   padding: '8px'
                 }}
                 aria-label="Toggle menu"
+                aria-expanded={isMobileMenuOpen}
+                aria-controls="sidebar"
               >
                 <span style={{ width: '24px', height: '3px', backgroundColor: '#032B41', borderRadius: '2px' }}></span>
                 <span style={{ width: '24px', height: '3px', backgroundColor: '#032B41', borderRadius: '2px' }}></span>
                 <span style={{ width: '24px', height: '3px', backgroundColor: '#032B41', borderRadius: '2px' }}></span>
               </button>
-
-              <SearchBarWithDropdown />
             </div>
           </div>
         </header>
@@ -593,72 +595,61 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children, bottomOffset = 
           50% { opacity: 0.5; }
         }
 
-        /* ====== Tablet/Mobile (≤768px) ====== */
+        /* Tablet/Mobile (≤768px) */
         @media (max-width: 768px) {
-          .hamburger-menu {
+          /* Burger shows and sits to the RIGHT of the search bar */
+          .sl-hamburger {
             display: flex !important;
-            order: -1;
-            flex-shrink: 0;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
           }
 
-          .header-content {
-            justify-content: space-between !important;
-          }
+          /* Center the search; leave space for burger at right */
+          /* push the search bar toward the right, near the burger */
+.header-content {
+  justify-content: flex-end !important;  /* right-align the search row */
+  padding-right: 72px;                   /* reserve space so it doesn't sit under the burger */
+}
 
-          .search-bar-container {
-            width: 100% !important;
-            max-width: calc(100vw - 120px) !important;
-            flex-shrink: 1;
-            min-width: 0;
-          }
+/* keep the search reasonably sized on tablet */
+.search-bar-container {
+  width: 100% !important;
+  max-width: min(520px, calc(100vw - 120px)) !important;  /* cap width + leave room for burger */
+  flex-shrink: 1;
+  min-width: 0;
+}
 
           .search-bar-container input {
             font-size: 14px !important;
             padding: 10px 40px 10px 12px !important;
           }
-
           .search-bar-container .absolute.right-4 {
             right: 8px !important;
           }
 
-          /* Hide sidebar off-canvas by default on tablet/mobile */
-          .fixed.left-0.top-0.flex.flex-col.border-r {
+          /* Off-canvas drawer behavior */
+          .sl-sidebar {
             transform: translateX(-100%);
-            width: 80vw !important; /* drawer width similar to original */
+            width: 80vw !important;
             max-width: 320px !important;
           }
+          .sl-sidebar.open { transform: translateX(0); }
 
-          /* When open, slide it in */
-          .mobile-menu-open {
-            transform: translateX(0) !important;
-          }
+          .sl-overlay { display: block !important; }
 
-          /* Show the overlay on tablet/mobile */
-          .mobile-overlay {
-            display: block !important;
-          }
+          /* Content should not be pushed on tablet */
+          .sl-main { margin-left: 0 !important; }
 
-          header > div {
-            padding: 16px 20px !important;
-          }
-
-          .header-content {
-            gap: 12px !important;
-          }
-
-          /* Remove desktop left margin when sidebar is off-canvas */
-          .main-wrap {
-            margin-left: 0 !important;
-          }
-
-          main {
-            padding: 20px 16px !important;
-          }
+          header > div { padding: 16px 20px !important; }
+          .header-content { gap: 12px !important; }
+          main { padding: 20px 16px !important; }
         }
 
-        /* ====== Desktop (>768px) keeps pinned sidebar ====== */
+        /* Desktop (>768px) keeps the pinned sidebar */
         @media (min-width: 769px) {
-          .fixed.left-0.top-0.flex.flex-col.border-r {
+          .sl-sidebar {
             transform: translateX(0);
             width: 240px !important;
           }
