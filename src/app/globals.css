@@ -969,7 +969,39 @@ button:disabled {
   text-align: center;
   }
 
-  
+  .selected-book-card {
+    /* row layout, centered content, compact height */
+    flex-direction: row !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 960px !important;
+    min-height: 160px !important;
+    padding: 24px 20px !important;
+    margin: 0 auto !important;
+  }
+
+  .book-description {
+    max-width: 360px !important;   /* give text a bit more line length */
+    padding-right: 16px !important;
+  }
+
+  .featured-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;         /* keep it tidy like the original */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .book-divider {
+    height: 96px !important;       /* shorter vertical rule—helps the rectangle feel */
+    margin: 0 16px !important;
+  }
+
+  .book-info img {
+    width: 80px !important;        /* slightly smaller cover */
+    height: 118px !important;
+  }
+
 }
 
 @media (max-width: 600px) {
@@ -1011,3 +1043,7 @@ button:disabled {
     width: 240px !important;
   }
 }
+
+/* ==== Page overflow guards ==== */
+.sl-main { overflow-x: hidden; }
+.for-you-root { overflow-x: hidden; }
