@@ -118,7 +118,7 @@ const ChoosePlanPage = () => {
       }}
     >
       <div
-        className="relative wrapper"
+        className="relative wrapper choose-header"
         style={{
           backgroundColor: '#032B41',
           paddingTop: '80px',
