@@ -2,10 +2,15 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronUp, ChevronDown, FileText, Leaf, Handshake } from 'lucide-react';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
 import LoginModal from '../components/LoginModal';
+
+// ✅ React Icons (replacing the three Lucide icons only)
+import { IoDocumentText } from 'react-icons/io5';
+import { RiPlantFill } from 'react-icons/ri';
+import { FaHandshake } from 'react-icons/fa6';
 
 const ChoosePlanPage = () => {
   const router = useRouter();
@@ -182,7 +187,8 @@ const ChoosePlanPage = () => {
                 margin: '0 auto 16px auto',
               }}
             >
-              <FileText className="w-14 h-14" style={{ color: '#032B41' }} />
+              {/* swapped icon */}
+              <IoDocumentText size={56} style={{ color: '#032B41' }} />
             </div>
             <h3 className="font-bold mb-2" style={{ color: '#1F2937', fontSize: '18px' }}>
               Key ideas in few min
@@ -201,7 +207,8 @@ const ChoosePlanPage = () => {
                 margin: '0 auto 16px auto',
               }}
             >
-              <Leaf className="w-14 h-14" style={{ color: '#032B41' }} />
+              {/* swapped icon */}
+              <RiPlantFill size={56} style={{ color: '#032B41' }} />
             </div>
             <h3 className="font-bold mb-2" style={{ color: '#1F2937', fontSize: '18px' }}>
               3 million people growing
@@ -220,7 +227,8 @@ const ChoosePlanPage = () => {
                 margin: '0 auto 16px auto',
               }}
             >
-              <Handshake className="w-14 h-14" style={{ color: '#032B41' }} />
+              {/* swapped icon */}
+              <FaHandshake size={56} style={{ color: '#032B41' }} />
             </div>
             <h3 className="font-bold mb-2" style={{ color: '#1F2937', fontSize: '18px' }}>
               Precise recommendations
