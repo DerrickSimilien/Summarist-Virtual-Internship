@@ -25,17 +25,13 @@ const ChoosePlanPage = () => {
   const inlineCtaRef = useRef<HTMLDivElement | null>(null);
   const footerRef = useRef<HTMLElement | null>(null);
 
-  // Firebase Auth State Listener
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setAuthLoading(false);
-      
-      // If user just logged in and came back to this page, auto-redirect to checkout
+
       if (currentUser && showLoginModal) {
         setShowLoginModal(false);
-        // Optional: Auto-redirect to checkout after login
-        // router.push(`/checkout?plan=${selectedPlan}`);
       }
     });
 
@@ -44,37 +40,35 @@ const ChoosePlanPage = () => {
 
   useEffect(() => {
     if (!inlineCtaRef.current || !footerRef.current) return;
-    
+
     let inlineCtaVisible = true;
     let footerVisible = false;
-    
+
     const updateFixedCTA = () => {
       setShowFixedCTA(!inlineCtaVisible && !footerVisible);
     };
-    
+
     const handleScroll = () => {
       setIsAtTop(window.scrollY <= 5);
     };
-    
-    // Check initial scroll position immediately
+
     handleScroll();
-    
+
     const inlineCtaObserver = new IntersectionObserver(([entry]) => {
       inlineCtaVisible = entry.isIntersecting;
       updateFixedCTA();
     }, { threshold: 0.5 });
-    
+
     const footerObserver = new IntersectionObserver(([entry]) => {
       footerVisible = entry.isIntersecting;
       updateFixedCTA();
     }, { threshold: 0.1 });
-    
-    // Add scroll listener
+
     window.addEventListener('scroll', handleScroll);
-    
+
     inlineCtaObserver.observe(inlineCtaRef.current);
     footerObserver.observe(footerRef.current);
-    
+
     return () => {
       inlineCtaObserver.disconnect();
       footerObserver.disconnect();
@@ -95,23 +89,15 @@ const ChoosePlanPage = () => {
       : '30-day money back guarantee, no questions asked.';
 
   const handleButtonClick = () => {
-    // Check if user is authenticated
     if (user) {
-      // User is logged in, proceed to checkout
       router.push(`/checkout?plan=${selectedPlan}`);
     } else {
-      // User is not logged in, show login modal
       setShowLoginModal(true);
     }
   };
 
   const handleLoginSuccess = () => {
-    // This function will be called after successful login
-    // We want to prevent the default redirect to /for-you
-    // and keep the user on this page instead
     setShowLoginModal(false);
-    // The user state will be updated automatically by the auth listener
-    // User can then click the button again to proceed to checkout
   };
 
   return (
@@ -148,17 +134,17 @@ const ChoosePlanPage = () => {
             Get unlimited access to many amazing books to read
           </h1>
 
-          <p
-            className="text-white"
-            style={{
-              fontSize: '20px',
-              fontFamily: 'Roboto, sans-serif',
-              opacity: 0.9,
-              margin: '0px 0px 32px',
-            }}
-          >
-            Turn ordinary moments into amazing learning opportunities
-          </p>
+        <p
+          className="text-white"
+          style={{
+            fontSize: '20px',
+            fontFamily: 'Roboto, sans-serif',
+            opacity: 0.9,
+            margin: '0px 0px 32px',
+          }}
+        >
+          Turn ordinary moments into amazing learning opportunities
+        </p>
 
           <div className="plan__img--mask">
             <img
@@ -175,7 +161,7 @@ const ChoosePlanPage = () => {
       </div>
 
       <div className="text-center" style={{ padding: '64px 24px', maxWidth: '1000px', margin: '0 auto' }}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12" style={{ marginBottom: '64px' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12" style={{ marginBottom: '64px' }}>
           <div className="text-center">
             <div
               className="mx-auto mb-4 flex items-center justify-center"
@@ -187,7 +173,6 @@ const ChoosePlanPage = () => {
                 margin: '0 auto 16px auto',
               }}
             >
-              {/* swapped icon */}
               <IoDocumentText size={56} style={{ color: '#032B41' }} />
             </div>
             <h3 className="font-bold mb-2" style={{ color: '#1F2937', fontSize: '18px' }}>
@@ -207,7 +192,6 @@ const ChoosePlanPage = () => {
                 margin: '0 auto 16px auto',
               }}
             >
-              {/* swapped icon */}
               <RiPlantFill size={56} style={{ color: '#032B41' }} />
             </div>
             <h3 className="font-bold mb-2" style={{ color: '#1F2937', fontSize: '18px' }}>
@@ -227,7 +211,6 @@ const ChoosePlanPage = () => {
                 margin: '0 auto 16px auto',
               }}
             >
-              {/* swapped icon */}
               <FaHandshake size={56} style={{ color: '#032B41' }} />
             </div>
             <h3 className="font-bold mb-2" style={{ color: '#1F2937', fontSize: '18px' }}>
@@ -242,12 +225,21 @@ const ChoosePlanPage = () => {
             Choose the plan that fits you
           </h2>
 
-          <div className="space-y-4" style={{ margin: '0 92.4px' }}>
+          {/* ⬇️ Only change here: wider wrapper + taller cards */}
+          <div
+            className="space-y-4 plan-cards"
+            style={{
+              maxWidth: '550px',         // wider on mobile
+              padding: '0 24px',
+              margin: '0 auto',          // center it
+            }}
+          >
             <div
               className="relative rounded-lg cursor-pointer transition-all"
               style={{
                 backgroundColor: '#F1F6F4',
                 padding: '24px',
+                minHeight: '168px',       // taller rectangle
                 border: selectedPlan === 'yearly' ? '4px solid #4ADE80' : '4px solid #bac8ce',
               }}
               onClick={() => setSelectedPlan('yearly')}
@@ -324,6 +316,7 @@ const ChoosePlanPage = () => {
               style={{
                 backgroundColor: '#F1F6F4',
                 padding: '24px',
+                minHeight: '168px',       // taller rectangle
                 border: selectedPlan === 'monthly' ? '4px solid #4ADE80' : '4px solid #bac8ce',
               }}
               onClick={() => setSelectedPlan('monthly')}
@@ -415,7 +408,7 @@ const ChoosePlanPage = () => {
             </button>
 
             {!isAtTop && (
-              <p className="text-center text-gray-400 text-sm mt-6">{getDisclaimerText()}</p>
+              <p className="text-center text-gray-400 text-sm"  style={{ marginTop: '24px' }}  >{getDisclaimerText()}</p>
             )}
           </div>
         </div>
@@ -663,7 +656,7 @@ const ChoosePlanPage = () => {
 
             <p
               className="text-center"
-              style={{ color: '#6b757b', fontSize: '12px', fontFamily: 'Roboto, sans-serif', marginTop: '8px' }}
+              style={{ color: '#6b757b', fontSize: '12px', fontFamily: 'Roboto, sans-serif', marginTop: '16px' }}
             >
               {getDisclaimerText()}
             </p>
@@ -671,7 +664,6 @@ const ChoosePlanPage = () => {
         </div>
       )}
 
-      {/* Login Modal */}
       {showLoginModal && (
         <LoginModal
           isOpen={showLoginModal}

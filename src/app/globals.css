@@ -1097,6 +1097,44 @@ button:disabled {
     max-width: 280px !important;  /* slight downsize for 600px */
     bottom: 0 !important;
   }
+
+    .choose-header .text-center h3 + p {
+    display: inline;
+    margin-left: 4px;
+  }
+
+  .choose-header .text-center h3 {
+    display: inline;
+    font-size: 16px !important;
+    color: #032B41 !important;
+    font-weight: 700 !important;
+  }
+
+  .choose-header .text-center p {
+    font-size: 16px !important;
+    color: #6B7280 !important;
+  }
+
+  /* Center everything nicely */
+  .choose-header .text-center div {
+    text-align: center;
+  }
+
+    /* Make the plan boxes longer horizontally */
+  .plan-cards .relative.rounded-lg {
+    width: 100% !important;
+    max-width: 480px !important; /* controls the stretch — increase for longer look */
+    margin: 0 auto 16px auto !important;
+    padding: 24px 28px !important;
+    min-height: 160px !important;
+  }
+
+  /* Make sure the box contents stay centered */
+  .plan-cards {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
   
 }
 
