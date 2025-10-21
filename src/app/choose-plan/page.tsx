@@ -478,7 +478,7 @@ const ChoosePlanPage = () => {
           padding: '48px 24px',
         }}
       >
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-4 gap-8" style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div>
             <h4 style={{ 
               color: '#032B41', 
