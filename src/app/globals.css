@@ -1098,22 +1098,22 @@ button:disabled {
     bottom: 0 !important;
   }
 
-    .choose-header .text-center h3 + p {
-    display: inline;
-    margin-left: 4px;
-  }
+   .text-center .grid .text-center h3 + p {
+  display: inline;
+  margin-left: 4px;
+}
 
-  .choose-header .text-center h3 {
-    display: inline;
-    font-size: 16px !important;
-    color: #032B41 !important;
-    font-weight: 700 !important;
-  }
+.text-center .grid .text-center h3 {
+  display: inline;
+  font-size: 16px !important;
+  color: #032B41 !important;
+  font-weight: 700 !important;
+}
 
-  .choose-header .text-center p {
-    font-size: 16px !important;
-    color: #6B7280 !important;
-  }
+.text-center .grid .text-center p {
+  font-size: 16px !important;
+  color: #6B7280 !important;
+}
 
   /* Center everything nicely */
   .choose-header .text-center div {

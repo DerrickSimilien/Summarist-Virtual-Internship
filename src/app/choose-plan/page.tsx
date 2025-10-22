@@ -137,9 +137,10 @@ const ChoosePlanPage = () => {
         <p
           className="text-white"
           style={{
+             color: '#ffffff',
             fontSize: '20px',
             fontFamily: 'Roboto, sans-serif',
-            opacity: 0.9,
+            // opacity: 3,
             margin: '0px 0px 32px',
           }}
         >
@@ -246,34 +247,47 @@ const ChoosePlanPage = () => {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <input
-                    type="radio"
-                    checked={selectedPlan === 'yearly'}
-                    onChange={() => setSelectedPlan('yearly')}
-                    className="w-5 h-5 mr-4"
-                    style={{
-                      accentColor: 'transparent',
-                      appearance: 'none',
-                      border: '2px solid #032B41',
-                      borderRadius: '50%',
-                      position: 'relative',
-                    }}
-                  />
-                  {selectedPlan === 'yearly' && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        left: '32px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        width: '8px',
-                        height: '8px',
-                        backgroundColor: '#032B41',
-                        borderRadius: '50%',
-                        pointerEvents: 'none',
-                      }}
-                    />
-                  )}
+                  <div
+  style={{
+    position: 'relative',
+    width: 20,
+    height: 20,
+    marginRight: 16,
+    flex: '0 0 20px',
+  }}
+>
+  <input
+    type="radio"
+    checked={selectedPlan === 'yearly'}
+    onChange={() => setSelectedPlan('yearly')}
+    style={{
+      accentColor: 'transparent',
+      appearance: 'none',
+      width: '100%',
+      height: '100%',
+      border: '2px solid #032B41',
+      borderRadius: '50%',
+      display: 'block',
+      background: 'transparent',
+    }}
+  />
+  {selectedPlan === 'yearly' && (
+    <span
+      style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 8,
+        height: 8,
+        borderRadius: '50%',
+        backgroundColor: '#032B41',
+        pointerEvents: 'none',
+      }}
+    />
+  )}
+</div>
+
                   <div>
                     <h3
                       style={{
@@ -323,34 +337,47 @@ const ChoosePlanPage = () => {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <input
-                    type="radio"
-                    checked={selectedPlan === 'monthly'}
-                    onChange={() => setSelectedPlan('monthly')}
-                    className="w-5 h-5 mr-4"
-                    style={{
-                      accentColor: 'transparent',
-                      appearance: 'none',
-                      border: '2px solid #032B41',
-                      borderRadius: '50%',
-                      position: 'relative',
-                    }}
-                  />
-                  {selectedPlan === 'monthly' && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        left: '32px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        width: '8px',
-                        height: '8px',
-                        backgroundColor: '#032B41',
-                        borderRadius: '50%',
-                        pointerEvents: 'none',
-                      }}
-                    />
-                  )}
+                 <div
+  style={{
+    position: 'relative',
+    width: 20,
+    height: 20,
+    marginRight: 16,
+    flex: '0 0 20px',
+  }}
+>
+  <input
+    type="radio"
+    checked={selectedPlan === 'monthly'}
+    onChange={() => setSelectedPlan('monthly')}
+    style={{
+      accentColor: 'transparent',
+      appearance: 'none',
+      width: '100%',
+      height: '100%',
+      border: '2px solid #032B41',
+      borderRadius: '50%',
+      display: 'block',
+      background: 'transparent',
+    }}
+  />
+  {selectedPlan === 'monthly' && (
+    <span
+      style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 8,
+        height: 8,
+        borderRadius: '50%',
+        backgroundColor: '#032B41',
+        pointerEvents: 'none',
+      }}
+    />
+  )}
+</div>
+
                   <div>
                     <h3
                       style={{
