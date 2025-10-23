@@ -283,10 +283,10 @@ const ForYouPage = () => {
                 style={{
                   backgroundColor: '#FBEFD6',
                   width: '100%',
-                  maxWidth: '960px',
+                  maxWidth: '610px',
                   minHeight: '144px',
                   padding: '32px 24px 24px 24px',
-                  margin: '0 auto'
+                  margin: '0 0 0 5px'
                 }}
                 onClick={handleSelectedBookClick}
               >
