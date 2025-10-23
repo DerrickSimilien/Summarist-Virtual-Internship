@@ -69,35 +69,62 @@ const BookCardSkeleton = () => (
 
 /* ---------- Book Card ---------- */
 
+/** Robust mapping: prefer ID (stable), then title (normalized), else '03:24'. */
+const ID_DURATIONS: Record<string, string> = {
+  // Can't Hurt Me (your API id)
+  '2l0idxm1rwv': '04:52',
+  // Add others by id here if you want to be future-proof
+  // '5bxl50cz4bt': '03:24', // How to Win Friends..., etc.
+};
+
+const TITLE_DURATIONS: Record<string, string> = {
+  'how to win friends and influence people': '03:24',
+  "can't hurt me": '04:52',     // straight apostrophe
+  "can’t hurt me": '04:52',     // curly apostrophe
+  'mastery': '04:40',
+  'atomic habits': '03:24',
+  'how to talk to anyone': '03:22',
+  'jim collins': '03:01',
+  'good to great': '03:01',
+  'the intelligent investor': '02:48',
+  'the 4 day week': '02:20',
+  'the 7 habits of highly effective people': '04:36',
+  'rich dad poor dad': '05:38',
+  'the power of now': '03:12',
+  'think and grow rich': '04:25',
+  'zero to one': '03:24',
+  'the 10x rule': '04:15',
+  'deep work': '04:02',
+  'the second machine age': '03:36',
+  'the 5 second rule': '02:45',
+  'the 12 week year': '03:36',
+  'getting things done': '02:24',
+};
+
+const normalizeTitle = (s: string) =>
+  s
+    ?.toLowerCase()
+    .replace(/[’`]/g, "'") // normalize curly/backtick to straight
+    .trim();
+
 const RecommendedBookCard = ({ book }: { book: any }) => {
   const router = useRouter();
 
   const handleBookClick = () => router.push(`/book/${book.id}`);
 
-  const getBookDuration = (bookTitle: string) => {
-    const durations: Record<string, string> = {
-      'How to Win Friends and Influence People': '03:24',
-      "Can't Hurt Me": '04:52',
-      'Mastery': '04:40',
-      'Atomic Habits': '03:24',
-      'How to Talk to Anyone': '03:22',
-      'Jim Collins': '03:01',
-      'Good to Great': '03:01',
-      'The Intelligent Investor': '02:48',
-      'The 4 Day Week': '02:20',
-      'The 7 Habits of Highly Effective People': '04:36',
-      'Rich Dad Poor Dad': '05:38',
-      'The Power of Now': '03:12',
-      'Think and Grow Rich': '04:25',
-      'Zero to One': '03:24',
-      'The 10X Rule': '04:15',
-      'Deep Work': '04:02',
-      'The Second Machine Age': '03:36',
-      'The 5 Second Rule': '02:45',
-      'The 12 Week Year': '03:36',
-      'Getting Things Done': '02:24'
-    };
-    return durations[bookTitle] || '03:24';
+  const getBookDuration = (b: any) => {
+    // 1) If API already gives a duration we trust, use it
+    if (b?.duration && typeof b.duration === 'string') return b.duration;
+
+    // 2) Prefer known duration by book id
+    if (b?.id && ID_DURATIONS[b.id]) return ID_DURATIONS[b.id];
+
+    // 3) Fallback to normalized title lookup
+    const key = normalizeTitle(b?.title || '');
+    if (key && TITLE_DURATIONS[key]) return TITLE_DURATIONS[key];
+
+    // 4) Final fallback – what you were showing before
+    return '03:24';
   };
 
   return (
@@ -136,7 +163,7 @@ const RecommendedBookCard = ({ book }: { book: any }) => {
         <div className="flex items-center justify-between text-small" style={{ marginTop: '6px' }}>
           <div className="flex items-center" style={{ gap: '3px', color: '#6b7280' }}>
             <Clock className="w-3 h-3" />
-            <span>{getBookDuration(book.title)}</span>
+            <span>{getBookDuration(book)}</span>
           </div>
           <div className="flex items-center" style={{ gap: '3px', color: '#6b7280' }}>
             <span>☆</span>
