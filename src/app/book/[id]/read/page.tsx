@@ -12,7 +12,7 @@ type Book = {
   imageLink: string;
   summary?: string;
   duration?: string;      // "MM:SS" fallback
-  audioUrl?: string;      // MP3/OGG URL (CORS-enabled)
+  audioLink?: string;      // MP3/OGG URL (CORS-enabled)
 };
 
 /** Known audio fallbacks by book id. */
@@ -113,13 +113,13 @@ const BookReadingPage = () => {
         // Apply fallback audio if API doesn't send one
         const withAudio: Book = {
           ...data,
-          audioUrl: data.audioUrl || AUDIO_FALLBACK_BY_ID[bookId],
+          audioLink: data.audioLink || AUDIO_FALLBACK_BY_ID[bookId],
         };
 
         setBook(withAudio);
 
         // Sanitize the audio URL for Firebase
-        setAudioSrc(sanitizeFirebaseObjectUrl(withAudio.audioUrl));
+        setAudioSrc(sanitizeFirebaseObjectUrl(withAudio.audioLink));
 
         // Fallback duration from API; later overwrite with audio metadata
         const raw = withAudio.duration || '03:24';
