@@ -6,7 +6,8 @@ import SidebarLayout from '../../../components/SidebarLayout';
 
 const DESKTOP_PLAYER_HEIGHT = 80;
 const MOBILE_PLAYER_HEIGHT = 160;
-const MOBILE_BP = 600;
+const MOBILE_BP = 600;   // phones and small devices
+const TABLET_BP = 768;   // tablets
 
 type Book = {
   title: string;
@@ -75,12 +76,21 @@ export default function BookReadingPage() {
     }
   }, [fontIndex]);
 
-  // ——— responsive: detect mobile ———
+  // responsive flags
   const [isMobile, setIsMobile] = useState<boolean>(() =>
     typeof window !== 'undefined' ? window.innerWidth <= MOBILE_BP : false
   );
+  const [isTablet, setIsTablet] = useState<boolean>(() =>
+    typeof window !== 'undefined'
+      ? window.innerWidth > MOBILE_BP && window.innerWidth <= TABLET_BP
+      : false
+  );
   useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth <= MOBILE_BP);
+    const onResize = () => {
+      const w = window.innerWidth;
+      setIsMobile(w <= MOBILE_BP);
+      setIsTablet(w > MOBILE_BP && w <= TABLET_BP);
+    };
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, []);
@@ -220,7 +230,10 @@ export default function BookReadingPage() {
   };
 
   const SidebarFontControls = (
-    <div className="sidebar__link--wrapper sidebar__font--size-wrapper" style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+    <div
+      className="sidebar__link--wrapper sidebar__font--size-wrapper"
+      style={{ display: 'flex', gap: '16px', alignItems: 'center' }}
+    >
       {FONT_PRESETS.map((fp, idx) => (
         <button
           key={idx}
@@ -246,12 +259,13 @@ export default function BookReadingPage() {
     </div>
   );
 
-  const currentFontPx = FONT_PRESETS[fontIndex]?.px ?? 16;
   const progressPct = safeDuration ? (currentTime / safeDuration) * 100 : 0;
+
+  const bottomOffset = (isMobile || isTablet) ? MOBILE_PLAYER_HEIGHT : DESKTOP_PLAYER_HEIGHT;
 
   if (loading) {
     return (
-      <SidebarLayout bottomOffset={isMobile ? MOBILE_PLAYER_HEIGHT : DESKTOP_PLAYER_HEIGHT} sidebarExtrasBelowSearch={SidebarFontControls}>
+      <SidebarLayout bottomOffset={bottomOffset} sidebarExtrasBelowSearch={SidebarFontControls}>
         <div className="flex justify-center items-center min-h-screen">
           <div className="text-lg" style={{ color: '#6b7280' }}>Loading book content...</div>
         </div>
@@ -261,11 +275,16 @@ export default function BookReadingPage() {
 
   if (error || !book) {
     return (
-      <SidebarLayout bottomOffset={isMobile ? MOBILE_PLAYER_HEIGHT : DESKTOP_PLAYER_HEIGHT} sidebarExtrasBelowSearch={SidebarFontControls}>
+      <SidebarLayout bottomOffset={bottomOffset} sidebarExtrasBelowSearch={SidebarFontControls}>
         <div className="flex justify-center items-center min-h-screen">
           <div className="text-center">
-            <div className="text-lg mb-4" style={{ color: '#dc2626' }}>Error loading book: {error || 'Unknown error'}</div>
-            <button onClick={() => router.back()} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            <div className="text-lg mb-4" style={{ color: '#dc2626' }}>
+              Error loading book: {error || 'Unknown error'}
+            </div>
+            <button
+              onClick={() => router.back()}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
               Go Back
             </button>
           </div>
@@ -275,86 +294,80 @@ export default function BookReadingPage() {
   }
 
   return (
-    <SidebarLayout bottomOffset={isMobile ? MOBILE_PLAYER_HEIGHT : DESKTOP_PLAYER_HEIGHT} sidebarExtrasBelowSearch={SidebarFontControls}>
+    <SidebarLayout bottomOffset={bottomOffset} sidebarExtrasBelowSearch={SidebarFontControls}>
       {audioSrc ? <audio ref={audioRef} src={audioSrc} preload="metadata" /> : null}
 
       {/* Content */}
       <div className="flex justify-center" style={{ width: '100%', minHeight: '100vh' }}>
         <div style={{ maxWidth: '800px', width: '100%', padding: '0 20px 40px 20px' }}>
-          <h1 className="font-bold" style={{ fontSize: '24px', fontFamily: 'Roboto, sans-serif', color: '#032B41', lineHeight: '1.4', marginTop: '40px', marginBottom: '16px' }}>
+          <h1
+            className="font-bold"
+            style={{
+              fontSize: '24px',
+              fontFamily: 'Roboto, sans-serif',
+              color: '#032B41',
+              lineHeight: '1.4',
+              marginTop: '40px',
+              marginBottom: '16px',
+            }}
+          >
             {book.title}
           </h1>
           <div style={{ width: '100%', height: '1px', backgroundColor: '#e5e7eb', marginBottom: '32px' }} />
           <div className="mb-12" style={{ paddingBottom: '120px' }}>
-  {summaryParagraphs.map((paragraph, index) => (
-    <p
-      key={index}
-      style={{
-        fontSize: '14px', // changed from dynamic to fixed 14px
-        fontFamily: 'Roboto, sans-serif',
-        color: '#032B41',
-        lineHeight: 1.8,
-        marginBottom: '24px',
-      }}
-    >
-      {paragraph}
-    </p>
-  ))}
-</div>
+            {summaryParagraphs.map((paragraph, index) => (
+              <p
+                key={index}
+                style={{
+                  fontSize: '14px',
+                  fontFamily: 'Roboto, sans-serif',
+                  color: '#032B41',
+                  lineHeight: 1.8,
+                  marginBottom: '24px',
+                }}
+              >
+                {paragraph}
+              </p>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Player */}
       <div className="reader-player fixed bottom-0 left-0 right-0 border-t" style={{ backgroundColor: '#042330' }}>
-        {/* Row 1 (desktop: inline left) */}
+        {/* Row 1: cover + meta */}
         <div className="player-left">
           <img
             src={book.imageLink}
             alt={book.title}
-            className="object-cover"
-            style={{ width: '48px', height: '48px', borderRadius: '4px', flex: '0 0 auto' }}
+            className="object-cover player-cover"
           />
-          <div style={{ overflow: 'hidden' }}>
-            <div className="text-white" style={{ fontWeight: 500, fontSize: '14px', lineHeight: 1.25, whiteSpace: 'normal', wordBreak: 'break-word' }}>
-              {book.title}
-            </div>
-            <div className="text-gray-400" style={{ fontSize: '12px', marginTop: '2px', whiteSpace: 'normal' }}>
-              {book.author}
-            </div>
+          <div className="player-meta">
+            <div className="player-title">{book.title}</div>
+            <div className="player-author">{book.author}</div>
           </div>
         </div>
 
-        {/* Row 2 – controls */}
+        {/* Row 2: controls */}
         <div className="player-center">
           <button
-            className="text-white hover:text-gray-300 transition-colors flex items-center justify-center relative"
+            className="skip-btn"
             onClick={rewind10}
             aria-label="Rewind 10 seconds"
             disabled={!audioSrc || !canPlay}
           >
-            <div style={{ width: 28, height: 28, position: 'relative' }}>
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                style={{ color: 'white', opacity: audioSrc && canPlay ? 1 : 0.5 }}>
+            <div className="skip-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M3 12a9 9 0 1 0 9-9 9.6 9.6 0 0 0-6.7 2.7L3 8" />
                 <path d="M3 3v5h5" />
               </svg>
-              <span style={{ position: 'absolute', left: '50%', top: 10, transform: 'translateX(-50%)', fontSize: 10, fontWeight: 700, color: '#fff', lineHeight: 1, opacity: audioSrc && canPlay ? 1 : 0.5 }}>
-                10
-              </span>
+              <span>10</span>
             </div>
           </button>
 
           <button
             onClick={playPause}
-            className="rounded-full transition-colors"
-            style={{
-              width: '48px',
-              height: '48px',
-              backgroundColor: '#ffffff',
-              opacity: audioSrc && canPlay ? 1 : 0.6,
-              cursor: audioSrc && canPlay ? 'pointer' : 'not-allowed',
-              display: 'grid', placeItems: 'center'
-            }}
+            className="play-btn"
             aria-label={isPlaying ? 'Pause' : 'Play'}
             disabled={!audioSrc || !canPlay}
           >
@@ -371,27 +384,24 @@ export default function BookReadingPage() {
           </button>
 
           <button
-            className="text-white hover:text-gray-300 transition-colors flex items-center justify-center relative"
+            className="skip-btn"
             onClick={forward10}
             aria-label="Forward 10 seconds"
             disabled={!audioSrc || !canPlay}
           >
-            <div style={{ width: 28, height: 28, position: 'relative' }}>
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                style={{ color: 'white', opacity: audioSrc && canPlay ? 1 : 0.5 }}>
+            <div className="skip-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
                 <path d="M21 3v5h-5" />
               </svg>
-              <span style={{ position: 'absolute', left: '50%', top: 10, transform: 'translateX(-50%)', fontSize: 10, fontWeight: 700, color: '#fff', lineHeight: 1, opacity: audioSrc && canPlay ? 1 : 0.5 }}>
-                10
-              </span>
+              <span>10</span>
             </div>
           </button>
         </div>
 
-        {/* Row 3 – progress */}
+        {/* Row 3: progress */}
         <div className="player-right">
-          <span className="text-white text-xs font-mono time-left">{formatTime(currentTime)}</span>
+          <span className="time-left">{formatTime(currentTime)}</span>
 
           <div
             className="seekbar"
@@ -402,7 +412,7 @@ export default function BookReadingPage() {
             <div className="seekbar-thumb" style={{ left: `calc(${progressPct}% - 6px)` }} />
           </div>
 
-          <span className="text-white text-xs font-mono time-right">{formatTime(safeDuration)}</span>
+          <span className="time-right">{formatTime(safeDuration)}</span>
         </div>
       </div>
 
@@ -425,12 +435,61 @@ export default function BookReadingPage() {
           min-width: 0;
           padding-right: 16px;
         }
+        .player-cover {
+          width: 48px;
+          height: 48px;
+          border-radius: 4px;
+          flex: 0 0 auto;
+        }
+        .player-meta { overflow: hidden; }
+        .player-title {
+          color: #fff;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 1.25;
+          white-space: normal;
+          word-break: break-word;
+        }
+        .player-author {
+          color: #9ca3af;
+          font-size: 12px;
+          margin-top: 2px;
+          white-space: normal;
+        }
 
         .player-center {
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 20px;
+        }
+        .play-btn {
+          width: 48px;
+          height: 48px;
+          border-radius: 9999px;
+          background: #fff;
+          display: grid;
+          place-items: center;
+          opacity: ${audioSrc ? 1 : 0.6};
+          cursor: ${audioSrc ? 'pointer' : 'not-allowed'};
+        }
+        .skip-btn { color: #fff; }
+        .skip-icon {
+          position: relative;
+          width: 28px;
+          height: 28px;
+        }
+        .skip-icon svg { color: #fff; }
+        .skip-icon span {
+          position: absolute;
+          left: 50%;
+          top: 10px;
+          transform: translateX(-50%);
+          font-size: 10px;
+          font-weight: 700;
+          color: #fff;
+          line-height: 1;
+          text-shadow: 0 0 1px rgba(0,0,0,0.5);
         }
 
         .player-right {
@@ -440,9 +499,13 @@ export default function BookReadingPage() {
           justify-content: flex-end;
           opacity: ${audioSrc ? 1 : 0.6};
         }
-
-        .time-left, .time-right { min-width: 40px; text-align: center; }
-
+        .time-left, .time-right {
+          color: #fff;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+          font-size: 12px;
+          min-width: 44px;
+          text-align: center;
+        }
         .seekbar {
           position: relative;
           height: 4px;
@@ -469,8 +532,8 @@ export default function BookReadingPage() {
           .reader-player {
             height: ${MOBILE_PLAYER_HEIGHT}px;
             padding: 10px 16px 12px 16px;
-            grid-template-columns: 1fr;           /* single column */
-            grid-template-rows: auto auto auto;   /* three rows */
+            grid-template-columns: 1fr;
+            grid-template-rows: auto auto auto;
             justify-items: center;
             gap: 10px;
           }
@@ -489,8 +552,44 @@ export default function BookReadingPage() {
             justify-content: center;
             gap: 12px;
           }
-          .time-left, .time-right { min-width: 44px; }
-          .seekbar { min-width: 0; width: 70vw; } /* center progress bar */
+          .seekbar { min-width: 0; width: 70vw; }
+        }
+
+        /* ——— Tablet layout (601px–768px): same stacked structure as mobile ——— */
+        @media (min-width: ${MOBILE_BP + 1}px) and (max-width: ${TABLET_BP}px) {
+          .reader-player {
+            height: ${MOBILE_PLAYER_HEIGHT}px;      /* keep same height as mobile */
+            padding: 12px 20px 14px 20px;
+            grid-template-columns: 1fr;             /* single column */
+            grid-template-rows: auto auto auto;     /* three rows */
+            justify-items: center;
+            gap: 12px;
+          }
+          .player-left {
+            width: 100%;
+            justify-content: center;                 /* cover + meta centered */
+            gap: 14px;
+          }
+          .player-cover {
+            width: 52px;                             /* a tad larger is ok */
+            height: 52px;
+          }
+          .player-meta { text-align: left; }
+          .player-title { font-size: 14px; }
+          .player-author { font-size: 12px; }
+
+          .player-center {
+            width: 100%;
+            justify-content: center;
+            gap: 26px;
+          }
+
+          .player-right {
+            width: 100%;
+            justify-content: center;
+            gap: 14px;
+          }
+          .seekbar { min-width: 0; width: 78vw; }   /* clearer, wider bar */
         }
       `}</style>
     </SidebarLayout>
