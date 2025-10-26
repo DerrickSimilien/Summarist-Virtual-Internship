@@ -74,7 +74,7 @@ const ID_DURATIONS: Record<string, string> = {
   // Can't Hurt Me (your API id)
   '2l0idxm1rwv': '04:52',
   // Add others by id here if you want to be future-proof
-  // '5bxl50cz4bt': '03:24', // How to Win Friends..., etc.
+  // '5bxl50cz4bt': '03:24',
 };
 
 const TITLE_DURATIONS: Record<string, string> = {
@@ -89,22 +89,30 @@ const TITLE_DURATIONS: Record<string, string> = {
   'the intelligent investor': '02:48',
   'the 4 day week': '02:20',
   'the 7 habits of highly effective people': '04:36',
-  'rich dad poor dad': '05:38',
+  'rich dad poor dad': '05:38', // ✅ ensure RDPD shows 05:38
   'the power of now': '03:12',
   'think and grow rich': '04:25',
   'zero to one': '03:24',
-  'the 10x rule': '04:15',
-  'deep work': '04:02',
+  'the 10x rule': '03:18',      // ✅ corrected to 03:18
+  'deep work': '02:50',         // ✅ corrected to 02:50
   'the second machine age': '03:36',
   'the 5 second rule': '02:45',
   'the 12 week year': '03:36',
   'getting things done': '02:24',
 };
 
+/** Make title keys reliable:
+ * - lowercase
+ * - normalize curly/backtick apostrophes
+ * - strip punctuation (commas, colons, etc.), keep letters/numbers/spaces
+ * - collapse extra spaces
+ */
 const normalizeTitle = (s: string) =>
   s
     ?.toLowerCase()
-    .replace(/[’`]/g, "'") // normalize curly/backtick to straight
+    .replace(/[’`]/g, "'")
+    .replace(/[^\w\s']/g, ' ')     // remove punctuation like commas/colons
+    .replace(/\s+/g, ' ')          // collapse multiple spaces
     .trim();
 
 const RecommendedBookCard = ({ book }: { book: any }) => {

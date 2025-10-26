@@ -10,6 +10,8 @@ import { Star, Clock, BookOpen, Headphones, Bookmark, Lightbulb } from 'lucide-r
 
 /* -----------------------------------------
    Duration helpers (ID-first, then title)
+   We PREFER our overrides (ID/TITLE) over any
+   API-provided duration so pages are consistent.
 ------------------------------------------ */
 
 const ID_DURATIONS: Record<string, string> = {
@@ -17,13 +19,14 @@ const ID_DURATIONS: Record<string, string> = {
   '2l0idxm1rwv': '04:52',
   // How to Win Friends and Influence People in the Digital Age
   '5bxl50cz4bt': '03:24',
-  // Add more IDs here if you want bulletproof consistency
+  // Rich Dad, Poor Dad (your current page id from the screenshot)
+  'hyqzkhdyq7h': '05:38',
 };
 
 const TITLE_DURATIONS: Record<string, string> = {
   'how to win friends and influence people in the digital age': '03:24',
-  "can't hurt me": '04:52',  // straight apostrophe
-  "can’t hurt me": '04:52',  // curly apostrophe
+  "can't hurt me": '04:52',
+  "can’t hurt me": '04:52',
   'mastery': '04:40',
   'atomic habits': '03:24',
   'how to talk to anyone': '03:22',
@@ -33,9 +36,12 @@ const TITLE_DURATIONS: Record<string, string> = {
   'the 4 day week': '02:20',
   'the 7 habits of highly effective people': '04:36',
   'zero to one': '03:24',
+
+  // The ones you care about here
   'rich dad poor dad': '05:38',
   'the 10x rule': '03:18',
   'deep work': '02:50',
+
   'the 5 second rule': '02:45',
   'the power of now': '03:12',
   'think and grow rich': '04:25',
@@ -46,21 +52,29 @@ const TITLE_DURATIONS: Record<string, string> = {
 };
 
 const normalizeTitle = (s: string) =>
-  s?.toLowerCase().replace(/[’`]/g, "'").trim();
+  s
+    ?.toLowerCase()
+    .replace(/[’`]/g, "'")    // normalize curly/backtick to straight apostrophe
+    .replace(/[^a-z0-9\s]/g, '') // strip punctuation (commas, colons, etc.)
+    .replace(/\s+/g, ' ')     // collapse spaces
+    .trim();
 
-/** Returns a display duration like "04:52" with ID-first fallback. */
+/** Returns a display duration like "04:52".
+ *  IMPORTANT: We now use ID/TITLE overrides FIRST,
+ *  then fall back to API-provided duration, then default.
+ */
 const getBookDurationSafe = (book: any): string => {
   if (!book) return '03:24';
 
-  // 1) If API ever supplies a reliable duration string, use that first.
-  if (book.duration && typeof book.duration === 'string') return book.duration;
-
-  // 2) Known by ID (stable)
+  // 1) Known by ID (stable)
   if (book.id && ID_DURATIONS[book.id]) return ID_DURATIONS[book.id];
 
-  // 3) Known by normalized title
+  // 2) Known by normalized title
   const t = normalizeTitle(book.title || '');
   if (t && TITLE_DURATIONS[t]) return TITLE_DURATIONS[t];
+
+  // 3) If API provides a duration string, use it as a fallback
+  if (book.duration && typeof book.duration === 'string') return book.duration;
 
   // 4) Default
   return '03:24';
@@ -111,9 +125,7 @@ const BookDetailPage = () => {
     fetchBookDetails();
   }, [id]);
 
-  const formatRating = (rating: number) => {
-    return rating ? rating.toFixed(1) : '0.0';
-  };
+  const formatRating = (rating: number) => (rating ? rating.toFixed(1) : '0.0');
 
   const handleReadClick = () => {
     if (!user) {
