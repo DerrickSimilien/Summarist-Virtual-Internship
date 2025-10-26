@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, ChevronDown } from 'lucide-react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from '../../lib/firebase';
+import { auth, db } from '@/lib/firebase';
 
 const CheckoutPage = () => {
   const router = useRouter();
