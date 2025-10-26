@@ -2,12 +2,17 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AiFillFileText, AiFillBulb, AiFillAudio } from "react-icons/ai";
+import {
+  AiFillFileText,
+  AiFillBulb,
+  AiFillAudio,
+} from "react-icons/ai";
 import { BsStarFill, BsStarHalf } from "react-icons/bs";
 import { BiCrown } from "react-icons/bi";
 import { RiLeafLine } from "react-icons/ri";
+
 import LoginModal from "@/app/components/LoginModal";
 
 interface User {
@@ -15,7 +20,7 @@ interface User {
   loginType: "email" | "google" | "guest";
 }
 
-/* ------------------------- Animated Statistics ------------------------- */
+/* ---------------- Animated statistic headlines (unchanged) ---------------- */
 
 const AnimatedStatistics = () => {
   const [activeLeftIndex, setActiveLeftIndex] = useState(0);
@@ -45,18 +50,18 @@ const AnimatedStatistics = () => {
       setActiveRightIndex((p) => (p + 1) % rightHeadings.length);
     }, 2000);
     return () => clearInterval(id);
-  }, [leftHeadings.length, rightHeadings.length]);
+  }, []);
 
   return (
     <div className="statistics__wrapper">
       {/* Left Column */}
       <div className="statistics__content">
         <div className="statistics__content--header">
-          {leftHeadings.map((heading, index) => (
+          {leftHeadings.map((heading, idx) => (
             <div
-              key={index}
+              key={idx}
               className={`statistics__heading ${
-                index === activeLeftIndex ? "statistics__heading--active" : ""
+                idx === activeLeftIndex ? "statistics__heading--active" : ""
               }`}
             >
               {heading}
@@ -68,8 +73,7 @@ const AnimatedStatistics = () => {
           <div className="statistics__data">
             <div className="statistics__data--number">93%</div>
             <div className="statistics__data--title">
-              of Summarist members <b>significantly increase</b> reading
-              frequency.
+              of Summarist members <b>significantly increase</b> reading frequency.
             </div>
           </div>
           <div className="statistics__data">
@@ -93,34 +97,29 @@ const AnimatedStatistics = () => {
           <div className="statistics__data">
             <div className="statistics__data--number">91%</div>
             <div className="statistics__data--title">
-              of Summarist members{" "}
-              <b>report feeling more productive</b> after incorporating the
-              service into their daily routine.
+              of Summarist members <b>report feeling more productive</b> after incorporating the service into their daily routine.
             </div>
           </div>
           <div className="statistics__data">
             <div className="statistics__data--number">94%</div>
             <div className="statistics__data--title">
-              of Summarist members have{" "}
-              <b>noticed an improvement</b> in their overall comprehension and
-              retention of information.
+              of Summarist members have <b>noticed an improvement</b> in their overall comprehension and retention of information.
             </div>
           </div>
           <div className="statistics__data">
             <div className="statistics__data--number">88%</div>
             <div className="statistics__data--title">
-              of Summarist members <b>feel more informed</b> about current
-              events and industry trends since using the platform.
+              of Summarist members <b>feel more informed</b> about current events and industry trends since using the platform.
             </div>
           </div>
         </div>
 
         <div className="statistics__content--header statistics__content--header-second">
-          {rightHeadings.map((heading, index) => (
+          {rightHeadings.map((heading, idx) => (
             <div
-              key={index}
+              key={idx}
               className={`statistics__heading ${
-                index === activeRightIndex ? "statistics__heading--active" : ""
+                idx === activeRightIndex ? "statistics__heading--active" : ""
               }`}
             >
               {heading}
@@ -132,7 +131,7 @@ const AnimatedStatistics = () => {
   );
 };
 
-/* --------------------------------- Page -------------------------------- */
+/* --------------------------------- Page ---------------------------------- */
 
 export default function Home() {
   const router = useRouter();
@@ -140,60 +139,84 @@ export default function Home() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
-  // Load existing session (no redirect here)
+  // Prevent flicker: wait until we've read localStorage
+  const [hydrated, setHydrated] = useState(false);
+
   useEffect(() => {
-    const stored = localStorage.getItem("user");
-    if (stored) {
-      try {
-        setUser(JSON.parse(stored));
-      } catch {
-        localStorage.removeItem("user");
-      }
+    try {
+      const raw = localStorage.getItem("user");
+      if (raw) setUser(JSON.parse(raw));
+    } catch {
+      localStorage.removeItem("user");
+    } finally {
+      setHydrated(true);
     }
   }, []);
 
-  // Login → save + redirect ONCE
-  const handleLogin = (userData: User) => {
+  const handleLoginSuccess = (userData: User) => {
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
+    // Route to For You after successful login
     router.push("/for-you");
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
   };
 
   return (
     <div className="min-h-screen font-sans p-8 sm:p-20 flex flex-col gap-20">
-      {/* Navigation */}
+      {/* NAV */}
       <nav className="nav">
         <div className="nav__wrapper flex items-center justify-between max-w-7xl mx-auto">
-          <figure
-            className="nav__img--mask relative w-47 h-16 cursor-pointer"
-            onClick={() => router.push("/")}
-          >
+          <a href="/" className="nav__img--mask relative w-47 h-16 block">
             <Image
               src="/logo.png"
-              alt="logo"
+              alt="Summarist"
               fill
               style={{ objectFit: "contain" }}
               priority
             />
-          </figure>
+          </a>
 
-          <ul className="nav__list--wrapper flex space-x-8 text-lg">
-            {!user ? (
+          <ul className="nav__list--wrapper flex items-center gap-8 text-lg">
+            {/* Show Login or Logout only after hydration to avoid flicker */}
+            {hydrated && (
               <li className="nav__list nav__list--login cursor-pointer">
-                <button onClick={() => setIsLoginModalOpen(true)}>Login</button>
+                {!user ? (
+                  <button
+                    onClick={() => setIsLoginModalOpen(true)}
+                    className="text-[#032B41] hover:opacity-80"
+                  >
+                    Login
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleLogout}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    Logout
+                  </button>
+                )}
               </li>
-            ) : null}
-            <li className="nav__list nav__list--mobile cursor-pointer">About</li>
-            <li className="nav__list nav__list--mobile cursor-pointer">Contact</li>
+            )}
+
+            <li className="nav__list nav__list--mobile cursor-pointer">
+              About
+            </li>
+            <li className="nav__list nav__list--mobile cursor-pointer">
+              Contact
+            </li>
             <li className="nav__list nav__list--mobile cursor-pointer">Help</li>
           </ul>
         </div>
       </nav>
 
-      {/* Landing Section */}
+      {/* HERO */}
       <section id="landing" className="container max-w-7xl mx-auto">
-        <div className="landing__wrapper flex flex-col sm:flex-row items-center gap-10 justify-center translate-x-2 sm:translate-x-34 -translate-y-24">
-          <div className="landing__content max-w-md text-center sm:text-left -translate-y-8 sm:-translate-x-12">
+        <div className="landing__wrapper flex flex-col sm:flex-row items-center gap-10 justify-center sm:translate-x-32 -translate-y-24">
+          <div className="landing__content max-w-md text-center sm:text-left -translate-y-8 sm:-translate-x-6">
             <h1 className="landing__content__title text-4xl font-bold leading-tight">
               Gain more knowledge <br className="remove--tablet hidden sm:inline" />
               in less time
@@ -206,19 +229,19 @@ export default function Home() {
               and even people who don't like to read.
             </p>
 
-            {user ? (
+            {!user ? (
               <button
+                onClick={() => setIsLoginModalOpen(true)}
                 className="btn home__cta--btn mt-8 px-8 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition"
-                onClick={() => router.push("/for-you")}
               >
-                Go to Dashboard
+                Login
               </button>
             ) : (
               <button
-                onClick={() => setIsLoginModalOpen(true)}
-                className="btn home__cta--btn mt-8 px-8 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                onClick={() => router.push("/for-you")}
+                className="btn home__cta--btn mt-8 px-8 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition"
               >
-                Login
+                Go to Dashboard
               </button>
             )}
           </div>
@@ -235,7 +258,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features */}
+      {/* FEATURES */}
       <section id="features" className="container max-w-7xl mx-auto xl:translate-x-36 -translate-y-36">
         <h2 className="section__title text-3xl font-semibold mb-12 text-center sm:text-left">
           Understand books in few minutes
@@ -246,9 +269,7 @@ export default function Home() {
             <div className="features__icon mb-4 text-blue-600">
               <AiFillFileText size={48} />
             </div>
-            <h3 className="features__title text-xl font-semibold mb-2">
-              Read or listen
-            </h3>
+            <h3 className="features__title text-xl font-semibold mb-2">Read or listen</h3>
             <p className="features__sub--title text-gray-700">
               Save time by getting the core ideas from the best books.
             </p>
@@ -258,9 +279,7 @@ export default function Home() {
             <div className="features__icon mb-4 text-yellow-500">
               <AiFillBulb size={48} />
             </div>
-            <h3 className="features__title text-xl font-semibold mb-2">
-              Find your next read
-            </h3>
+            <h3 className="features__title text-xl font-semibold mb-2">Find your next read</h3>
             <p className="features__sub--title text-gray-700">
               Explore book lists and personalized recommendations.
             </p>
@@ -270,9 +289,7 @@ export default function Home() {
             <div className="features__icon mb-4 text-purple-600">
               <AiFillAudio size={48} />
             </div>
-            <h3 className="features__title text-xl font-semibold mb-2">
-              Briefcasts
-            </h3>
+            <h3 className="features__title text-xl font-semibold mb-2">Briefcasts</h3>
             <p className="features__sub--title text-gray-700">
               Gain valuable insights from briefcasts.
             </p>
@@ -282,7 +299,7 @@ export default function Home() {
         <AnimatedStatistics />
       </section>
 
-      {/* Reviews */}
+      {/* REVIEWS */}
       <section id="reviews" className="container max-w-7xl mx-auto xl:translate-x-36 -translate-y-42">
         <h2 className="section__title text-3xl font-semibold mb-12 text-center">
           What our members say
@@ -294,9 +311,7 @@ export default function Home() {
               name: "Hanna M.",
               body: (
                 <>
-                  This app has been a <b>game-changer</b> for me! It's saved me
-                  so much time and effort in reading and comprehending books.
-                  Highly recommend it to all book lovers.
+                  This app has been a <b>game-changer</b> for me! It's saved me so much time and effort in reading and comprehending books. Highly recommend it to all book lovers.
                 </>
               ),
             },
@@ -304,10 +319,7 @@ export default function Home() {
               name: "David B.",
               body: (
                 <>
-                  I love this app! It provides{" "}
-                  <b>concise and accurate summaries</b> of books in a way that
-                  is easy to understand. It's also very user-friendly and
-                  intuitive.
+                  I love this app! It provides <b>concise and accurate summaries</b> of books in a way that is easy to understand. It's also very user-friendly and intuitive.
                 </>
               ),
             },
@@ -315,10 +327,7 @@ export default function Home() {
               name: "Nathan S.",
               body: (
                 <>
-                  This app is a great way to get the main takeaways from a book
-                  without having to read the entire thing.{" "}
-                  <b>The summaries are well-written and informative.</b>{" "}
-                  Definitely worth downloading.
+                  This app is a great way to get the main takeaways from a book without having to read the entire thing. <b>The summaries are well-written and informative.</b> Definitely worth downloading.
                 </>
               ),
             },
@@ -326,10 +335,7 @@ export default function Home() {
               name: "Ryan R.",
               body: (
                 <>
-                  If you're a busy person who{" "}
-                  <b>loves reading but doesn't have the time</b> to read every
-                  book in full, this app is for you! The summaries are thorough
-                  and provide a great overview of the book's content.
+                  If you're a busy person who <b>loves reading but doesn't have the time</b> to read every book in full, this app is for you! The summaries are thorough and provide a great overview of the book's content.
                 </>
               ),
             },
@@ -349,33 +355,34 @@ export default function Home() {
         </div>
 
         <div className="reviews__btn--wrapper">
-          {user ? (
-            <button
-              className="btn home__cta--btn"
-              onClick={() => router.push("/for-you")}
-            >
-              Go to Dashboard
-            </button>
-          ) : (
+          {!user ? (
             <button
               onClick={() => setIsLoginModalOpen(true)}
               className="btn home__cta--btn"
             >
               Login
             </button>
+          ) : (
+            <button
+              onClick={() => router.push("/for-you")}
+              className="btn home__cta--btn"
+            >
+              Go to Dashboard
+            </button>
           )}
         </div>
       </section>
 
-      {/* Numbers */}
+      {/* NUMBERS / STATS (edge-to-edge, rounded corners on 768 & 600) */}
       <section id="numbers" className="container max-w-7xl mx-auto xl:translate-x-36 -translate-y-35">
         <h2 className="section__title text-3xl font-semibold mb-12 text-center">
           Start growing with Summarist now
         </h2>
 
-        <div className="numbers__wrapper flex flex-col sm:flex-row justify-around gap-12 text-center">
-          <div className="numbers max-w-xs">
-            <div className="numbers__icon text-yellow-500 mb-3">
+        <div className="numbers__wrapper flex flex-col gap-6">
+          {/* Card 1 */}
+          <div className="numbers__card">
+            <div className="numbers__icon text-blue-600 mb-3">
               <BiCrown size={48} />
             </div>
             <div className="numbers__title text-3xl font-bold">3 Million</div>
@@ -384,7 +391,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="numbers max-w-xs">
+          {/* Card 2 */}
+          <div className="numbers__card">
             <div className="numbers__icon numbers__star--icon flex justify-center text-yellow-500 mb-3 space-x-1">
               <BsStarFill size={24} />
               <BsStarHalf size={24} />
@@ -395,7 +403,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="numbers max-w-xs">
+          {/* Card 3 */}
+          <div className="numbers__card">
             <div className="numbers__icon text-green-600 mb-3">
               <RiLeafLine size={48} />
             </div>
@@ -407,73 +416,19 @@ export default function Home() {
         </div>
       </section>
 
-     <style jsx>{`
-  .numbers {
-    background: #eaf2ff;
-    padding: 24px 24px;
-    transition: height .2s ease;
-  }
-
-  /* Tablet and smaller: edge-to-edge, but keep soft rounded corners */
-  @media (max-width: 1024px) {
-    .numbers__wrapper {
-      align-items: center;
-      flex-direction: column;
-      gap: 24px;
-      width: 100vw;
-      margin-left: calc(-50vw + 50%);
-    }
-
-    .numbers {
-      width: 100vw;
-      max-width: none;
-      min-height: 160px;
-      padding: 36px 32px;
-      border-radius: 16px;   /* ✅ brings back rounded corners */
-    }
-  }
-
-  /* Mobile (≤600px): same style, just slightly taller */
-  @media (max-width: 600px) {
-    .numbers__wrapper {
-      width: 100vw;
-      margin-left: calc(-50vw + 50%);
-    }
-
-    .numbers {
-      width: 100vw;
-      max-width: none;
-      min-height: 180px;
-      padding: 40px 24px;
-      border-radius: 16px;   /* ✅ rounded corners preserved */
-    }
-  }
-`}</style>
-
-
-
-      {/* Footer */}
+      {/* FOOTER */}
       <section id="footer" className="bg-gray-100 py-12 mt-8">
         <div className="container max-w-7xl mx-auto px-6">
-          <div className="row grid grid-cols-1 lg:grid-cols-4 gap-12 text-gray-700">
+          {/* 768px behavior: stack columns, titles on top of links */}
+          <div className="row grid grid-cols-1 sm:grid-cols-4 gap-12 text-gray-700">
             {[
               {
                 title: "Actions",
-                links: [
-                  "Summarist Magazine",
-                  "Cancel Subscription",
-                  "Help",
-                  "Contact us",
-                ],
+                links: ["Summarist Magazine", "Cancel Subscription", "Help", "Contact us"],
               },
               {
                 title: "Useful Links",
-                links: [
-                  "Pricing",
-                  "Summarist Business",
-                  "Gift Cards",
-                  "Authors & Publishers",
-                ],
+                links: ["Pricing", "Summarist Business", "Gift Cards", "Authors & Publishers"],
               },
               {
                 title: "Company",
@@ -483,16 +438,14 @@ export default function Home() {
                 title: "Other",
                 links: ["Sitemap", "Legal Notice", "Terms of Service", "Privacy Policies"],
               },
-            ].map(({ title, links }, idx) => (
-              <div key={idx} className="footer__block">
-                <h4 className="footer__link--title font-semibold mb-6">
-                  {title}
-                </h4>
-                <div>
-                  {links.map((link, i) => (
-                    <div key={i} className="footer__link--wrapper mb-3">
+            ].map(({ title, links }, i) => (
+              <div key={i} className="footer__block">
+                <h4 className="footer__link--title font-semibold mb-6">{title}</h4>
+                <div className="footer__links--stack">
+                  {links.map((l, j) => (
+                    <div key={j} className="footer__link--wrapper mb-3">
                       <a href="#" className="footer__link text-gray-600 hover:text-gray-900 transition">
-                        {link}
+                        {l}
                       </a>
                     </div>
                   ))}
@@ -507,12 +460,51 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Login Modal */}
+      {/* LOGIN MODAL */}
       <LoginModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
-        onLogin={handleLogin}
+        onLogin={handleLoginSuccess}
       />
+
+      {/* PAGE-SPECIFIC STYLES */}
+      <style jsx>{`
+        /* Footer: at <= 768px stack each block (title above links, vertical flow) */
+        @media (max-width: 768px) {
+          #reviews {
+            padding: 0 24px;
+            transform: translateX(0) !important;
+          }
+          .container {
+            width: 100%;
+            padding: 0;
+          }
+          .footer__links--stack {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+          }
+        }
+
+        /* Edge-to-edge + rounded rectangular "numbers" cards on tablet/mobile */
+        .numbers__wrapper .numbers__card {
+          background: #eaf2ff;
+          border-radius: 16px;
+          padding: 28px 24px;
+          width: 100%;
+        }
+        @media (max-width: 1024px) {
+          .numbers__wrapper {
+            padding: 0;
+          }
+          .numbers__card {
+            margin-left: calc(50% - 50vw);
+            margin-right: calc(50% - 50vw);
+            padding-left: max(24px, env(safe-area-inset-left));
+            padding-right: max(24px, env(safe-area-inset-right));
+          }
+        }
+      `}</style>
     </div>
   );
 }
