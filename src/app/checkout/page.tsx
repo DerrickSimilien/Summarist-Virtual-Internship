@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, ChevronDown } from 'lucide-react';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
 
 const CheckoutPage = () => {
@@ -11,7 +11,7 @@ const CheckoutPage = () => {
   const searchParams = useSearchParams();
   const plan = searchParams.get('plan') || 'yearly';
   
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   
   const [formData, setFormData] = useState({
