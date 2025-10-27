@@ -1,15 +1,16 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, ChevronDown } from 'lucide-react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 
+
 // Prevent static prerender issues; this page depends on URL/auth
 export const dynamic = 'force-dynamic';
 
-const CheckoutPage = () => {
+const CheckoutContent = () => {
   const router = useRouter();
 
   // Plan: default to 'yearly' on first render; hydrate from URL on client
@@ -805,4 +806,10 @@ const CheckoutPage = () => {
   );
 };
 
-export default CheckoutPage;
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div>Loading checkout...</div>}>
+      <CheckoutContent />
+    </Suspense>
+  );
+}
