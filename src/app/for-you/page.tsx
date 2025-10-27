@@ -275,7 +275,7 @@ const ForYouPage = () => {
       <div className="for-you-root flex justify-center" style={{ width: '100%', maxWidth: '100vw', overflowX: 'hidden' }}>
         <div
           className="for-you-container"
-          style={{ maxWidth: '1000px', width: '100%', maxWidthShrink: 0, padding: '0 20px', margin: '0 auto' }}
+          style={{ maxWidth: '1000px', width: '100%', padding: '0 20px', margin: '0 auto' }}
         >
           {/* Featured */}
           <section style={{ marginBottom: '32px' }}>
