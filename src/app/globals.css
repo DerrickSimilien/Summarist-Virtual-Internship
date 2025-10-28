@@ -1,10 +1,31 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
 @import "tailwindcss";
-/* @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap"); */
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --card-bg: #1e293b;
+  --featured-card-bg: #FBEFD6;  /* Always beige for featured card */
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --text-muted: #6b7280;
+  --skeleton-bg: #e5e7eb;
+  --skeleton-highlight: #d1d5db;
+}
+
+/* Dark mode color scheme with better contrast */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f172a;
+    --foreground: #f1f5f9;
+    --card-bg: #1e293b;
+    --featured-card-bg: #FBEFD6;  /* Featured card stays beige even in dark mode */
+    --text-primary: #f1f5f9;
+    --text-secondary: #e2e8f0;
+    --text-muted: #cbd5e1;
+    --skeleton-bg: #1e293b;
+    --skeleton-highlight: #334155;
+  }
 }
 
 @theme inline {
@@ -14,17 +35,11 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ===== Your full custom CSS starts here ===== */
@@ -40,21 +55,14 @@ body {
   box-sizing: border-box;
 }
 
-
-
 body {
   margin: 0;
-  padding: 0; /* Only on body if needed */
+  padding: 0;
   font-family: "Roboto", sans-serif;
   background: var(--background);
   color: var(--foreground);
   overflow-x: hidden;
 }
-
-/* body {
-  max-width: 100%;
-  overflow-x: hidden;
-} */
 
 .login-modal * {
   margin: unset;
@@ -78,7 +86,6 @@ button {
   cursor: pointer;
   outline: none;
   border: none;
-  /* background-color: transparent; */
 }
 
 button:active {
@@ -131,22 +138,14 @@ button:disabled {
   justify-content: center;
 }
 
-/* Add this to your global.css file */
-
-
-
-/* Modal-specific reset to counteract global reset */
-.login-modal-content {
-  /* Reset margins and padding for modal elements */
-}
-
+/* Modal-specific reset */
 .login-modal-content * {
   margin: revert;
   padding: revert;
 }
 
 .login-modal-content h2 {
-  margin: 0 0 1rem 0; /* Specific spacing for the title */
+  margin: 0 0 1rem 0;
 }
 
 .login-modal-content .modal-form-section {
@@ -155,7 +154,7 @@ button:disabled {
 }
 
 .login-modal-content .modal-form-section > * {
-  margin-bottom: 0.75rem; /* 12px spacing between form elements */
+  margin-bottom: 0.75rem;
 }
 
 .login-modal-content .modal-form-section > *:last-child {
@@ -163,24 +162,23 @@ button:disabled {
 }
 
 .login-modal-content .modal-separator {
-  margin: 0.5rem 0; /* 8px top/bottom margin for separators */
+  margin: 0.5rem 0;
 }
 
 .login-modal-content .modal-footer-link {
-  margin: 1.5rem 0 0 0; /* 24px top margin for footer links */
+  margin: 1.5rem 0 0 0;
 }
 
 .login-modal-content input {
-  margin: 0; /* Reset input margins */
-  padding: 0.75rem 1rem; /* Keep the padding for inputs */
+  margin: 0;
+  padding: 0.75rem 1rem;
 }
 
 .login-modal-content button {
-  margin: 0; /* Reset button margins */
-  padding: 0.75rem 1.25rem; /* Keep button padding */
+  margin: 0;
+  padding: 0.75rem 1.25rem;
 }
 
-/* Specific overrides for form elements */
 .login-modal-content .form-group {
   margin: 0;
   padding: 0;
@@ -191,13 +189,14 @@ button:disabled {
   padding: 0;
 }
 
-/* HOME */
+/* HOME - Updated for dark mode support */
 .section__title {
   font-size: 32px;
-  color: #032b41;
+  color: var(--text-primary);
   text-align: center;
   margin-bottom: 32px;
   font-weight: bold;
+  transition: color 0.3s ease;
 }
 
 /* NAVBAR */
@@ -232,8 +231,8 @@ button:disabled {
 
 .nav__list {
   cursor: not-allowed;
-  color: #032b41;
-  transition: color 100ms;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
 }
 
 .nav__list--login:hover {
@@ -244,7 +243,7 @@ button:disabled {
   cursor: pointer;
 }
 
-/* LANDING */
+/* LANDING - Updated for dark mode */
 .landing__wrapper {
   display: flex;
 }
@@ -266,21 +265,23 @@ button:disabled {
 }
 
 .landing__content__title {
-  color: #032b41;
+  color: var(--text-primary);
   font-size: 40px;
   font-weight: bold;
   margin-bottom: 24px;
+  transition: color 0.3s ease;
 }
 
 .landing__content__subtitle {
-  color: #394547;
+  color: var(--text-secondary);
   font-size: 20px;
   font-weight: 300;
   margin-bottom: 24px;
   line-height: 1.5;
+  transition: color 0.3s ease;
 }
 
-/* FEATURES */
+/* FEATURES - Updated for dark mode */
 .features__wrapper {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -299,7 +300,8 @@ button:disabled {
   display: flex;
   justify-content: center;
   margin-bottom: 8px;
-  color: #032b41;
+  color: #2bd97c;
+  transition: color 0.3s ease;
 }
 
 .features__icon svg {
@@ -309,22 +311,25 @@ button:disabled {
 
 .features__title {
   font-size: 24px;
-  color: #032b41;
+  color: var(--text-primary);
   margin-bottom: 16px;
   font-weight: 500;
+  transition: color 0.3s ease;
 }
 
 .features__sub--title {
   font-size: 18px;
-  color: #394547;
+  color: var(--text-secondary);
   font-weight: 300;
+  transition: color 0.3s ease;
 }
 
 .statistics__heading {
   font-size: 32px;
   font-weight: 500;
-  color: #6b757b;
+  color: var(--text-muted);
   margin-bottom: 16px;
+  transition: color 0.3s ease;
 }
 
 .statistics__heading:last-child {
@@ -335,10 +340,9 @@ button:disabled {
   color: #2bd97c;
 }
 
-/* REPLACED FLEXBOX WITH CSS GRID FOR BETTER CONTROL */
 .statistics__wrapper {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  grid-template-columns: 1fr 1fr;
   gap: 80px;
   margin-bottom: 96px;
 }
@@ -348,18 +352,18 @@ button:disabled {
 }
 
 .statistics__content {
-  display: contents; /* Allows child elements to be direct grid items */
+  display: contents;
 }
 
 .statistics__content--header {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  text-align: left; /* Default left align */
+  text-align: left;
 }
 
 .statistics__content--header-second {
-  text-align: right; /* Right align for the second header column */
+  text-align: right;
 }
 
 .statistics__content--details {
@@ -367,9 +371,10 @@ button:disabled {
   flex-direction: column;
   justify-content: center;
   gap: 24px;
-  background-color: #f1f6f4;
+  background-color: var(--card-bg);
   padding: 40px 24px;
-  border-radius: 4px; /* Added to match the visual */
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
 .statistics__data {
@@ -387,7 +392,8 @@ button:disabled {
 .statistics__data--title {
   font-size: 20px;
   font-weight: 300;
-  color: #394547;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
 }
 
 /* REVIEWS */
@@ -404,351 +410,117 @@ button:disabled {
   font-weight: 300;
 }
 
-.review__header {
-  color: #032b41;
-  display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
+/* In dark mode, keep reviews readable */
+@media (prefers-color-scheme: dark) {
+  .review {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+  }
 }
 
-.review__body {
-  color: #394547;
-  letter-spacing: 0.3px;
-  line-height: 1.4;
+.review__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.review__name {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
 }
 
 .review__stars {
   display: flex;
+  gap: 4px;
+  color: #ffc107;
 }
 
-.review__stars svg {
-  width: 16px;
-  height: 16px;
-  fill: #0564f1;
-}
-
-.reviews__btn--wrapper {
-  display: flex;
-  justify-content: center;
+.review__body {
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 1.5;
+  transition: color 0.3s ease;
 }
 
 /* NUMBERS */
-.numbers {
-  background-color: #d7e9ff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 24px;
-  padding-bottom: 40px;
-  border-radius: 12px;
-}
-
 .numbers__wrapper {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 40px;
 }
 
-.numbers__icon {
+.numbers {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  height: 60px;
-  gap: 4px;
+  text-align: center;
 }
 
-.numbers__icon svg {
+.numbers__icon {
   color: #0365f2;
-  width: 48px;
-  height: 48px;
-}
-
-.numbers__star--icon svg {
-  width: 20px;
-  height: 20px;
+  margin-bottom: 16px;
 }
 
 .numbers__title {
-  font-size: 40px;
-  color: #032b41;
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-
-.numbers__sub--title {
-  color: #394547;
-  font-weight: 300;
-}
-
-#footer {
-  background-color: rgb(241 246 244);
-   padding: 80px 0 40px 0;
-}
-
-#footer .container {
-  max-width: 1070px;
-  margin: 0 auto;
-  padding: 0 60px; 
-}
-
-.footer__top--wrapper {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
- margin: 0 auto 64px; 
-  max-width: 900px;
-}
-
-.footer__block {
-  z-index: 1;
-  flex: 1; 
-  padding: 0 20px;
-}
-
-.footer__link--title {
-  font-weight: 600;
-  margin-bottom: 24px;
-  font-size: 18px;
-  color: #032b41;
-  text-align: left;
-}
-
-.footer__social--link-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.footer__social--link {
-  display: flex;
-}
-
-.footer__link--wrapper {
- margin-bottom: 16px; /* Increase spacing between links */
-  line-height: 1.0;
-}
-
-.footer__link {
-  color: #394547;
-  font-size: 14px;
-  cursor: not-allowed;
-  line-height: 1.2;
-}
-
-.footer__link--wrapper:last-child {
-  margin-bottom: 0;
-}
-
-.footer__social--text {
-  margin-bottom: 4px;
-}
-
-.footer__social--text b {
-  font-weight: 500;
-}
-
-.footer__review--wrapper {
-  display: flex;
-  gap: 8px;
+  font-size: 48px;
+  font-weight: bold;
+  color: #0365f2;
   margin-bottom: 8px;
 }
 
-.footer__social--img-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.footer__social--img {
-  display: flex;
-}
-
-.footer__copyright--wrapper {
- display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-top: 32px; 
-  border-top: 1px solid rgba(3, 43, 65, 0.1);
-  text-align: center;
-   color: #032b41;
-  font-family: "Roboto", sans-serif;
+.numbers__sub--title {
   font-size: 16px;
-  font-weight: 400;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
 }
 
-/* .footer__copyright {
-  color: #6b757b; 
-  font-weight: 300; 
-  font-size: 14px;
+/* FOOTER */
+.footer__top--wrapper {
+  display: flex;
+  justify-content: space-between;
+  max-width: 900px;
+  margin: 0 auto 60px;
+}
+
+.footer__block {
+  padding: 0 24px;
+}
+
+.footer__link--title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  transition: color 0.3s ease;
+}
+
+.footer__link--wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer__link {
+  color: var(--text-secondary);
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.footer__link:hover {
+  color: #2bd97c;
+}
+
+.footer__copyright {
   text-align: center;
-} */
-
-/* Add these styles to your global CSS file to fix the layout issues */
-
-/* Override global reset for navigation components */
-.sidebar-layout {
-  display: flex;
-  min-height: 100vh;
-  position: relative;
+  color: var(--text-muted);
+  font-size: 14px;
+  transition: color 0.3s ease;
 }
 
-.sidebar-nav {
-  position: fixed !important;
-  left: 0;
-  top: 0;
-  width: 200px;
-  height: 100vh;
-  background-color: #f8f9fa;
-  border-right: 1px solid #e9ecef;
-  padding: 1rem 0;
-  z-index: 1000;
-  overflow-y: auto;
-}
-
-.sidebar-nav * {
-  margin: revert;
-  padding: revert;
-  box-sizing: border-box;
-}
-
-.sidebar-nav .nav-item {
-  padding: 0.75rem 1.5rem;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: #374151;
-  text-decoration: none;
-  transition: background-color 0.2s;
-}
-
-.sidebar-nav .nav-item:hover {
-  background-color: #f3f4f6;
-}
-
-.sidebar-nav .nav-item.active {
-  background-color: #e5f3ff;
-  color: #1d4ed8;
-  border-right: 3px solid #1d4ed8;
-}
-
-.main-nav {
-  position: fixed !important;
-  top: 0;
-  left: 200px;
-  right: 0;
-  height: 80px;
-  background-color: white;
-  border-bottom: 1px solid #e9ecef;
-  padding: 0 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  z-index: 999;
-}
-
-.main-nav * {
-  margin: revert;
-  padding: revert;
-  box-sizing: border-box;
-}
-
-.search-input {
-  width: 300px !important;
-  padding: 0.75rem 1rem !important;
-  border: 1px solid #d1d5db !important;
-  border-radius: 0.375rem !important;
-  background-color: white !important;
-  font-size: 0.875rem !important;
-  color: #374151 !important;
-}
-
-.search-input::placeholder {
-  color: #9ca3af !important;
-}
-
-.search-input:focus {
-  outline: none !important;
-  border-color: #3b82f6 !important;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
-}
-
-.main-content {
-  margin-left: 200px;
-  margin-top: 80px;
-  padding: 2rem;
-  min-height: calc(100vh - 80px);
-}
-
-/* Fix for mobile responsiveness */
-@media (max-width: 768px) {
-  .sidebar-nav {
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-  }
-  
-  .sidebar-nav.open {
-    transform: translateX(0);
-  }
-  
-  .main-nav {
-    left: 0;
-  }
-  
-  .main-content {
-    margin-left: 0;
-  }
-}
-
-/* Ensure proper spacing for components inside SidebarLayout */
-.sidebar-layout .section-title {
-  margin-bottom: 1.5rem !important;
-}
-
-.sidebar-layout .section {
-  margin-bottom: 2rem !important;
-}
-
-.sidebar-layout .book-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-/* Fix any conflicting styles from global reset */
-.sidebar-layout h1,
-.sidebar-layout h2,
-.sidebar-layout h3,
-.sidebar-layout h4,
-.sidebar-layout h5,
-.sidebar-layout h6 {
-  margin: 0 0 1rem 0 !important;
-  line-height: 1.2 !important;
-}
-
-.sidebar-layout p {
-  margin: 0 0 1rem 0 !important;
-  line-height: 1.5 !important;
-}
-
-
-.plan__img--mask{
-    display: flex;
-    justify-content: center;
-    max-width: 340px;
-    margin: 0 auto;
-    border-radius: 180px 180px 0 0;
-    overflow: hidden;
-    position: absolute;
-    bottom: 0;
-    left: 40%;
-}
-
-
-/* The problematic CSS has been removed and the media query has been updated */
-
+/* RESPONSIVE */
 @media (max-width: 600px) {
   #landing {
     margin-top: 40px;
@@ -767,7 +539,6 @@ button:disabled {
     text-align: center;
   }
 }
-
 
 @media (max-width: 768px) {
    .landing__content {
@@ -795,10 +566,9 @@ button:disabled {
   }
 
   .statistics__wrapper {
-    grid-template-columns: 1fr; /* Stack columns vertically on mobile */
+    grid-template-columns: 1fr;
     gap: 32px;
     margin-bottom: 32px;
-    /* padding: 0 24px; */
   }
 
   .statistics__content {
@@ -810,14 +580,13 @@ button:disabled {
     text-align: left;
   }
   
-  /* Resetting right-side alignment on mobile */
   .statistics__content--header-second {
     align-items: flex-start;
     text-align: left;
   }
 
   .statistics__content--details-second {
-    order: 1; /* Puts the right details block on top of its header on mobile */
+    order: 1;
   }
 
   .statistics__heading {
@@ -857,7 +626,6 @@ button:disabled {
   .section__title {
     font-size: 24px;
      text-align: center;
-    /* padding-right: 380px; */
   }
 
   .features__title {
@@ -912,12 +680,12 @@ button:disabled {
   }
 
    #landing {
-    margin-top: 60px; /* Add breathing room from navbar */
+    margin-top: 60px;
   }
 
   .landing__wrapper {
-    transform: translateY(0) translateX(0) !important; /* Remove all transforms */
-    justify-content: center; /* Center the content */
+    transform: translateY(0) translateX(0) !important;
+    justify-content: center;
   }
 
   .landing__content {
@@ -926,7 +694,7 @@ button:disabled {
     align-items: center;
     text-align: center;
     max-width: 540px;
-    margin: 0 auto; /* Center horizontally */
+    margin: 0 auto;
     transform:  translateX(-40px);
   }
 
@@ -935,7 +703,6 @@ button:disabled {
      padding: 0 24px;
   }
 
-   /* Off-canvas drawer on tablet/mobile */
   .sl-sidebar {
     transform: translateX(-100%) !important;
     transition: transform .3s ease-in-out;
@@ -946,19 +713,15 @@ button:disabled {
     transform: translateX(0) !important;
   }
 
-  /* Overlay visible on tablet/mobile */
   .sl-overlay {
     display: block !important;
   }
 
-  /* Main area shouldn’t reserve desktop sidebar space */
   .sl-main {
     margin-left: 0 !important;
   }
-
 }
 
-/* Only apply the -90px shift between 601px and 768px */
 @media (min-width: 601px) and (max-width: 768px) {
   .landing__content {
     transform: translateX(-90px);
@@ -970,7 +733,6 @@ button:disabled {
   }
 
   .selected-book-card {
-    /* row layout, centered content, compact height */
     flex-direction: row !important;
     align-items: center !important;
     width: 100% !important;
@@ -981,35 +743,33 @@ button:disabled {
   }
 
   .book-description {
-    max-width: 360px !important;   /* give text a bit more line length */
+    max-width: 360px !important;
     padding-right: 16px !important;
   }
 
   .featured-desc {
     display: -webkit-box;
-    -webkit-line-clamp: 2;         /* keep it tidy like the original */
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
   .book-divider {
-    height: 96px !important;       /* shorter vertical rule—helps the rectangle feel */
+    height: 96px !important;
     margin: 0 16px !important;
   }
 
   .book-info img {
-    width: 80px !important;        /* slightly smaller cover */
+    width: 80px !important;
     height: 118px !important;
   }
 
-  /* Make the blue header a square banner and give extra depth for the logo */
   .choose-header {
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
-    padding-bottom: 300px !important; /* adjust to 240–280 if you want a touch less/more space */
+    padding-bottom: 300px !important;
   }
 
-  /* Title: white, Roboto, 32px, centered, with 32px margin below */
   .choose-header h1 {
     color: #ffffff !important;
     font-family: Roboto, sans-serif !important;
@@ -1021,23 +781,20 @@ button:disabled {
     margin-right: auto !important;
   }
 
-  /* Subtitle: white, Roboto, 16px, with 32px margin below */
   .choose-header p {
     color: #ffffff !important;
     font-family: Roboto, sans-serif !important;
     font-size: 16px !important;
     margin: 0 0 32px !important;
-    opacity: 1 !important; /* ensure it's fully visible */
+    opacity: 1 !important;
   }
 
-  /* Center the illustration under the subtitle so it doesn't overlap */
   .plan__img--mask {
     left: 50% !important;
     transform: translateX(-50%) !important;
     bottom: 0 !important;
-    max-width: 420px !important; /* looks good on tablets; tweak 400–460 if desired */
+    max-width: 420px !important;
   }
-
 }
 
 @media (max-width: 600px) {
@@ -1076,25 +833,23 @@ button:disabled {
     line-height: 1.3 !important;
     color: #ffffff !important;
     margin: 0 0 32px !important;
-    max-width: 480px;       /* keeps line length nice */
+    max-width: 480px;
     margin-left: auto;
     margin-right: auto;
   }
 
-  /* Subtitle: 16px, Roboto, white, 0 0 32px margin */
   .choose-header p {
     font-family: Roboto, sans-serif !important;
     font-size: 16px !important;
     color: #ffffff !important;
     margin: 0 0 32px !important;
-    opacity: 1 !important;  /* ensure full white like the original */
+    opacity: 1 !important;
   }
 
-  /* Center the half-circle image perfectly at the bottom */
   .plan__img--mask {
     left: 50% !important;
     transform: translateX(-50%) !important;
-    max-width: 280px !important;  /* slight downsize for 600px */
+    max-width: 280px !important;
     bottom: 0 !important;
   }
 
@@ -1115,27 +870,23 @@ button:disabled {
   color: #6B7280 !important;
 }
 
-  /* Center everything nicely */
   .choose-header .text-center div {
     text-align: center;
   }
 
-    /* Make the plan boxes longer horizontally */
   .plan-cards .relative.rounded-lg {
     width: 100% !important;
-    max-width: 480px !important; /* controls the stretch — increase for longer look */
+    max-width: 480px !important;
     margin: 0 auto 16px auto !important;
     padding: 24px 28px !important;
     min-height: 160px !important;
   }
 
-  /* Make sure the box contents stay centered */
   .plan-cards {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-  
 }
 
 @media (max-width: 576px) {
@@ -1145,13 +896,11 @@ button:disabled {
 }
 
 @media (min-width: 769px) {
-  /* Pinned desktop sidebar */
   .sl-sidebar {
     transform: translateX(0) !important;
     width: 240px !important;
   }
 }
 
-/* ==== Page overflow guards ==== */
 .sl-main { overflow-x: hidden; }
 .for-you-root { overflow-x: hidden; }

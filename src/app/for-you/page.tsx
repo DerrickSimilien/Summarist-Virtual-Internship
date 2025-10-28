@@ -11,31 +11,32 @@ const SelectedBookSkeleton = () => (
   <div
     className="rounded-lg flex items-start selected-book-skeleton"
     style={{
-      backgroundColor: '#e5e7eb',
+      backgroundColor: 'var(--skeleton-bg)',
       width: '100%',
       maxWidth: '960px',
       minHeight: '144px',
       padding: '32px 24px 24px 24px',
       animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      margin: '0 auto'
+      margin: '0 auto',
+      transition: 'background-color 0.3s ease'
     }}
   >
     <div className="flex-1" style={{ paddingRight: '20px', maxWidth: '288px' }}>
-      <div style={{ height: '16px', backgroundColor: '#d1d5db', borderRadius: '4px', marginBottom: '8px', width: '100%' }} />
-      <div style={{ height: '16px', backgroundColor: '#d1d5db', borderRadius: '4px', marginBottom: '8px', width: '90%' }} />
-      <div style={{ height: '16px', backgroundColor: '#d1d5db', borderRadius: '4px', width: '80%' }} />
+      <div style={{ height: '16px', backgroundColor: 'var(--skeleton-highlight)', borderRadius: '4px', marginBottom: '8px', width: '100%' }} />
+      <div style={{ height: '16px', backgroundColor: 'var(--skeleton-highlight)', borderRadius: '4px', marginBottom: '8px', width: '90%' }} />
+      <div style={{ height: '16px', backgroundColor: 'var(--skeleton-highlight)', borderRadius: '4px', width: '80%' }} />
     </div>
 
-    <div className="book-divider" style={{ width: '1px', height: '112px', backgroundColor: '#d1d5db', margin: '0 20px' }} />
+    <div className="book-divider" style={{ width: '1px', height: '112px', backgroundColor: 'var(--skeleton-highlight)', margin: '0 20px' }} />
 
     <div className="flex items-center" style={{ gap: '12px' }}>
-      <div style={{ width: '88px', height: '128px', backgroundColor: '#d1d5db', borderRadius: '8px' }} />
+      <div style={{ width: '88px', height: '128px', backgroundColor: 'var(--skeleton-highlight)', borderRadius: '8px' }} />
       <div className="flex flex-col">
-        <div style={{ height: '20px', width: '120px', backgroundColor: '#d1d5db', borderRadius: '4px', marginBottom: '8px' }} />
-        <div style={{ height: '14px', width: '100px', backgroundColor: '#d1d5db', borderRadius: '4px', marginBottom: '12px' }} />
+        <div style={{ height: '20px', width: '120px', backgroundColor: 'var(--skeleton-highlight)', borderRadius: '4px', marginBottom: '8px' }} />
+        <div style={{ height: '14px', width: '100px', backgroundColor: 'var(--skeleton-highlight)', borderRadius: '4px', marginBottom: '12px' }} />
         <div className="flex items-center" style={{ gap: '8px' }}>
-          <div style={{ width: '36px', height: '36px', backgroundColor: '#d1d5db', borderRadius: '50%' }} />
-          <div style={{ height: '14px', width: '80px', backgroundColor: '#d1d5db', borderRadius: '4px' }} />
+          <div style={{ width: '36px', height: '36px', backgroundColor: 'var(--skeleton-highlight)', borderRadius: '50%' }} />
+          <div style={{ height: '14px', width: '80px', backgroundColor: 'var(--skeleton-highlight)', borderRadius: '4px' }} />
         </div>
       </div>
     </div>
@@ -49,19 +50,20 @@ const BookCardSkeleton = () => (
         style={{
           width: '100%',
           height: '180px',
-          backgroundColor: '#e5e7eb',
+          backgroundColor: 'var(--skeleton-bg)',
           borderRadius: '8px',
-          animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+          animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          transition: 'background-color 0.3s ease'
         }}
       />
     </div>
 
     <div style={{ paddingTop: '2px' }}>
-      <div style={{ height: '16px', backgroundColor: '#e5e7eb', borderRadius: '4px', marginBottom: '6px', width: '100%' }} />
-      <div style={{ height: '14px', backgroundColor: '#e5e7eb', borderRadius: '4px', marginBottom: '6px', width: '80%' }} />
+      <div style={{ height: '16px', backgroundColor: 'var(--skeleton-bg)', borderRadius: '4px', marginBottom: '6px', width: '100%' }} />
+      <div style={{ height: '14px', backgroundColor: 'var(--skeleton-bg)', borderRadius: '4px', marginBottom: '6px', width: '80%' }} />
       <div className="flex items-center justify-between" style={{ marginTop: '6px' }}>
-        <div style={{ height: '12px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '40%' }} />
-        <div style={{ height: '12px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '30%' }} />
+        <div style={{ height: '12px', backgroundColor: 'var(--skeleton-bg)', borderRadius: '4px', width: '40%' }} />
+        <div style={{ height: '12px', backgroundColor: 'var(--skeleton-bg)', borderRadius: '4px', width: '30%' }} />
       </div>
     </div>
   </div>
@@ -69,18 +71,14 @@ const BookCardSkeleton = () => (
 
 /* ---------- Book Card ---------- */
 
-/** Robust mapping: prefer ID (stable), then title (normalized), else '03:24'. */
 const ID_DURATIONS: Record<string, string> = {
-  // Can't Hurt Me (your API id)
   '2l0idxm1rwv': '04:52',
-  // Add others by id here if you want to be future-proof
-  // '5bxl50cz4bt': '03:24',
 };
 
 const TITLE_DURATIONS: Record<string, string> = {
   'how to win friends and influence people': '03:24',
-  "can't hurt me": '04:52',     // straight apostrophe
-  "can’t hurt me": '04:52',     // curly apostrophe
+  "can't hurt me": '04:52',
+  "can't hurt me": '04:52',
   'mastery': '04:40',
   'atomic habits': '03:24',
   'how to talk to anyone': '03:22',
@@ -89,30 +87,24 @@ const TITLE_DURATIONS: Record<string, string> = {
   'the intelligent investor': '02:48',
   'the 4 day week': '02:20',
   'the 7 habits of highly effective people': '04:36',
-  'rich dad poor dad': '05:38', // ✅ ensure RDPD shows 05:38
+  'rich dad poor dad': '05:38',
   'the power of now': '03:12',
   'think and grow rich': '04:25',
   'zero to one': '03:24',
-  'the 10x rule': '03:18',      // ✅ corrected to 03:18
-  'deep work': '02:50',         // ✅ corrected to 02:50
+  'the 10x rule': '03:18',
+  'deep work': '02:50',
   'the second machine age': '03:36',
   'the 5 second rule': '02:45',
   'the 12 week year': '03:36',
   'getting things done': '02:24',
 };
 
-/** Make title keys reliable:
- * - lowercase
- * - normalize curly/backtick apostrophes
- * - strip punctuation (commas, colons, etc.), keep letters/numbers/spaces
- * - collapse extra spaces
- */
 const normalizeTitle = (s: string) =>
   s
     ?.toLowerCase()
-    .replace(/[’`]/g, "'")
-    .replace(/[^\w\s']/g, ' ')     // remove punctuation like commas/colons
-    .replace(/\s+/g, ' ')          // collapse multiple spaces
+    .replace(/['`]/g, "'")
+    .replace(/[^\w\s']/g, ' ')
+    .replace(/\s+/g, ' ')
     .trim();
 
 const RecommendedBookCard = ({ book }: { book: any }) => {
@@ -121,17 +113,10 @@ const RecommendedBookCard = ({ book }: { book: any }) => {
   const handleBookClick = () => router.push(`/book/${book.id}`);
 
   const getBookDuration = (b: any) => {
-    // 1) If API already gives a duration we trust, use it
     if (b?.duration && typeof b.duration === 'string') return b.duration;
-
-    // 2) Prefer known duration by book id
     if (b?.id && ID_DURATIONS[b.id]) return ID_DURATIONS[b.id];
-
-    // 3) Fallback to normalized title lookup
     const key = normalizeTitle(b?.title || '');
     if (key && TITLE_DURATIONS[key]) return TITLE_DURATIONS[key];
-
-    // 4) Final fallback – what you were showing before
     return '03:24';
   };
 
@@ -161,19 +146,49 @@ const RecommendedBookCard = ({ book }: { book: any }) => {
       <div style={{ paddingTop: '2px' }}>
         <h3
           className="font-semibold line-clamp-2"
-          style={{ color: '#111827', marginBottom: '2px', lineHeight: '1.3', fontSize: '16px' }}
+          style={{ 
+            color: 'var(--text-primary)', 
+            marginBottom: '2px', 
+            lineHeight: '1.3', 
+            fontSize: '16px',
+            transition: 'color 0.3s ease'
+          }}
         >
           {book.title}
         </h3>
-        <p style={{ color: '#6b7280', marginBottom: '2px', fontSize: '14px' }}>{book.author}</p>
-        {book.subTitle && <p style={{ color: '#394547', marginBottom: '6px', fontSize: '14px' }}>{book.subTitle}</p>}
+        <p style={{ 
+          color: 'var(--text-muted)', 
+          marginBottom: '2px', 
+          fontSize: '14px',
+          transition: 'color 0.3s ease'
+        }}>
+          {book.author}
+        </p>
+        {book.subTitle && (
+          <p style={{ 
+            color: 'var(--text-secondary)', 
+            marginBottom: '6px', 
+            fontSize: '14px',
+            transition: 'color 0.3s ease'
+          }}>
+            {book.subTitle}
+          </p>
+        )}
 
         <div className="flex items-center justify-between text-small" style={{ marginTop: '6px' }}>
-          <div className="flex items-center" style={{ gap: '3px', color: '#6b7280' }}>
+          <div className="flex items-center" style={{ 
+            gap: '3px', 
+            color: 'var(--text-muted)',
+            transition: 'color 0.3s ease'
+          }}>
             <Clock className="w-3 h-3" />
             <span>{getBookDuration(book)}</span>
           </div>
-          <div className="flex items-center" style={{ gap: '3px', color: '#6b7280' }}>
+          <div className="flex items-center" style={{ 
+            gap: '3px', 
+            color: 'var(--text-muted)',
+            transition: 'color 0.3s ease'
+          }}>
             <span>☆</span>
             <span>{book.averageRating || '4.0'}</span>
           </div>
@@ -183,18 +198,28 @@ const RecommendedBookCard = ({ book }: { book: any }) => {
   );
 };
 
-/* ---------- Page ---------- */
+/* ---------- Main Component ---------- */
 
 const ForYouPage = () => {
   const router = useRouter();
+
+  // Selected book
   const [selectedBook, setSelectedBook] = useState<any>(null);
-  const [recommendedBooks, setRecommendedBooks] = useState<any[]>([]);
-  const [suggestedBooks, setSuggestedBooks] = useState<any[]>([]);
   const [selectedLoading, setSelectedLoading] = useState(true);
+
+  // Recommended books
+  const [recommendedBooks, setRecommendedBooks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Suggested books
+  const [suggestedBooks, setSuggestedBooks] = useState<any[]>([]);
   const [suggestedLoading, setSuggestedLoading] = useState(true);
   const [suggestedError, setSuggestedError] = useState<string | null>(null);
+
+  const handleSelectedBookClick = () => {
+    if (selectedBook?.id) router.push(`/book/${selectedBook.id}`);
+  };
 
   useEffect(() => {
     const fetchSelectedBook = async () => {
@@ -204,30 +229,17 @@ const ForYouPage = () => {
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         await new Promise((r) => setTimeout(r, 2000));
-        if (data && data.length > 0) setSelectedBook(data[0]);
+        setSelectedBook(data?.[0] || null);
       } catch (err: any) {
         await new Promise((r) => setTimeout(r, 2000));
-        setSelectedBook({
-          id: '1',
-          title: 'The Lean Startup',
-          author: 'Eric Ries',
-          imageLink:
-            'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1333576876i/10127019.jpg',
-          subscriptionRequired: false,
-          averageRating: 4.3,
-          duration: '3 mins 23 secs',
-          subTitle: 'How Constant Innovation Creates Radically Successful Businesses'
-        });
+        console.error('Error fetching selected book:', err);
+        setSelectedBook(null);
       } finally {
         setSelectedLoading(false);
       }
     };
     fetchSelectedBook();
   }, []);
-
-  const handleSelectedBookClick = () => {
-    if (selectedBook) router.push(`/book/${selectedBook.id}`);
-  };
 
   useEffect(() => {
     const fetchRecommendedBooks = async () => {
@@ -271,7 +283,6 @@ const ForYouPage = () => {
 
   return (
     <SidebarLayout>
-      {/* clamp width + kill horizontal overflow */}
       <div className="for-you-root flex justify-center" style={{ width: '100%', maxWidth: '100vw', overflowX: 'hidden' }}>
         <div
           className="for-you-container"
@@ -279,7 +290,11 @@ const ForYouPage = () => {
         >
           {/* Featured */}
           <section style={{ marginBottom: '32px' }}>
-            <h2 className="text-2xl font-bold" style={{ color: '#111827', marginBottom: '24px' }}>
+            <h2 className="text-2xl font-bold" style={{ 
+              color: 'var(--text-primary)', 
+              marginBottom: '24px',
+              transition: 'color 0.3s ease'
+            }}>
               Selected just for you
             </h2>
 
@@ -289,24 +304,33 @@ const ForYouPage = () => {
               <div
                 className="selected-book-card rounded-lg flex lg:flex-row justify-center flex-col items-start cursor-pointer transition-transform hover:scale-[1.02]"
                 style={{
-                  backgroundColor: '#FBEFD6',
+                  backgroundColor: '#FBEFD6', // ALWAYS beige, never changes
                   width: '100%',
                   maxWidth: '610px',
                   minHeight: '144px',
                   padding: '32px 24px 24px 24px',
-                  margin: '0 0 0 5px'
+                  margin: '0 0 0 5px',
+                  transition: 'transform 0.2s ease' // Only transform transitions, NOT background
                 }}
                 onClick={handleSelectedBookClick}
               >
                 <div className="book-description flex-1" style={{ paddingRight: '20px', maxWidth: '288px' }}>
-                  <div className="leading-relaxed featured-desc" style={{ fontSize: '16px', color: '#374151' }}>
+                  <div className="leading-relaxed featured-desc" style={{ 
+                    fontSize: '16px', 
+                    color: '#374151' // Fixed dark gray on beige - always readable
+                  }}>
                     {selectedBook.subTitle ||
                       selectedBook.summary ||
                       'How Constant Innovation Creates Radically Successful Businesses'}
                   </div>
                 </div>
 
-                <div className="book-divider" style={{ width: '1px', height: '112px', backgroundColor: '#d1d5db', margin: '0 20px' }} />
+                <div className="book-divider" style={{ 
+                  width: '1px', 
+                  height: '112px', 
+                  backgroundColor: '#d1d5db', // Fixed gray divider
+                  margin: '0 20px'
+                }} />
 
                 <div className="book-info flex items-center" style={{ gap: '12px' }}>
                   <img
@@ -317,10 +341,15 @@ const ForYouPage = () => {
                   />
 
                   <div className="flex flex-col">
-                    <h3 className="text-xl font-bold" style={{ color: '#111827', marginBottom: '4px' }}>
+                    <h3 className="text-xl font-bold" style={{ 
+                      color: '#111827' // Fixed dark text on beige
+                    }}>
                       {selectedBook.title}
                     </h3>
-                    <p className="text-sm" style={{ color: '#374151', marginBottom: '8px' }}>
+                    <p className="text-sm" style={{ 
+                      color: '#374151', // Fixed dark gray on beige
+                      marginBottom: '8px'
+                    }}>
                       by {selectedBook.author}
                     </p>
 
@@ -334,7 +363,9 @@ const ForYouPage = () => {
                       >
                         <Play className="w-4 h-4 fill-current" />
                       </button>
-                      <span className="text-sm font-medium" style={{ color: '#111827' }}>
+                      <span className="text-sm font-medium" style={{ 
+                        color: '#111827' // Fixed dark text
+                      }}>
                         {selectedBook.duration || '3 mins 23 secs'}
                       </span>
                     </div>
@@ -351,8 +382,19 @@ const ForYouPage = () => {
           {/* Recommended */}
           <section style={{ marginBottom: '32px' }}>
             <div style={{ marginBottom: '24px' }}>
-              <h2 className="text-2xl font-bold" style={{ color: '#111827' }}>Recommended For You</h2>
-              <p style={{ color: '#6b7280', marginTop: '6px' }}>We think you'll like these</p>
+              <h2 className="text-2xl font-bold" style={{ 
+                color: 'var(--text-primary)',
+                transition: 'color 0.3s ease'
+              }}>
+                Recommended For You
+              </h2>
+              <p style={{ 
+                color: 'var(--text-muted)', 
+                marginTop: '6px',
+                transition: 'color 0.3s ease'
+              }}>
+                We think you'll like these
+              </p>
             </div>
 
             {loading ? (
@@ -375,8 +417,19 @@ const ForYouPage = () => {
           {/* Suggested */}
           <section>
             <div style={{ marginBottom: '24px' }}>
-              <h2 className="text-2xl font-bold" style={{ color: '#111827' }}>Suggested Books</h2>
-              <p style={{ color: '#6b7280', marginTop: '4px' }}>Browse those books</p>
+              <h2 className="text-2xl font-bold" style={{ 
+                color: 'var(--text-primary)',
+                transition: 'color 0.3s ease'
+              }}>
+                Suggested Books
+              </h2>
+              <p style={{ 
+                color: 'var(--text-muted)', 
+                marginTop: '4px',
+                transition: 'color 0.3s ease'
+              }}>
+                Browse those books
+              </p>
             </div>
 
             {suggestedLoading ? (
@@ -404,10 +457,8 @@ const ForYouPage = () => {
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-        /* Horizontal scrollers that never grow the page width */
         .h-scroll { overflow-x: auto; overflow-y: hidden; width: 100%; max-width: 100%; }
 
-        /* Tablet & mobile: clamp everything to the viewport */
         @media (max-width: 768px) {
           .for-you-root { max-width: 100vw !important; overflow-x: hidden !important; }
           .for-you-container { padding: 0 16px !important; max-width: 100vw !important; }
@@ -416,7 +467,6 @@ const ForYouPage = () => {
           .h-scroll { width: 100% !important; max-width: 100% !important; }
         }
 
-        /* Small phones: stack the featured card */
         @media (max-width: 600px) {
           .selected-book-card { flex-direction: column !important; padding: 20px 16px !important; }
           .book-description { max-width: 100% !important; padding-right: 0 !important; margin-bottom: 16px; }
