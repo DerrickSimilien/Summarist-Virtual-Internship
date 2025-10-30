@@ -14,6 +14,7 @@ import { BiCrown } from "react-icons/bi";
 import { RiLeafLine } from "react-icons/ri";
 
 import LoginModal from "@/app/components/LoginModal";
+import DarkModeToggle from "./components/DarkModeToggle";
 
 interface User {
   email: string;
@@ -181,6 +182,7 @@ export default function Home() {
           </a>
 
           <ul className="nav__list--wrapper flex items-center gap-8 text-lg">
+             <DarkModeToggle />
             {/* Show Login or Logout only after hydration to avoid flicker */}
             {hydrated && (
               <li className="nav__list nav__list--login cursor-pointer">
@@ -417,10 +419,10 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <section id="footer" className="bg-gray-100 py-12 mt-8">
+      <section id="footer" className="bg-gray-100 dark:bg-slate-830 py-12 mt-auto">
         <div className="container max-w-7xl mx-auto px-6">
           {/* 768px behavior: stack columns, titles on top of links */}
-          <div className="row grid grid-cols-1 sm:grid-cols-4 gap-12 text-gray-700">
+          <div className="row grid grid-cols-1 sm:grid-cols-4 gap-12 text-gray-700 dark:text-gray-300">
             {[
               {
                 title: "Actions",

@@ -292,6 +292,8 @@ const ForYouPage = () => {
           <section style={{ marginBottom: '32px' }}>
             <h2 className="text-2xl font-bold" style={{ 
               color: 'var(--text-primary)', 
+              fontSize: '28px',      
+               fontWeight: '700',
               marginBottom: '24px',
               transition: 'color 0.3s ease'
             }}>
@@ -384,6 +386,8 @@ const ForYouPage = () => {
             <div style={{ marginBottom: '24px' }}>
               <h2 className="text-2xl font-bold" style={{ 
                 color: 'var(--text-primary)',
+                fontSize: '28px',      
+               fontWeight: '700',
                 transition: 'color 0.3s ease'
               }}>
                 Recommended For You
@@ -419,6 +423,8 @@ const ForYouPage = () => {
             <div style={{ marginBottom: '24px' }}>
               <h2 className="text-2xl font-bold" style={{ 
                 color: 'var(--text-primary)',
+                fontSize: '28px',      
+               fontWeight: '700',
                 transition: 'color 0.3s ease'
               }}>
                 Suggested Books

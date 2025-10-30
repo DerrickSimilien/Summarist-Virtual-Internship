@@ -11,22 +11,28 @@
   --text-muted: #6b7280;
   --skeleton-bg: #e5e7eb;
   --skeleton-highlight: #d1d5db;
+  --numbers-card-bg: #ffffff;      /* ← ADD THIS */
+--numbers-card-text: #032b41;
 }
 
 /* Dark mode color scheme with better contrast */
-@media (prefers-color-scheme: dark) {
+/* Dark mode color scheme with better contrast - controlled by .dark class on html */
+html.dark {
   :root {
-    --background: #0f172a;
+    --background: #0f177a;
     --foreground: #f1f5f9;
     --card-bg: #1e293b;
-    --featured-card-bg: #FBEFD6;  /* Featured card stays beige even in dark mode */
+    --featured-card-bg: #FBEFD6;  /* Featured card stays beige in dark mode */
     --text-primary: #f1f5f9;
-    --text-secondary: #e2e8f0;
+    --text-secondary: #f2e8f0;
     --text-muted: #cbd5e1;
     --skeleton-bg: #1e293b;
     --skeleton-highlight: #334155;
+    --numbers-card-bg: #1e293b;      /* ← ADD THIS */
+    --numbers-card-text: #ffffff; 
   }
 }
+
 
 @theme inline {
   --color-background: var(--background);
@@ -136,6 +142,7 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0 auto; /* ← ADD THIS LINE */
 }
 
 /* Modal-specific reset */
@@ -411,11 +418,9 @@ button:disabled {
 }
 
 /* In dark mode, keep reviews readable */
-@media (prefers-color-scheme: dark) {
-  .review {
-    background-color: #1e293b;
-    border: 1px solid #334155;
-  }
+html.dark .review {
+  background-color: #1e293b;
+  border: 1px solid #334155;
 }
 
 .review__header {
@@ -457,6 +462,10 @@ button:disabled {
   flex-direction: column;
   align-items: center;
   text-align: center;
+  background-color: var(--numbers-card-bg);  
+  padding: 40px 24px;                         
+  border-radius: 12px;                        
+  transition: background-color 0.3s ease;     
 }
 
 .numbers__icon {
