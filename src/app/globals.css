@@ -378,10 +378,15 @@ button:disabled {
   flex-direction: column;
   justify-content: center;
   gap: 24px;
-  background-color: var(--card-bg);
+  background-color: #f3f4f6;  /* ← Light gray in light mode */
   padding: 40px 24px;
   border-radius: 4px;
   transition: background-color 0.3s ease;
+}
+
+/* Dark mode styling */
+html.dark .statistics__content--details {
+  background-color: var(--card-bg);  /* ← Dark slate in dark mode */
 }
 
 .statistics__data {
