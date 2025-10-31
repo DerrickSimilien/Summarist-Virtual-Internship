@@ -18,19 +18,28 @@
 /* Dark mode color scheme with better contrast */
 /* Dark mode color scheme with better contrast - controlled by .dark class on html */
 html.dark {
-  :root {
-    --background: #0f177a;
-    --foreground: #f1f5f9;
-    --card-bg: #1e293b;
-    --featured-card-bg: #FBEFD6;  /* Featured card stays beige in dark mode */
-    --text-primary: #f1f5f9;
-    --text-secondary: #f2e8f0;
-    --text-muted: #cbd5e1;
-    --skeleton-bg: #1e293b;
-    --skeleton-highlight: #334155;
-    --numbers-card-bg: #1e293b;      /* ← ADD THIS */
-    --numbers-card-text: #ffffff; 
-  }
+  
+--background: #000000;
+
+--foreground: #f1f5f9;
+
+--card-bg: #1e293b;
+
+--featured-card-bg: #FBEFD6; /* Featured card stays beige in dark mode */
+
+--text-primary: #f1f5f9;
+
+--text-secondary: #f2e8f0;
+
+--text-muted: #cbd5e1;
+
+--skeleton-bg: #1e293b;
+
+--skeleton-highlight: #334155;
+
+--numbers-card-bg: #1e293b; /* ← ADD THIS */
+
+--numbers-card-text: #ffffff;
 }
 
 

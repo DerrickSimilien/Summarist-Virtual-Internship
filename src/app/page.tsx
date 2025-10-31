@@ -388,7 +388,7 @@ export default function Home() {
               <BiCrown size={48} />
             </div>
             <div className="numbers__title text-3xl font-bold">3 Million</div>
-            <div className="numbers__sub--title text-gray-700">
+            <div className="numbers__sub--title text-gray-700 dark:text-gray-300">
               Downloads on all platforms
             </div>
           </div>
@@ -400,7 +400,7 @@ export default function Home() {
               <BsStarHalf size={24} />
             </div>
             <div className="numbers__title text-3xl font-bold">4.5 Stars</div>
-            <div className="numbers__sub--title text-gray-700">
+            <div className="numbers__sub--title text-gray-700 dark:text-gray-300">
               Average ratings on iOS and Google Play
             </div>
           </div>
@@ -411,7 +411,7 @@ export default function Home() {
               <RiLeafLine size={48} />
             </div>
             <div className="numbers__title text-3xl font-bold">97%</div>
-            <div className="numbers__sub--title text-gray-700">
+            <div className="numbers__sub--title text-gray-700 dark:text-gray-300">
               Of Summarist members create a better reading habit
             </div>
           </div>
@@ -419,7 +419,7 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <section id="footer" className="bg-gray-100 dark:bg-slate-830 py-12 mt-auto">
+      <section id="footer" className="bg-gray-100 dark:bg-gray-900 py-12 mt-auto">
         <div className="container max-w-7xl mx-auto px-6">
           {/* 768px behavior: stack columns, titles on top of links */}
           <div className="row grid grid-cols-1 sm:grid-cols-4 gap-12 text-gray-700 dark:text-gray-300">
@@ -446,7 +446,7 @@ export default function Home() {
                 <div className="footer__links--stack">
                   {links.map((l, j) => (
                     <div key={j} className="footer__link--wrapper mb-3">
-                      <a href="#" className="footer__link text-gray-600 hover:text-gray-900 transition">
+                    <a href="#" className="footer__link text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition">
                         {l}
                       </a>
                     </div>
@@ -456,7 +456,8 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="footer__copyright--wrapper mt-12 border-t pt-6 text-center text-gray-500 text-sm">
+          
+<div className="footer__copyright--wrapper mt-12 border-t pt-6 text-center text-gray-500 dark:text-gray-400 text-sm">
             Copyright &copy; 2023 Summarist.
           </div>
         </div>
@@ -494,6 +495,11 @@ export default function Home() {
           border-radius: 16px;
           padding: 28px 24px;
           width: 100%;
+          }
+
+:global(html.dark) .numbers__wrapper .numbers__card {
+
+background: var(--numbers-card-bg);
         }
         @media (max-width: 1024px) {
           .numbers__wrapper {
