@@ -536,6 +536,12 @@ html.dark .review {
   color: #2bd97c;
 }
 
+html.dark .footer__link,
+html.dark .footer__link--title,
+html.dark .footer__copyright {
+  color: var(--text-primary);
+}
+
 .footer__copyright {
   text-align: center;
   color: var(--text-muted);
@@ -927,3 +933,4 @@ html.dark .review {
 
 .sl-main { overflow-x: hidden; }
 .for-you-root { overflow-x: hidden; }
+
