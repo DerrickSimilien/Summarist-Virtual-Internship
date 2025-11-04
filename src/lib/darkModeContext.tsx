@@ -42,11 +42,7 @@ export function DarkModeProvider({ children }: { children: React.ReactNode }) {
     setIsDarkMode(!isDarkMode);
   };
 
-  // Prevent hydration mismatch
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
+  // Always provide context, even before mounting
   return (
     <DarkModeContext.Provider value={{ isDarkMode, toggleDarkMode }}>
       {children}

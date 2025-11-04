@@ -149,29 +149,37 @@ const ChoosePlanPage = () => {
         </p>
 
           <div 
-            className="plan__img--mask"
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '100%',
-              maxWidth: '340px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'flex-end',
-            }}
-          >
-            <img
-              src="/pricingtop.png"
-              alt="Learning illustration"
-              style={{
-                width: '100%',
-                height: 'auto',
-                objectFit: 'contain',
-              }}
-            />
-          </div>
+  className="plan__img--mask"
+  style={{
+    position: 'absolute',
+    bottom: 0,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: '60%',
+    maxWidth: '480px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    padding: '12px 12px 12px',
+    backgroundColor: '#ffffff',
+    overflow: 'hidden',
+    borderTopLeftRadius: '50% 100%',
+    borderTopRightRadius: '50% 100%',
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    boxShadow: 'none'
+  }}
+>
+  <img
+    src="/pricingtop.png"
+    alt="Learning illustration"
+    style={{
+      width: '58%',
+      height: 'auto',
+      objectFit: 'contain'
+    }}
+  />
+</div>
         </div>
       </div>
 
