@@ -78,7 +78,6 @@ const ID_DURATIONS: Record<string, string> = {
 const TITLE_DURATIONS: Record<string, string> = {
   'how to win friends and influence people': '03:24',
   "can't hurt me": '04:52',
-  "can't hurt me": '04:52',
   'mastery': '04:40',
   'atomic habits': '03:24',
   'how to talk to anyone': '03:22',
@@ -203,6 +202,18 @@ const RecommendedBookCard = ({ book }: { book: any }) => {
 const ForYouPage = () => {
   const router = useRouter();
 
+  // ✅ NEW: Force this page to ALWAYS be in light mode
+  useEffect(() => {
+    document.documentElement.classList.remove('dark');
+    
+    return () => {
+      const savedTheme = localStorage.getItem('darkMode');
+      if (savedTheme === 'true') {
+        document.documentElement.classList.add('dark');
+      }
+    };
+  }, []);
+
   // Selected book
   const [selectedBook, setSelectedBook] = useState<any>(null);
   const [selectedLoading, setSelectedLoading] = useState(true);
@@ -306,20 +317,20 @@ const ForYouPage = () => {
               <div
                 className="selected-book-card rounded-lg flex lg:flex-row justify-center flex-col items-start cursor-pointer transition-transform hover:scale-[1.02]"
                 style={{
-                  backgroundColor: '#FBEFD6', // ALWAYS beige, never changes
+                  backgroundColor: '#FBEFD6',
                   width: '100%',
                   maxWidth: '610px',
                   minHeight: '144px',
                   padding: '32px 24px 24px 24px',
                   margin: '0 0 0 5px',
-                  transition: 'transform 0.2s ease' // Only transform transitions, NOT background
+                  transition: 'transform 0.2s ease'
                 }}
                 onClick={handleSelectedBookClick}
               >
                 <div className="book-description flex-1" style={{ paddingRight: '20px', maxWidth: '288px' }}>
                   <div className="leading-relaxed featured-desc" style={{ 
                     fontSize: '16px', 
-                    color: '#374151' // Fixed dark gray on beige - always readable
+                    color: '#374151'
                   }}>
                     {selectedBook.subTitle ||
                       selectedBook.summary ||
@@ -330,7 +341,7 @@ const ForYouPage = () => {
                 <div className="book-divider" style={{ 
                   width: '1px', 
                   height: '112px', 
-                  backgroundColor: '#d1d5db', // Fixed gray divider
+                  backgroundColor: '#d1d5db',
                   margin: '0 20px'
                 }} />
 
@@ -344,12 +355,12 @@ const ForYouPage = () => {
 
                   <div className="flex flex-col">
                     <h3 className="text-xl font-bold" style={{ 
-                      color: '#111827' // Fixed dark text on beige
+                      color: '#111827'
                     }}>
                       {selectedBook.title}
                     </h3>
                     <p className="text-sm" style={{ 
-                      color: '#374151', // Fixed dark gray on beige
+                      color: '#374151',
                       marginBottom: '8px'
                     }}>
                       by {selectedBook.author}
@@ -366,7 +377,7 @@ const ForYouPage = () => {
                         <Play className="w-4 h-4 fill-current" />
                       </button>
                       <span className="text-sm font-medium" style={{ 
-                        color: '#111827' // Fixed dark text
+                        color: '#111827'
                       }}>
                         {selectedBook.duration || '3 mins 23 secs'}
                       </span>

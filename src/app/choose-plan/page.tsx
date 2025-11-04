@@ -108,6 +108,7 @@ const ChoosePlanPage = () => {
         paddingBottom: showFixedCTA ? 96 : 0,
       }}
     >
+    
       <div
         className="relative wrapper choose-header"
         style={{
