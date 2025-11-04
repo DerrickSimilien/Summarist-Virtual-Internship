@@ -245,6 +245,13 @@ button:disabled {
   height: 100%;
 }
 
+/* Dark mode: Make logo visible with white filter */
+/* Dark mode: Make logo visible with white filter */
+html.dark .nav__img--mask img,
+html.dark .nav__img {
+  filter: brightness(0) invert(1) !important;
+}
+
 .nav__list {
   cursor: not-allowed;
   color: var(--text-primary);
@@ -257,6 +264,11 @@ button:disabled {
 
 .nav__list--login {
   cursor: pointer;
+}
+
+/* Dark mode: Make login button white */
+html.dark .nav__list--login button {
+  color: #ffffff !important;
 }
 
 /* LANDING - Updated for dark mode */
@@ -536,10 +548,25 @@ html.dark .review {
   color: #2bd97c;
 }
 
-html.dark .footer__link,
-html.dark .footer__link--title,
+/* Dark mode footer styling */
+html.dark #footer {
+  background-color: #1e293b !important;
+}
+
+html.dark .footer__link--title {
+  color: #ffffff !important;
+}
+
+html.dark .footer__link {
+  color: #ffffff !important;
+}
+
+html.dark .footer__link:hover {
+  color: #2bd97c !important;
+}
+
 html.dark .footer__copyright {
-  color: var(--text-primary);
+  color: #cbd5e1 !important;
 }
 
 .footer__copyright {
