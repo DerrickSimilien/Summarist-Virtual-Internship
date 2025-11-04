@@ -15,6 +15,7 @@ import { RiLeafLine } from "react-icons/ri";
 
 import LoginModal from "@/app/components/LoginModal";
 import DarkModeToggle from "./components/DarkModeToggle";
+import { useDarkMode } from "@/lib/darkModeContext";
 
 interface User {
   email: string;
@@ -136,6 +137,7 @@ const AnimatedStatistics = () => {
 
 export default function Home() {
   const router = useRouter();
+  const { isDarkMode } = useDarkMode();
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
@@ -171,14 +173,20 @@ export default function Home() {
       {/* NAV */}
       <nav className="nav">
         <div className="nav__wrapper flex items-center justify-between max-w-7xl mx-auto">
-          <a href="/" className="nav__img--mask relative w-47 h-16 block">
-            <Image
-              src="/logo.png"
-              alt="Summarist"
-              fill
-              style={{ objectFit: "contain" }}
-              priority
-            />
+          <a href="/" className="nav__img--mask relative w-47 h-16 flex items-center">
+            {!isDarkMode ? (
+              <Image
+                src="/logo.png"
+                alt="Summarist"
+                fill
+                style={{ objectFit: "contain" }}
+                priority
+              />
+            ) : (
+              <span className="text-white text-2xl font-bold">
+                Summarist
+              </span>
+            )}
           </a>
 
           <ul className="nav__list--wrapper flex items-center gap-8 text-lg">
