@@ -148,13 +148,26 @@ const ChoosePlanPage = () => {
           Turn ordinary moments into amazing learning opportunities
         </p>
 
-          <div className="plan__img--mask">
+          <div 
+            className="plan__img--mask"
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '100%',
+              maxWidth: '340px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'flex-end',
+            }}
+          >
             <img
               src="/pricingtop.png"
               alt="Learning illustration"
               style={{
                 width: '100%',
-                height: '100%',
+                height: 'auto',
                 objectFit: 'contain',
               }}
             />
