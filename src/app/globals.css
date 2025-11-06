@@ -944,7 +944,29 @@ html.dark .footer__copyright {
     align-items: center;
   }
 
-  
+   #footer .row {
+    text-align: center;
+  }
+
+  #footer .footer__block {
+    padding: 0;
+  }
+
+  #footer .footer__link--title {
+    text-align: center;
+  }
+
+  #footer .footer__link--wrapper {
+    align-items: center;
+  }
+
+ #numbers .numbers__card {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
 }
 
 @media (max-width: 576px) {
