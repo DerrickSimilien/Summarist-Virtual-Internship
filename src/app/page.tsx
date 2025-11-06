@@ -467,7 +467,7 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="footer__copyright--wrapper mt-12 pt-6 text-center text-gray-500 dark:text-gray-400 text-sm">
+          <div className="footer__copyright--wrapper mt-12 pt-14 text-center text-gray-500 dark:text-gray-400 text-sm">
             Copyright &copy; 2023 Summarist.
           </div>
         </div>
@@ -498,6 +498,10 @@ export default function Home() {
             gap: 0.5rem;
           }
         }
+
+        .footer__copyright--wrapper {
+    padding-top: 2rem; /* 32px – nice breathable gap above "Copyright..." */
+  }
 
         /* Edge-to-edge + rounded rectangular "numbers" cards on tablet/mobile */
         .numbers__wrapper .numbers__card {
