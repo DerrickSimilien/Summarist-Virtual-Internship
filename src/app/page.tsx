@@ -428,7 +428,7 @@ export default function Home() {
 
       {/* FOOTER */}
       <section id="footer" className="bg-gray-100 dark:bg-gray-900 py-12 mt-auto">
-        <div className="container max-w-7xl mx-auto px-6">
+        <div className="container max-w-7xl mx-auto px-6 xl:translate-x-36">
           {/* 768px behavior: stack columns, titles on top of links */}
           <div className="row grid grid-cols-1 sm:grid-cols-4 gap-12 text-gray-700 dark:text-gray-300">
             {[
@@ -454,7 +454,10 @@ export default function Home() {
                 <div className="footer__links--stack">
                   {links.map((l, j) => (
                     <div key={j} className="footer__link--wrapper mb-3">
-                    <a href="#" className="footer__link text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition">
+                      <a
+                        href="#"
+                        className="footer__link text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
+                      >
                         {l}
                       </a>
                     </div>
@@ -464,8 +467,7 @@ export default function Home() {
             ))}
           </div>
 
-          
-<div className="footer__copyright--wrapper mt-12 border-t pt-6 text-center text-gray-500 dark:text-gray-400 text-sm">
+          <div className="footer__copyright--wrapper mt-12 pt-6 text-center text-gray-500 dark:text-gray-400 text-sm">
             Copyright &copy; 2023 Summarist.
           </div>
         </div>
@@ -503,11 +505,10 @@ export default function Home() {
           border-radius: 16px;
           padding: 28px 24px;
           width: 100%;
-          }
+        }
 
-:global(html.dark) .numbers__wrapper .numbers__card {
-
-background: var(--numbers-card-bg);
+        :global(html.dark) .numbers__wrapper .numbers__card {
+          background: var(--numbers-card-bg);
         }
         @media (max-width: 1024px) {
           .numbers__wrapper {
