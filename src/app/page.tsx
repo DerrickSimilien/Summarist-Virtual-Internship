@@ -405,6 +405,9 @@ export default function Home() {
           <div className="numbers__card">
             <div className="numbers__icon numbers__star--icon flex justify-center text-yellow-500 mb-3 space-x-1">
               <BsStarFill size={24} />
+              <BsStarFill size={24} />
+              <BsStarFill size={24} />
+              <BsStarFill size={24} />
               <BsStarHalf size={24} />
             </div>
             <div className="numbers__title text-3xl font-bold">4.5 Stars</div>
